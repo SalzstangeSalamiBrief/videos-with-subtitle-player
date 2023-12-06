@@ -12,7 +12,7 @@ import (
 )
 
 // initialize path as const on root level of the file to prevent circular dependencies
-const GetAudioFileUseCasePath = `\/(.)+(\.mp3(\.vtt){0,1})$`
+const GetAudioFileUseCasePath = `\/file\/(.)+(\.mp3(\.vtt){0,1})$`
 
 // this use case can be used to get .mp3 oder .vtt files
 var GetAudioFileUseCaseRoute = router.Route{

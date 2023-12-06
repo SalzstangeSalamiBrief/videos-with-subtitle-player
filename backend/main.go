@@ -18,8 +18,10 @@ func main() {
 	}
 
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
+
 	addRoutesToApp()
-	http.HandleFunc("/", router.HandleRouting)
+	http.Handle("/", http.FileServer(http.Dir("./public")))
+	http.HandleFunc("/api/", router.HandleRouting)
 	http.ListenAndServe(ADDR, nil)
 }
 
