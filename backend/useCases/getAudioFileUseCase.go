@@ -4,18 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path"
 	"regexp"
 	"strings"
 	"videos-with-subtitle-player/models"
 	"videos-with-subtitle-player/router"
 )
 
-// TODO getSubtitleFileUseCase
-// TODO => OUTSOURCE SAME LOGIC?
-
 // initialize path as const on root level of the file to prevent circular dependencies
 const GetAudioFileUseCasePath = `\/(.)+(\.mp3(\.vtt){0,1})$`
 
+// this use case can be used to get .mp3 oder .vtt files
 var GetAudioFileUseCaseRoute = router.Route{
 	Path:    GetAudioFileUseCasePath,
 	Method:  http.MethodGet,
@@ -23,22 +22,24 @@ var GetAudioFileUseCaseRoute = router.Route{
 }
 
 func getAudioFileHandler(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
+	rootPath := os.Getenv("ROOT_PATH")
 	filePath := getFilePathFromUrl(r.URL.Path)
-	audioFile, err := findAudioFileInFileTree(filePath)
+	audioFileInTree, err := findAudioFileInFileTree(filePath, rootPath)
 	if err != nil {
 		fmt.Println(err.Error())
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", filePath), http.StatusBadRequest)
 		return
 	}
 
-	fileBytes, err := os.ReadFile(fmt.Sprintf(audioFile.Path))
+	filePathOnHardDist := path.Join(rootPath, audioFileInTree.Path)
+	fileBytes, err := os.ReadFile(filePathOnHardDist)
 	if err != nil {
 		fmt.Println(err.Error())
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", filePath), http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", audioFile.Name))
+	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", audioFileInTree.Name))
 	w.Write(fileBytes)
 	quit <- true
 }
@@ -50,10 +51,23 @@ func getFilePathFromUrl(urlPath string) string {
 	return filePathWithoutFilePathPrefix
 }
 
-func findAudioFileInFileTree(filePath string) (models.FileTreeItem, error) {
-	rootPath := os.Getenv("ROOT_PATH")
-	// TODO NEW FUNCTION RECURSIVELY
-	fileTree := GetFileTree(rootPath)
-	fmt.Println(fileTree)
-	return models.FileTreeItem{}, nil
+func findAudioFileInFileTree(filePath string, rootPath string) (models.FileTreeItem, error) {
+
+	flatFileTree := GetFlatFileTree(rootPath)
+
+	var err error
+	var result models.FileTreeItem
+	for _, fileTreeItem := range flatFileTree {
+		isMatch := strings.Contains(fileTreeItem.Path, filePath)
+		if isMatch == true {
+			result = fileTreeItem
+			break
+		}
+	}
+
+	if result.Path == "" {
+		err = fmt.Errorf("Could not find file '%v' in file tree", filePath)
+	}
+
+	return result, err
 }

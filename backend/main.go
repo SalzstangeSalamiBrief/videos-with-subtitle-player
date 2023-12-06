@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
+	"net/http"
 	"videos-with-subtitle-player/router"
 	usecases "videos-with-subtitle-player/useCases"
 
@@ -18,13 +17,10 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	rootPath := os.Getenv("ROOT_PATH")
-	vaka := usecases.GetFlatFileTree(rootPath)
-	fmt.Print(vaka)
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
-	// addRoutesToApp()
-	// http.HandleFunc("/", router.HandleRouting)
-	// http.ListenAndServe(ADDR, nil)
+	addRoutesToApp()
+	http.HandleFunc("/", router.HandleRouting)
+	http.ListenAndServe(ADDR, nil)
 }
 
 func addRoutesToApp() {
