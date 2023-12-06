@@ -19,7 +19,6 @@ var GetFileTreeUseCaseRoute = router.Route{
 	Method:  http.MethodGet,
 }
 
-var fileTree []models.DirectoryTreeItem
 var rootPath string
 
 func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
@@ -27,14 +26,9 @@ func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool
 		rootPath = os.Getenv("ROOT_PATH")
 	}
 
-	if len(fileTree) == 0 {
-		fileTree = getFileTree(rootPath)
-	} else {
-		// update file tree in background
-		go func() {
-			fileTree = getFileTree(rootPath)
-		}()
-	}
+	fileTree := GetFileTree(rootPath)
+	// TODO CACHING
+	// TODO ACCESS AND LOAD FILE TREE FROM OTHJER FILES
 
 	encodedBytes, err := json.Marshal(fileTree)
 	if err != nil {
@@ -47,9 +41,9 @@ func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool
 	quit <- true
 }
 
-func getFileTree(parentPath string) []models.DirectoryTreeItem {
+func GetFileTree(parentPath string) []models.DirectoryTreeItem {
 	fullTree := getFullTree(parentPath)
-	cleanedTree := removeEmptyDirectoryItems(fullTree)
+	cleanedTree := cleanUpTree(fullTree)
 
 	return cleanedTree
 }
@@ -107,14 +101,13 @@ func getFullTree(parentPath string) []models.DirectoryTreeItem {
 				continue
 			}
 
-			fmt.Printf("fileExtension %v\n", fileExtension)
 			newSubtitleFile := models.FileTreeItem{
-				Path: currentItemPath,
+				Path: getFolderPath(currentItemPath),
 				Name: itemName,
 			}
 
 			newAssociatedSourceFile := models.FileTreeItem{
-				Path: parentPath + "\\" + correspondingSourceFilePath,
+				Path: getFolderPath(correspondingSourceFilePath),
 				Name: itemName,
 			}
 
@@ -128,17 +121,37 @@ func getFullTree(parentPath string) []models.DirectoryTreeItem {
 	return currentFolderTree
 }
 
-func removeEmptyDirectoryItems(originTree []models.DirectoryTreeItem) []models.DirectoryTreeItem {
+func cleanUpTree(originTree []models.DirectoryTreeItem) []models.DirectoryTreeItem {
 	cleanedTree := make([]models.DirectoryTreeItem, 0)
 	for _, item := range originTree {
 		canBeAdded := checkIfDirectoryItemCanBeAdded(item)
-		if canBeAdded == true {
-			item.Children = removeEmptyDirectoryItems(item.Children)
-			cleanedTree = append(cleanedTree, item)
+		if canBeAdded == false {
+			continue
 		}
+		item.Children = cleanUpTree(item.Children)
+		item.Path = getFolderPath(item.Path)
+		cleanedTree = append(cleanedTree, item)
 	}
 
 	return cleanedTree
+}
+
+func getFolderPath(path string) string {
+	if rootPath == "" {
+		rootPath = os.Getenv("ROOT_PATH")
+	}
+
+	pathWithoutRoot := strings.Replace(path, rootPath, "", 1)
+	regexpToAddmatchingSeparators := regexp.MustCompile(`\\+`)
+	pathWithSeparators := regexpToAddmatchingSeparators.ReplaceAllString(pathWithoutRoot, "/")
+	return pathWithSeparators
+}
+
+func getFileName(path string) string {
+	regexpToAddmatchingSeparators := regexp.MustCompile(`\\+`)
+	pathParts := regexpToAddmatchingSeparators.Split(path, -1)
+	fileName := pathParts[len(pathParts)-1]
+	return fileName
 }
 
 func checkIfDirectoryItemCanBeAdded(newDirectoryItem models.DirectoryTreeItem) bool {
