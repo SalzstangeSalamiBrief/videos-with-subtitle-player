@@ -1,16 +1,53 @@
 package usecases
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path"
 	"regexp"
 	"strings"
 	"videos-with-subtitle-player/models"
+	"videos-with-subtitle-player/router"
 )
 
-func GetFileTree(parentPath string) []models.DirectoryTreeItem {
+var GetFileTreeUseCaseRoute = router.Route{
+	Path:    "/file-tree",
+	Handler: GetFileTreeUseCase,
+	Method:  http.MethodGet,
+}
+
+var fileTree []models.DirectoryTreeItem
+var rootPath string
+
+func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
+	if rootPath == "" {
+		rootPath = os.Getenv("ROOT_PATH")
+	}
+
+	if len(fileTree) == 0 {
+		fileTree = getFileTree(rootPath)
+	} else {
+		// update file tree in background
+		go func() {
+			fileTree = getFileTree(rootPath)
+		}()
+	}
+
+	encodedBytes, err := json.Marshal(fileTree)
+	if err != nil {
+		router.ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
+		quit <- true
+		return
+	}
+
+	w.Write(encodedBytes)
+	quit <- true
+}
+
+func getFileTree(parentPath string) []models.DirectoryTreeItem {
 	fullTree := getFullTree(parentPath)
 	cleanedTree := removeEmptyDirectoryItems(fullTree)
 

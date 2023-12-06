@@ -1,13 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"os"
+	"net/http"
+	"videos-with-subtitle-player/router"
 	usecases "videos-with-subtitle-player/useCases"
 
 	"github.com/joho/godotenv"
 )
+
+const ADDR = "localhost:3000"
 
 func main() {
 	err := godotenv.Load()
@@ -15,9 +17,11 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	rootPath := os.Getenv("ROOT_PATH")
+	addRoutesToApp()
+	http.HandleFunc("/", router.HandleRouting)
+	http.ListenAndServe(ADDR, nil)
+}
 
-	content := usecases.GetFileTree(rootPath)
-	fmt.Printf("content %v\n", content)
-
+func addRoutesToApp() {
+	router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
 }
