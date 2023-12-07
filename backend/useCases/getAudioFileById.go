@@ -9,6 +9,7 @@ import (
 	"strings"
 	"videos-with-subtitle-player/models"
 	"videos-with-subtitle-player/router"
+	directoryTree "videos-with-subtitle-player/services/directoryTree"
 )
 
 // initialize path as const on root level of the file to prevent circular dependencies
@@ -53,7 +54,7 @@ func getFilePathFromUrl(urlPath string) string {
 
 func findAudioFileInFileTree(filePath string, rootPath string) (models.FileTreeItem, error) {
 
-	flatFileTree := GetFlatFileTree(rootPath)
+	flatFileTree := directoryTree.FlatTree
 
 	var err error
 	var result models.FileTreeItem
