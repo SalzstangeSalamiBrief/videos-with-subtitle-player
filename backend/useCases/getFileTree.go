@@ -12,11 +12,11 @@ import (
 
 var GetFileTreeUseCaseRoute = router.Route{
 	Path:    "/file-tree",
-	Handler: GetFileTreeUseCase,
+	Handler: getFileTreeUseCase,
 	Method:  http.MethodGet,
 }
 
-func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
+func getFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
 	fileTree := directoryTree.FileTreeItems
 	encodedBytes, err := json.Marshal(fileTree)
 	if err != nil {
@@ -30,9 +30,9 @@ func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool
 }
 
 // TODO LOWERCASE
-func GetFileTreeDto(flatFileTree []models.FileTreeItem) {
-	rootFileHierarchy := models.FileHierarchyDto{
-		Children: map[string]models.FileHierarchyDto{},
+func getFileTreeDto(flatFileTree []models.FileTreeItem) {
+	rootFileHierarchy := models.FileTreeDto{
+		Children: map[string]models.FileTreeDto{},
 	}
 
 	for _, file := range flatFileTree {
@@ -43,7 +43,6 @@ func GetFileTreeDto(flatFileTree []models.FileTreeItem) {
 	}
 
 	for _, file := range flatFileTree {
-		// TODO FILES DO NOT GET AADDED
 		pathParts := strings.Split(file.Path, "/")[1:]                // first element is empty, so skip it
 		pathPartsWithoutFileExtension := pathParts[:len(pathParts)-1] // remove file extension
 		AddFileToHierarchy(&rootFileHierarchy, file, pathPartsWithoutFileExtension)
@@ -51,9 +50,9 @@ func GetFileTreeDto(flatFileTree []models.FileTreeItem) {
 	fmt.Println(rootFileHierarchy)
 }
 
-func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileHierarchyDto {
-	item := models.FileHierarchyDto{
-		Children:   map[string]models.FileHierarchyDto{},
+func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileTreeDto {
+	item := models.FileTreeDto{
+		Children:   map[string]models.FileTreeDto{},
 		AudioFiles: map[string][]models.FileItem{},
 	}
 
@@ -66,8 +65,8 @@ func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileHierarchyD
 
 	_, ok := item.Children[currentPathPart]
 	if !ok {
-		item.Children[currentPathPart] = models.FileHierarchyDto{
-			Children:   map[string]models.FileHierarchyDto{},
+		item.Children[currentPathPart] = models.FileTreeDto{
+			Children:   map[string]models.FileTreeDto{},
 			AudioFiles: map[string][]models.FileItem{},
 		}
 	}
@@ -92,7 +91,7 @@ func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileHierarchyD
 	// return item
 }
 
-func AddFileToHierarchy(currentHierarchy *models.FileHierarchyDto, file models.FileTreeItem, remainingPathParts []string) {
+func AddFileToHierarchy(currentHierarchy *models.FileTreeDto, file models.FileTreeItem, remainingPathParts []string) {
 
 	if len(remainingPathParts) == 1 {
 		matchingHierarchy := (*currentHierarchy).Children[remainingPathParts[0]]
@@ -118,13 +117,13 @@ func AddFileToHierarchy(currentHierarchy *models.FileHierarchyDto, file models.F
 	currentPathPart, remainingPath := remainingPathParts[0], remainingPathParts[1:]
 	// Ensure the current path part has a corresponding child hierarchy
 	if currentHierarchy.Children == nil {
-		currentHierarchy.Children = map[string]models.FileHierarchyDto{}
+		currentHierarchy.Children = map[string]models.FileTreeDto{}
 	}
 
 	nextHierarchy, ok := currentHierarchy.Children[currentPathPart]
 	if !ok {
-		nextHierarchy = models.FileHierarchyDto{
-			Children: map[string]models.FileHierarchyDto{},
+		nextHierarchy = models.FileTreeDto{
+			Children: map[string]models.FileTreeDto{},
 		}
 		currentHierarchy.Children[currentPathPart] = nextHierarchy
 	}

@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	// "net/http"
+	"net/http"
 	"videos-with-subtitle-player/router"
 	directoryTreeService "videos-with-subtitle-player/services/directoryTree"
 	useCases "videos-with-subtitle-player/useCases"
@@ -20,14 +20,14 @@ func main() {
 
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
 	directoryTreeService.InitializeFileTree()
-	useCases.GetFileTreeDto(directoryTreeService.FileTreeItems)
-	// addRoutesToApp()
-	// http.Handle("/", http.FileServer(http.Dir("./public")))
-	// http.HandleFunc("/api/", router.HandleRouting)
-	// http.ListenAndServe(ADDR, nil)
+	// useCases.GetFileTreeDto(directoryTreeService.FileTreeItems)
+	addRoutesToApp()
+	http.Handle("/", http.FileServer(http.Dir("./public")))
+	http.HandleFunc("/api/", router.HandleRouting)
+	http.ListenAndServe(ADDR, nil)
 }
 
 func addRoutesToApp() {
-	// router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
-	router.Routes.AddRoute(useCases.GetAudioFileUseCaseRoute)
+	// router.Routes.AddRoute(usecases.GetAudioFileUseCasePath)
+	router.Routes.AddRoute(useCases.GetFileTreeUseCaseRoute)
 }

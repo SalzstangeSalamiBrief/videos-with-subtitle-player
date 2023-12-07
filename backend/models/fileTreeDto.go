@@ -2,9 +2,9 @@ package models
 
 import "github.com/google/uuid"
 
-type FileHierarchyDto struct {
+type FileTreeDto struct {
 	AudioFiles AudioFileDictionary
-	Children   map[string]FileHierarchyDto
+	Children   map[string]FileTreeDto
 }
 
 type AudioFileDictionary map[string][]FileItem
