@@ -54,7 +54,7 @@ func getFilePathFromUrl(urlPath string) string {
 
 func findAudioFileInFileTree(filePath string, rootPath string) (models.FileTreeItem, error) {
 
-	flatFileTree := directoryTree.FlatTree
+	flatFileTree := directoryTree.FileTreeItems
 
 	var err error
 	var result models.FileTreeItem

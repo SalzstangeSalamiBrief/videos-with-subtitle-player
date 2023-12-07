@@ -7,35 +7,6 @@ import (
 	"videos-with-subtitle-player/models"
 )
 
-func cleanUpTree(originTree []models.DirectoryTreeItem) []models.DirectoryTreeItem {
-	cleanedTree := make([]models.DirectoryTreeItem, 0)
-	for _, item := range originTree {
-		canBeAdded := checkIfDirectoryItemCanBeAdded(item)
-		if canBeAdded == false {
-			continue
-		}
-		// TODO FIX ADDING DUPLICATES OR FIND SOURCE => GOLAND GOO
-
-		sourceChildren := item.Children
-		item.Children = []models.DirectoryTreeItem{}
-		cleanedItems := cleanUpTree(sourceChildren)
-		item.Children = cleanedItems
-		item.Path = getFolderPath(item.Path)
-		flatTree = appendIfNotExists(flatTree, item.AudioFile)
-		cleanedTree = append(cleanedTree, item)
-
-		// TODO CHAT SUGGESTIONS
-		// cleanedItem := models.DirectoryTreeItem{
-		// 	Path:     getFolderPath(item.Path),
-		// 	Children: cleanUpTree(item.Children),
-		// }
-
-		// cleanedTree = append(cleanedTree, cleanedItem)
-	}
-
-	return cleanedTree
-}
-
 func getFolderPath(path string) string {
 	pathWithoutRoot := strings.Replace(path, rootPath, "", 1)
 	regexpToAddmatchingSeparators := regexp.MustCompile(`\\+`)

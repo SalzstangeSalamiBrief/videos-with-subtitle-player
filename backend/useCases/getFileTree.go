@@ -17,8 +17,7 @@ var GetFileTreeUseCaseRoute = router.Route{
 }
 
 func GetFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
-	// flatFileTree := directoryTree.FlatTree
-	fileTree := directoryTree.FileTree
+	fileTree := directoryTree.FileTreeItems
 	encodedBytes, err := json.Marshal(fileTree)
 	if err != nil {
 		router.ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
