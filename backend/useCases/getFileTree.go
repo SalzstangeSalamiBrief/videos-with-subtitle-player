@@ -29,7 +29,6 @@ func getFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool
 	quit <- true
 }
 
-// TODO LOWERCASE
 func getFileTreeDto(flatFileTree []models.FileTreeItem) {
 	rootFileHierarchy := models.FileTreeDto{
 		Children: map[string]models.FileTreeDto{},
@@ -73,22 +72,7 @@ func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileTreeDto {
 
 	// Update the children by making a recursive call with the correct remainingPathParts
 	item.Children[currentPathPart] = buildFileHierarchyItemOfPathParts(remainingPathParts)
-
 	return item
-	// for _, remainingPathPart := range remainingPathParts {
-	// 	_, ok := item.Children[remainingPathPart]
-	// 	if ok == false {
-	// 		item.Children[remainingPathPart] = models.FileHierarchyDto{
-	// 			Children:   map[string]models.FileHierarchyDto{},
-	// 			AudioFiles: map[string][]models.FileItem{},
-	// 		}
-	// 	}
-
-	// 	item.Children[remainingPathPart] = buildFileHierarchyItemOfPathParts(remainingPathParts[1:])
-
-	// }
-
-	// return item
 }
 
 func AddFileToHierarchy(currentHierarchy *models.FileTreeDto, file models.FileTreeItem, remainingPathParts []string) {
