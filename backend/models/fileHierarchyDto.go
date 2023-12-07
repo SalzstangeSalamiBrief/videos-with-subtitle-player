@@ -7,7 +7,7 @@ type FileHierarchyDto struct {
 	Children   map[string]FileHierarchyDto
 }
 
-type AudioFileDictionary map[string][]FileItem // TODO LATER CHANGE TO TUPLE
+type AudioFileDictionary map[string][]FileItem
 
 type FileItem struct {
 	Id   uuid.UUID

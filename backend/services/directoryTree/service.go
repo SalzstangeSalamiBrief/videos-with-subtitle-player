@@ -21,8 +21,23 @@ func InitializeFileTree() {
 	rootPath = os.Getenv("ROOT_PATH")
 	fullTree := getFullTree(rootPath)
 	cleanedTree := cleanUpTree(fullTree)
+	baka := make([]int, 0)
+	for i, item := range cleanedTree {
+		if item.Name == "Challenged to a sex match by my big titted kouhai" {
+			baka = append(baka, i)
+		}
+	}
 	FileTree = cleanedTree
-	FlatTree = flattenTree(cleanedTree)
+	flattenedTree := flattenTree(cleanedTree)
+
+	temp := make([]int, 0)
+	for i, item := range flattenedTree {
+		if item.Name == "Challenged to a sex match by my big titted kouhai" {
+			temp = append(temp, i)
+		}
+	}
+
+	FlatTree = flattenedTree
 }
 
 func getFullTree(parentPath string) []models.DirectoryTreeItem {

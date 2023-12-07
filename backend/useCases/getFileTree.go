@@ -39,11 +39,12 @@ func GetFileTreeDto(flatFileTree []models.FileTreeItem) {
 	for _, file := range flatFileTree {
 		pathParts := strings.Split(file.Path, "/")[1:]                // first element is empty, so skip it
 		pathPartsWithoutFileExtension := pathParts[:len(pathParts)-1] // remove file extension
-		hierarchyItem := buildFileHierarchyItemOfPathParts(pathPartsWithoutFileExtension)
+		hierarchyItem := buildFileHierarchyItemOfPathParts(pathPartsWithoutFileExtension[1:])
 		rootFileHierarchy.Children[pathParts[0]] = hierarchyItem
 	}
 
 	for _, file := range flatFileTree {
+		// TODO FILES DO NOT GET AADDED
 		pathParts := strings.Split(file.Path, "/")[1:]                // first element is empty, so skip it
 		pathPartsWithoutFileExtension := pathParts[:len(pathParts)-1] // remove file extension
 		AddFileToHierarchy(&rootFileHierarchy, file, pathPartsWithoutFileExtension)
@@ -61,32 +62,46 @@ func buildFileHierarchyItemOfPathParts(pathParts []string) models.FileHierarchyD
 		return item
 	}
 
+	currentPathPart := pathParts[0]
 	remainingPathParts := pathParts[1:]
-	for _, remainingPathPart := range remainingPathParts {
-		_, ok := item.Children[remainingPathPart]
-		if ok == false {
-			item.Children[remainingPathPart] = models.FileHierarchyDto{
-				Children:   map[string]models.FileHierarchyDto{},
-				AudioFiles: map[string][]models.FileItem{},
-			}
+
+	_, ok := item.Children[currentPathPart]
+	if !ok {
+		item.Children[currentPathPart] = models.FileHierarchyDto{
+			Children:   map[string]models.FileHierarchyDto{},
+			AudioFiles: map[string][]models.FileItem{},
 		}
-
-		item.Children[remainingPathPart] = buildFileHierarchyItemOfPathParts(remainingPathParts[1:])
-
 	}
 
+	// Update the children by making a recursive call with the correct remainingPathParts
+	item.Children[currentPathPart] = buildFileHierarchyItemOfPathParts(remainingPathParts)
+
 	return item
+	// for _, remainingPathPart := range remainingPathParts {
+	// 	_, ok := item.Children[remainingPathPart]
+	// 	if ok == false {
+	// 		item.Children[remainingPathPart] = models.FileHierarchyDto{
+	// 			Children:   map[string]models.FileHierarchyDto{},
+	// 			AudioFiles: map[string][]models.FileItem{},
+	// 		}
+	// 	}
+
+	// 	item.Children[remainingPathPart] = buildFileHierarchyItemOfPathParts(remainingPathParts[1:])
+
+	// }
+
+	// return item
 }
 
 func AddFileToHierarchy(currentHierarchy *models.FileHierarchyDto, file models.FileTreeItem, remainingPathParts []string) {
-	// TODO RECURSIVE ADD NOT WORKING
+
 	if len(remainingPathParts) == 1 {
 		matchingHierarchy := (*currentHierarchy).Children[remainingPathParts[0]]
 
 		if matchingHierarchy.AudioFiles == nil {
 			matchingHierarchy.AudioFiles = map[string][]models.FileItem{}
 		}
-		// TODO FIX FILE NAME BY REMOVING EXTENSION
+
 		_, ok := matchingHierarchy.AudioFiles[file.Name]
 		if ok == false {
 			matchingHierarchy.AudioFiles[file.Name] = []models.FileItem{}
@@ -96,7 +111,7 @@ func AddFileToHierarchy(currentHierarchy *models.FileHierarchyDto, file models.F
 			Id:   file.Id,
 			Name: file.Name,
 		}
-		// TODO ADDS MULTIPLE TIMES? MAYBE PROBLEMS IN FLATTENING THE LIST
+
 		matchingHierarchy.AudioFiles[file.Name] = append(matchingHierarchy.AudioFiles[file.Name], fileDto)
 		return
 	}

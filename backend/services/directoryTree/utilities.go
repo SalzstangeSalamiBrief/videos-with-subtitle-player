@@ -1,6 +1,7 @@
 package directorytree
 
 import (
+	"path"
 	"regexp"
 	"strings"
 	"videos-with-subtitle-player/models"
@@ -13,16 +14,29 @@ func cleanUpTree(originTree []models.DirectoryTreeItem) []models.DirectoryTreeIt
 		if canBeAdded == false {
 			continue
 		}
-		item.Children = cleanUpTree(item.Children)
+		// TODO FIX ADDING DUPLICATES OR FIND SOURCE => GOLAND GOO
+
+		sourceChildren := item.Children
+		item.Children = []models.DirectoryTreeItem{}
+		cleanedItems := cleanUpTree(sourceChildren)
+		item.Children = cleanedItems
 		item.Path = getFolderPath(item.Path)
+		flatTree = appendIfNotExists(flatTree, item.AudioFile)
 		cleanedTree = append(cleanedTree, item)
+
+		// TODO CHAT SUGGESTIONS
+		// cleanedItem := models.DirectoryTreeItem{
+		// 	Path:     getFolderPath(item.Path),
+		// 	Children: cleanUpTree(item.Children),
+		// }
+
+		// cleanedTree = append(cleanedTree, cleanedItem)
 	}
 
 	return cleanedTree
 }
 
 func getFolderPath(path string) string {
-
 	pathWithoutRoot := strings.Replace(path, rootPath, "", 1)
 	regexpToAddmatchingSeparators := regexp.MustCompile(`\\+`)
 	pathWithSeparators := regexpToAddmatchingSeparators.ReplaceAllString(pathWithoutRoot, "/")
@@ -47,14 +61,17 @@ func checkIfDirectoryItemCanBeAdded(newDirectoryItem models.DirectoryTreeItem) b
 func flattenTree(originTree []models.DirectoryTreeItem) []models.FileTreeItem {
 	flatTree := make([]models.FileTreeItem, 0)
 	for _, item := range originTree {
-		hasAudioFile := item.AudioFile.Path != ""
-		hasSubtitleFile := item.SubtitleFile.Path != ""
-		if hasAudioFile && hasSubtitleFile {
-			flatTree = append(flatTree, item.AudioFile)
-			flatTree = append(flatTree, item.SubtitleFile)
-			continue
+		// Append audio file if it exists
+		if item.AudioFile.Path != "" {
+			flatTree = appendIfNotExists(flatTree, item.AudioFile)
 		}
 
+		// Append subtitle file if it exists
+		if item.SubtitleFile.Path != "" {
+			flatTree = appendIfNotExists(flatTree, item.SubtitleFile)
+		}
+
+		// Recursively flatten children
 		flatChildren := flattenTree(item.Children)
 		flatTree = append(flatTree, flatChildren...)
 	}
@@ -62,8 +79,23 @@ func flattenTree(originTree []models.DirectoryTreeItem) []models.FileTreeItem {
 	return flatTree
 }
 
+func appendIfNotExists(slice []models.FileTreeItem, item models.FileTreeItem) []models.FileTreeItem {
+	for _, existingItem := range slice {
+		if existingItem.Path == item.Path {
+			return slice
+		}
+	}
+	return append(slice, item)
+}
+
 func getFileNameWithoutExtension(filename string) string {
-	// assume that there is no dot in the filename
-	fileNameWithoutExtension := strings.Split(filename, ".")[0]
+	fileExtension := path.Ext(filename)
+	fileNameWithoutExtension := strings.Replace(filename, fileExtension, "", 1)
+	// used if two file names are chained
+	fileExtension = path.Ext(fileNameWithoutExtension)
+	if fileExtension != "" {
+		fileNameWithoutExtension = strings.Replace(fileNameWithoutExtension, fileExtension, "", 1)
+	}
+
 	return fileNameWithoutExtension
 }
