@@ -1,0 +1,27 @@
+<li>
+  <p>fileTree{{ fileTree.name }}</p>
+  @if(fileTree.children.length > 0){
+  <ng-container>
+    <ul>
+      @if(fileTree.children.length > 0){
+      <ul>
+        @for (childTree of fileTree.children; track childTree.id){
+
+        <app-navigation-tree [fileTree]="childTree"></app-navigation-tree>
+        }
+      </ul>
+      }
+    </ul>
+  </ng-container>
+  }
+  <!-- if audioFIles exist-->
+  @if(fileTree.audioFiles.length>0){
+  <ul>
+    @for(audioFile of fileTree.audioFiles; track audioFile.name){
+    <li>
+      <app-navigation-leaf [audioFile]="audioFile"></app-navigation-leaf>
+    </li>
+    }
+  </ul>
+  }
+</li>

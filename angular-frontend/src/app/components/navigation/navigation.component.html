@@ -1,0 +1,12 @@
+<nav>
+  {{ isLoading() }}
+  <!-- <ul></ul> -->
+
+  @if(isLoading() == false && fileTrees().length > 0){
+  <ul>
+    @for (fileTree of fileTrees(); track fileTree.id){
+    <app-navigation-tree [fileTree]="fileTree"></app-navigation-tree>
+    }
+  </ul>
+  }
+</nav>

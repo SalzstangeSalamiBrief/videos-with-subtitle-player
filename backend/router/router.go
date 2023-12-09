@@ -8,7 +8,7 @@ import (
 
 type routes []Route
 
-var acceptedMethods = [5]string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost}
+var acceptedMethods = [6]string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost, http.MethodOptions}
 var Routes = make(routes, 0)
 
 func HandleRouting(w http.ResponseWriter, r *http.Request) {
@@ -30,8 +30,14 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if isPathMatching && isMethodMatching {
-			go route.Handler(w, r, quitChannel)
-			<-quitChannel // wait till the goroutine is completed and discard value
+			if route.Method == http.MethodOptions {
+				w.WriteHeader(http.StatusOK)
+			} else {
+				go route.Handler(w, r, quitChannel)
+				<-quitChannel // wait till the goroutine is completed and discard value
+
+			}
+
 			hasMatched = true
 			break
 		}
@@ -41,7 +47,6 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 		ErrorHandler(w, fmt.Sprintf("Could not get resource '%v' with method '%v'", r.URL.Path, r.Method), http.StatusBadRequest)
 	}
 }
-
 func (r *routes) AddRoute(routeToAdd Route) {
 	*r = append(*r, routeToAdd)
 }
