@@ -20,7 +20,8 @@ func main() {
 
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
 	directoryTreeService.InitializeFileTree()
-	// useCases.GetFileTreeDto(directoryTreeService.FileTreeItems)
+	//result := useCases.GetFileTreeDto(directoryTreeService.FileTreeItems)
+	//fmt.Printf("%+v", result)
 	addRoutesToApp()
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/api/", router.HandleRouting)

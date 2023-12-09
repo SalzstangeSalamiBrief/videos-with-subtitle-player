@@ -1,0 +1,25 @@
+<nav>
+  @if (fileTree){
+  <ng-template #treeView let-data="Object.values(fileTree)">
+    <ul>
+      @if (Object.values(data.children).length > 0){
+      <li *ngFor="let child of Object.values(data.children)">
+        <a *ngIf="child.type === 'file'" [routerLink]="['/file', child.path]">
+          {{ child.name }}
+        </a>
+        <a
+          *ngIf="child.type === 'directory'"
+          [routerLink]="['/directory', child.path]"
+        >
+          {{ child.name }}
+        </a>
+        <ng-container
+          *ngTemplateOutlet="treeView; context: { $implicit: child }"
+        ></ng-container>
+      </li>
+
+      }
+    </ul>
+  </ng-template>
+  }
+</nav>
