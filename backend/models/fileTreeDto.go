@@ -2,14 +2,21 @@ package models
 
 import "github.com/google/uuid"
 
+// TODO maybe swagger??
 type FileTreeDto struct {
-	AudioFiles AudioFileDictionary
-	Children   map[string]FileTreeDto
+	Name       string
+	Id         uuid.UUID
+	AudioFiles []AudioFileDto
+	Children   []FileTreeDto
 }
 
-type AudioFileDictionary map[string][]FileItem
+type AudioFileDto struct {
+	Name         string
+	SubtitleFile FileItemDto
+	AudioFile    FileItemDto
+}
 
-type FileItem struct {
+type FileItemDto struct {
 	Id   uuid.UUID
 	Name string
 }
