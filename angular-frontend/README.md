@@ -1,5 +1,7 @@
 # AngularFrontend
 
+TODO THIS project is suspended until material ui can be used with standalone flag
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.6.
 
 ## Development server

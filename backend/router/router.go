@@ -12,6 +12,8 @@ var acceptedMethods = [6]string{http.MethodGet, http.MethodDelete, http.MethodPa
 var Routes = make(routes, 0)
 
 func HandleRouting(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*") // TODO ONLY IN DEV
+
 	quitChannel := make(chan bool)
 
 	if validateHttpMethod(w, r) == false {

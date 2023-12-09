@@ -3,11 +3,12 @@ import { Subscription } from 'rxjs';
 import { IFileTreeDto } from '../../models/fileTreeDto';
 import { FetchFileTreeService } from '../../services/fetch-file-tree.service';
 import { NavigationTreeComponent } from './navigation-tree/navigation-tree.component';
+import { MatSidenavContainer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [NavigationTreeComponent],
+  imports: [NavigationTreeComponent, MatSidenavContainer],
   templateUrl: './navigation.component.html',
   styleUrl: './navigation.component.css',
 })
