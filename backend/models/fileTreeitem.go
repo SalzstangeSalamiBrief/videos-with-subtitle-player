@@ -1,9 +1,7 @@
 package models
 
-import "github.com/google/uuid"
-
 type FileTreeItem struct {
-	Id   uuid.UUID
+	Id   string
 	Path string
 	Name string
 }

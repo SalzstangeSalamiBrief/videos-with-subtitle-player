@@ -6,12 +6,11 @@ import { FileTreeContextWrapper } from "../contexts/FileTreeContextWrapper";
 export function RootLayout() {
   return (
     <FileTreeContextWrapper>
-      // TODO STYLING
       <Row style={{ height: "100%" }}>
         <Col span={8}>
           <Navigation />
         </Col>
-        <Col span={16}>
+        <Col span={16} style={{ padding: "1rem" }}>
           <Outlet />
         </Col>
       </Row>

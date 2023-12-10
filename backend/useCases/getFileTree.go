@@ -35,7 +35,7 @@ func getFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool
 
 func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	rootFileHierarchy := models.FileTreeDto{
-		Id:       uuid.New(),
+		Id:       uuid.New().String(),
 		Children: []models.FileTreeDto{},
 	}
 
@@ -68,7 +68,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		} else {
 			child := models.FileTreeDto{
-				Id:         uuid.New(),
+				Id:         uuid.New().String(),
 				Name:       currentPathPart,
 				Children:   []models.FileTreeDto{},
 				AudioFiles: []models.AudioFileDto{},

@@ -17,8 +17,7 @@ var FileTreeItems []models.FileTreeItem
 func InitializeFileTree() {
 	rootPath = os.Getenv("ROOT_PATH")
 	fullTree := getFullTree(rootPath)
-	flattenedTree := fullTree
-	FileTreeItems = flattenedTree
+	FileTreeItems = fullTree
 }
 
 func getFullTree(parentPath string) []models.FileTreeItem {
@@ -68,13 +67,13 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		newSubtitleFile := models.FileTreeItem{
-			Id:   uuid.New(),
+			Id:   uuid.New().String(),
 			Path: getFolderPath(currentItemPath),
 			Name: getFileNameWithoutExtension(itemName),
 		}
 
 		newAssociatedSourceFile := models.FileTreeItem{
-			Id:   uuid.New(),
+			Id:   uuid.New().String(),
 			Path: getFolderPath(correspondingSourceFilePath),
 			Name: getFileNameWithoutExtension(itemName),
 		}

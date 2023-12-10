@@ -1,15 +1,23 @@
 import { Menu, MenuProps } from "antd";
 import { IFileTreeDto } from "../../models/fileTreeDto";
-import { useContext } from "react";
-import { generatePath } from "react-router-dom";
+import { useContext, useMemo } from "react";
+import { generatePath, useParams } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { FileTreeContext } from "../../contexts/FileTreeContextWrapper";
 
 export function Navigation() {
-  const fileTreeContext = useContext(FileTreeContext);
-  const menuItems = fileTreeContext.fileTrees.map(getMenuTree);
+  const { audioId } = useParams();
+  const { fileTrees } = useContext(FileTreeContext);
+  const menuItems = useMemo(() => fileTrees.map(getMenuTree), [fileTrees]);
 
-  return <Menu items={menuItems} mode="inline" style={{ height: "100%" }} />;
+  return (
+    <Menu
+      items={menuItems}
+      mode="inline"
+      style={{ height: "100%" }}
+      selectedKeys={[audioId ?? ""]}
+    />
+  );
 }
 
 type MenuItem = Required<MenuProps>["items"][number];
@@ -27,7 +35,7 @@ const getMenuTree = (fileTree: IFileTreeDto): MenuItem => {
           audioId: audioFile.audioFile.id,
         });
         return {
-          key: `${fileTree.id}-${audioFile.name}`,
+          key: audioFile.audioFile.id,
           label: (
             <ReactRouterLink to={targetUrl} title={audioFile.name}>
               {audioFile.name}

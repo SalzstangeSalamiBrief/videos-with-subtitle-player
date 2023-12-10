@@ -3,9 +3,11 @@ import { useGetFileTree } from "../hooks/useGetFileTree";
 import { IFileTreeDto } from "../models/fileTreeDto";
 import { LoadingSpinner } from "../components/loadingSpinner/LoadingSpinner";
 import { ErrorMessage } from "../components/errorMessage/ErrorMessage";
+import { IAudioFileDto } from "../models/audioFileDto";
 
 interface IFileTreeContext {
   fileTrees: IFileTreeDto[];
+  audioFileGroups: IAudioFileDto[][];
 }
 
 interface IFileTreeContextWrapperProps {
@@ -14,12 +16,15 @@ interface IFileTreeContextWrapperProps {
 
 export const FileTreeContext = createContext<IFileTreeContext>({
   fileTrees: [],
+  audioFileGroups: [],
 });
 
 export function FileTreeContextWrapper({
   children,
 }: IFileTreeContextWrapperProps) {
-  const { getFileTree, fileTrees, isLoading, error } = useGetFileTree(); // todo error isLoading => MAYBE IN NAVIGATIOPN?
+  const { getFileTree, fileTrees, isLoading, error, audioFileGroups } =
+    useGetFileTree();
+
   useEffect(() => {
     getFileTree();
   }, []);
@@ -43,7 +48,7 @@ export function FileTreeContextWrapper({
   }
 
   return (
-    <FileTreeContext.Provider value={{ fileTrees }}>
+    <FileTreeContext.Provider value={{ fileTrees, audioFileGroups }}>
       {children}
     </FileTreeContext.Provider>
   );

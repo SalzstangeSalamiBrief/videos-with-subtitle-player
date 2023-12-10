@@ -1,11 +1,9 @@
 package models
 
-import "github.com/google/uuid"
-
 // TODO maybe swagger??
 type FileTreeDto struct {
 	Name       string         `json:"name"`
-	Id         uuid.UUID      `json:"id"`
+	Id         string         `json:"id"`
 	AudioFiles []AudioFileDto `json:"audioFiles"`
 	Children   []FileTreeDto  `json:"children"`
 }
@@ -17,6 +15,6 @@ type AudioFileDto struct {
 }
 
 type FileItemDto struct {
-	Id   uuid.UUID `json:"id"`
-	Name string    `json:"name"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
 }
