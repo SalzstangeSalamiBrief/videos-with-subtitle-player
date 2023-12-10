@@ -10,8 +10,10 @@ export function RootLayout() {
         <Col span={8}>
           <Navigation />
         </Col>
-        <Col span={16} style={{ padding: "1rem" }}>
-          <Outlet />
+        <Col span={16}>
+          <main style={{ padding: "1rem" }}>
+            <Outlet />
+          </main>
         </Col>
       </Row>
     </FileTreeContextWrapper>
