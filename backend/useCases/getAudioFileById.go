@@ -11,10 +11,8 @@ import (
 	directoryTree "videos-with-subtitle-player/services/directoryTree"
 )
 
-// initialize path as const on root level of the file to prevent circular dependencies
 const GetAudioFileUseCasePath = `\/file\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
-// this use case can be used to get .mp3 oder .vtt files
 var GetAudioFileUseCaseRoute = router.Route{
 	Path:    GetAudioFileUseCasePath,
 	Method:  http.MethodGet,
@@ -25,12 +23,10 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request, quit chan<- boo
 	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/")
 	audioFileInTree := getFileById(fileIdString)
-	// isIdNullGuid := audioFileInTree.Id == uuid.Nil
-	// if isIdNullGuid {
-	// 	router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
-	// 	return
-	// }
-
+	if audioFileInTree.Id == "" {
+		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
+		return
+	}
 	filePathOnHardDist := path.Join(rootPath, audioFileInTree.Path)
 	fileBytes, err := os.ReadFile(filePathOnHardDist)
 	if err != nil {
