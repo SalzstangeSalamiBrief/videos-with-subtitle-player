@@ -6,6 +6,7 @@ import { Button, Flex, Tooltip } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { IFileTreeDto } from "../../models/fileTreeDto";
+import { AudioPlayer } from "./components/AudioPlayer";
 
 export function AudioFilePage() {
   const { audioFileGroups, fileTrees } = useContext(FileTreeContext);
@@ -18,7 +19,6 @@ export function AudioFilePage() {
     currentAudioName,
   } = getFileIds(audioFileGroups, audioId ?? "");
 
-  // TODO REMOVE LOCALHOST
   return (
     <Flex vertical>
       <h1 style={{ fontSize: "1.25rem", margin: 0 }}>
@@ -47,18 +47,13 @@ export function AudioFilePage() {
             />
           </ReactRouterLink>
         </Tooltip>
-        <video
-          controls
-          src={`http://localhost:3000/api/file/${currentAudioId}`}
-          style={{ flexGrow: 1 }}
-        >
-          <track
-            default
-            kind="captions"
-            srcLang="en"
-            src={`http://localhost:3000/api/file/${currentSubtitleId}`}
+        {currentAudioId && currentSubtitleId && (
+          <AudioPlayer
+            key={currentAudioId}
+            audioId={currentAudioId}
+            subtitleId={currentSubtitleId}
           />
-        </video>
+        )}
         <Tooltip title="Next track">
           <ReactRouterLink to={`/audio/${nextAudioId}`} aria-label="next track">
             <Button
