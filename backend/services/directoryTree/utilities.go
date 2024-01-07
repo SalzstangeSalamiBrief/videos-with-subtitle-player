@@ -14,8 +14,8 @@ func getFolderPath(path string) string {
 }
 
 func getFileName(path string) string {
-	regexpToAddmatchingSeparators := regexp.MustCompile(`\\+`)
-	pathParts := regexpToAddmatchingSeparators.Split(path, -1)
+	regexpToAddMatchingSeparators := regexp.MustCompile(`\\+`)
+	pathParts := regexpToAddMatchingSeparators.Split(path, -1)
 	fileName := pathParts[len(pathParts)-1]
 	return fileName
 }

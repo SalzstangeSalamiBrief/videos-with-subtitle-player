@@ -1,14 +1,13 @@
 package directorytree
 
 import (
+	"backend/models"
+	"github.com/google/uuid"
 	"log"
 	"os"
 	"path"
 	"regexp"
 	"strings"
-	"videos-with-subtitle-player/models"
-
-	"github.com/google/uuid"
 )
 
 var rootPath string

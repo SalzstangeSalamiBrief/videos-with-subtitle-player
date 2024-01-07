@@ -1,8 +1,8 @@
-module videos-with-subtitle-player
+module backend
 
-go 1.21.0
+go 1.21
 
 require (
-	github.com/google/uuid v1.4.0 // indirect
+	github.com/google/uuid v1.5.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 )

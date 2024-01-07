@@ -1,11 +1,11 @@
 package main
 
 import (
+	"backend/router"
+	directorytree "backend/services/directoryTree"
+	usecases "backend/useCases"
 	"log"
 	"net/http"
-	"videos-with-subtitle-player/router"
-	directoryTreeService "videos-with-subtitle-player/services/directoryTree"
-	useCases "videos-with-subtitle-player/useCases"
 
 	"github.com/joho/godotenv"
 )
@@ -19,7 +19,7 @@ func main() {
 	}
 
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
-	directoryTreeService.InitializeFileTree()
+	directorytree.InitializeFileTree()
 	addRoutesToApp()
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 	http.HandleFunc("/api/", router.HandleRouting)
@@ -27,6 +27,6 @@ func main() {
 }
 
 func addRoutesToApp() {
-	router.Routes.AddRoute(useCases.GetAudioFileUseCaseRoute)
-	router.Routes.AddRoute(useCases.GetFileTreeUseCaseRoute)
+	router.Routes.AddRoute(usecases.GetAudioFileUseCaseRoute)
+	router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
 }

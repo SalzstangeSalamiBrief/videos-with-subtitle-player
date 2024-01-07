@@ -1,14 +1,14 @@
 package usecases
 
 import (
+	"backend/models"
+	"backend/router"
+	directorytree "backend/services/directoryTree"
 	"fmt"
 	"net/http"
 	"os"
 	"path"
 	"strings"
-	"videos-with-subtitle-player/models"
-	"videos-with-subtitle-player/router"
-	directoryTree "videos-with-subtitle-player/services/directoryTree"
 )
 
 const GetAudioFileUseCasePath = `\/file\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
@@ -19,7 +19,7 @@ var GetAudioFileUseCaseRoute = router.Route{
 	Handler: getAudioFileHandler,
 }
 
-func getAudioFileHandler(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
+func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/")
 	audioFileInTree := getFileById(fileIdString)
@@ -27,8 +27,9 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request, quit chan<- boo
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return
 	}
-	filePathOnHardDist := path.Join(rootPath, audioFileInTree.Path)
-	fileBytes, err := os.ReadFile(filePathOnHardDist)
+
+	filePathOnHardDisk := path.Join(rootPath, audioFileInTree.Path)
+	fileBytes, err := os.ReadFile(filePathOnHardDisk)
 	if err != nil {
 		fmt.Println(err.Error())
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
@@ -36,13 +37,13 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request, quit chan<- boo
 	}
 
 	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", audioFileInTree.Name))
+	addContentTypeHeader(w, audioFileInTree)
 	w.Write(fileBytes)
-	quit <- true
 }
 
 func getFileById(fileIdString string) models.FileTreeItem {
 	var file models.FileTreeItem
-	for _, fileTreeItem := range directoryTree.FileTreeItems {
+	for _, fileTreeItem := range directorytree.FileTreeItems {
 		isMatch := fileTreeItem.Id == fileIdString
 		if isMatch {
 			file = fileTreeItem
@@ -51,4 +52,14 @@ func getFileById(fileIdString string) models.FileTreeItem {
 	}
 
 	return file
+}
+
+func addContentTypeHeader(w http.ResponseWriter, selectedFile models.FileTreeItem) {
+	contentTypeToAdd := "audio/mpeg3"
+	isSubtitleFile := strings.HasSuffix(selectedFile.Path, ".vtt")
+	if isSubtitleFile == true {
+		contentTypeToAdd = "text/vtt"
+	}
+
+	w.Header().Add("Content-Type", contentTypeToAdd)
 }
