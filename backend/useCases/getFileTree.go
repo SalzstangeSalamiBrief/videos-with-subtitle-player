@@ -1,14 +1,14 @@
 package usecases
 
 import (
+	"backend/models"
+	"backend/router"
+	directorytree "backend/services/directoryTree"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"path"
 	"strings"
-	"videos-with-subtitle-player/models"
-	"videos-with-subtitle-player/router"
-	directoryTree "videos-with-subtitle-player/services/directoryTree"
 
 	"github.com/google/uuid"
 )
@@ -19,18 +19,16 @@ var GetFileTreeUseCaseRoute = router.Route{
 	Method:  http.MethodGet,
 }
 
-func getFileTreeUseCase(w http.ResponseWriter, r *http.Request, quit chan<- bool) {
-	fileTree := GetFileTreeDto(directoryTree.FileTreeItems)
+func getFileTreeUseCase(w http.ResponseWriter, r *http.Request) {
+	fileTree := GetFileTreeDto(directorytree.FileTreeItems)
 	subTrees := fileTree.Children
 	encodedBytes, err := json.Marshal(subTrees)
 	if err != nil {
 		router.ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
-		quit <- true
 		return
 	}
 
 	w.Write(encodedBytes)
-	quit <- true
 }
 
 func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {

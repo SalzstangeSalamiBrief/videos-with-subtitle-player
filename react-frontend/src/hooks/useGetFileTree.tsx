@@ -2,7 +2,8 @@ import { useState } from "react";
 import { IFileTreeDto } from "../models/fileTreeDto";
 import { IAudioFileDto } from "../models/audioFileDto";
 
-const baseUrl = "http://localhost:3000"; // todo remove
+const baseUrl = import.meta.env.VITE_BASE_URL || "";
+console.log(baseUrl);
 const path = "/api/file-tree";
 
 const url = baseUrl + path;

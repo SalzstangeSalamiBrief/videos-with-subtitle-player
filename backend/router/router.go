@@ -12,7 +12,7 @@ var acceptedMethods = [6]string{http.MethodGet, http.MethodDelete, http.MethodPa
 var Routes = make(routes, 0)
 
 func HandleRouting(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", "*") // TODO ONLY IN DEV
+	useCors(w, r)
 
 	quitChannel := make(chan bool)
 
@@ -26,23 +26,26 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 		isMethodMatching := route.Method == r.Method
 
 		if pathMatchingErr != nil {
-
 			ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", path), http.StatusBadRequest)
 			break
 		}
 
-		if isPathMatching && isMethodMatching {
-			if route.Method == http.MethodOptions {
-				w.WriteHeader(http.StatusOK)
-			} else {
-				go route.Handler(w, r, quitChannel)
-				<-quitChannel // wait till the goroutine is completed and discard value
+		if isPathMatching == false || isMethodMatching == false {
+			continue
+		}
 
-			}
-
-			hasMatched = true
+		if route.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
 			break
 		}
+
+		go func() {
+			route.Handler(w, r)
+			hasMatched = true
+			quitChannel <- true
+		}()
+
+		<-quitChannel // wait till the goroutine is completed and discard value
 	}
 
 	if hasMatched == false {
