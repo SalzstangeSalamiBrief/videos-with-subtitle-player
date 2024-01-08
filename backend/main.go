@@ -4,8 +4,12 @@ import (
 	"backend/router"
 	directorytree "backend/services/directoryTree"
 	usecases "backend/useCases"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/joho/godotenv"
 )
@@ -17,6 +21,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+
+	go func() {
+		exit := make(chan os.Signal, 1)
+		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
+		<-exit
+		fmt.Printf("Shutting down server at %v\n", ADDR)
+		os.Exit(0)
+	}()
 
 	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
 	directorytree.InitializeFileTree()

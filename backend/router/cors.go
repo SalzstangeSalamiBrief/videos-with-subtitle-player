@@ -15,7 +15,7 @@ func useCors(w http.ResponseWriter, r *http.Request) {
 
 	allowAllOrigins := configuredCors == "*"
 	if allowAllOrigins == true {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
 	}
 
 	allowedCors := strings.Split(configuredCors, ",")
