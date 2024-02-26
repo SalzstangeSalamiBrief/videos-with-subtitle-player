@@ -30,7 +30,6 @@ func main() {
 		os.Exit(0)
 	}()
 
-	// TODO GRACEFULLY HANDLE ERRORS/SHUTDOWN AND START
 	directorytree.InitializeFileTree()
 	addRoutesToApp()
 	http.Handle("/", http.FileServer(http.Dir("./public")))

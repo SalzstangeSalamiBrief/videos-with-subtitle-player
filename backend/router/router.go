@@ -16,7 +16,7 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 
 	quitChannel := make(chan bool)
 
-	if validateHttpMethod(w, r) == false {
+	if !validateHttpMethod(w, r) {
 		return
 	}
 
@@ -30,7 +30,7 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		if isPathMatching == false || isMethodMatching == false {
+		if !isPathMatching || !isMethodMatching {
 			continue
 		}
 
@@ -48,7 +48,7 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 		<-quitChannel // wait till the goroutine is completed and discard value
 	}
 
-	if hasMatched == false {
+	if !hasMatched {
 		ErrorHandler(w, fmt.Sprintf("Could not get resource '%v' with method '%v'", r.URL.Path, r.Method), http.StatusBadRequest)
 	}
 }
@@ -66,7 +66,7 @@ func validateHttpMethod(w http.ResponseWriter, r *http.Request) bool {
 		}
 	}
 
-	if isAccepted == false {
+	if !isAccepted {
 		ErrorHandler(w, fmt.Sprintf("The method '%v' is not acceptable", r.Method), http.StatusBadRequest)
 	}
 

@@ -57,7 +57,7 @@ func getFileById(fileIdString string) models.FileTreeItem {
 func addContentTypeHeader(w http.ResponseWriter, selectedFile models.FileTreeItem) {
 	contentTypeToAdd := "audio/mpeg3"
 	isSubtitleFile := strings.HasSuffix(selectedFile.Path, ".vtt")
-	if isSubtitleFile == true {
+	if isSubtitleFile {
 		contentTypeToAdd = "text/vtt"
 	}
 
