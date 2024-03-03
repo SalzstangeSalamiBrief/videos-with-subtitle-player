@@ -29,10 +29,12 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 	for _, item := range content {
 		itemName := item.Name()
+
 		currentItemPath := parentPath + "\\" + itemName
 		isDirectory := item.IsDir()
 
 		if isDirectory {
+			//log.Default().Printf("'%v' is a directory\n", itemName)
 			newDirectoryItems := getFullTree(currentItemPath)
 			currentFileItems = append(currentFileItems, newDirectoryItems...)
 			continue
@@ -45,11 +47,11 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
-		mp3RegExp := regexp.MustCompile(".mp3.vtt$")
+		mp3RegExp := regexp.MustCompile(".(mp3|wav).vtt$")
 		isAssociatedWithMp3File := mp3RegExp.MatchString(itemName)
 
 		if !isAssociatedWithMp3File {
-			log.Default().Printf("'%v' is not associated with an mp3 file\n", itemName)
+			log.Default().Printf("'%v' is not associated with an (mp3|wav) file\n", itemName)
 			continue
 		}
 
