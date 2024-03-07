@@ -6,6 +6,7 @@ import { FileTreeContextWrapper } from "../contexts/FileTreeContextWrapper";
 export function RootLayout() {
   return (
     <FileTreeContextWrapper>
+      {/* TODO ADD SCROLLING */}
       <Row style={{ height: "100%" }}>
         <Col span={8}>
           <Navigation />

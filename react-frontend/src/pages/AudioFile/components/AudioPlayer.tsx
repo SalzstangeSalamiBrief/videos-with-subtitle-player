@@ -8,12 +8,12 @@ interface IAudioPlayerProps {
 export function AudioPlayer({ audioId, subtitleId }: IAudioPlayerProps) {
   return (
     <video controls style={{ flexGrow: 1 }} crossOrigin="anonymous">
-      <source type="audio/mp3" src={`${baseUrl}/api/file/${audioId}`} />
+      <source type="audio/mp3" src={`${baseUrl}/api/file/audio/${audioId}`} />
       <track
         default
         kind="captions"
         srcLang="en"
-        src={`${baseUrl}/api/file/${subtitleId}`}
+        src={`${baseUrl}/api/file/subtitle/${subtitleId}`}
       />
     </video>
   );
