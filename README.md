@@ -5,4 +5,5 @@
 - Display Illustrations
 - Display audios without vtt file
 - Display Videos
-- Support wav
+- Fix styling of the GUI
+- Add simple tests
