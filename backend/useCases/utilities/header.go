@@ -18,13 +18,6 @@ func AddContentTypeHeader(w http.ResponseWriter, selectedFile models.FileTreeIte
 	if ext == ".vtt" {
 		mimeType = "text/vtt"
 	}
-
-	//contentTypeToAdd := "audio/mpeg3"
-	//isSubtitleFile := strings.HasSuffix(selectedFile.Path, ".vtt")
-	//if isSubtitleFile {
-	//	contentTypeToAdd = "text/vtt"
-	//}
-
 	w.Header().Add("Content-Type", mimeType)
 }
 
