@@ -11,17 +11,14 @@ export function Navigation() {
   const menuItems = useMemo(() => fileTrees.map(getMenuTree), [fileTrees]);
 
   return (
-    <Menu
-      items={menuItems}
-      mode="inline"
-      style={{ height: "100%" }}
-      selectedKeys={[audioId ?? ""]}
-    />
+    <nav style={{ height: "100%" }}>
+      <Menu items={menuItems} mode="inline" selectedKeys={[audioId ?? ""]} />
+    </nav>
   );
 }
 
 type MenuItem = Required<MenuProps>["items"][number];
-const getMenuTree = (fileTree: IFileTreeDto): MenuItem => {
+function getMenuTree(fileTree: IFileTreeDto): MenuItem {
   let children: MenuItem[] = [];
   if (fileTree.children?.length) {
     children = [...children, ...fileTree.children.map(getMenuTree)];
@@ -54,4 +51,4 @@ const getMenuTree = (fileTree: IFileTreeDto): MenuItem => {
   };
 
   return menuItem;
-};
+}
