@@ -9,7 +9,7 @@ export function Navigation() {
   const { audioId } = useParams();
   const { fileTrees } = useContext(FileTreeContext);
   const menuItems = useMemo(() => fileTrees.map(getMenuTree), [fileTrees]);
-  console.log(fileTrees[0]);
+
   return (
     <nav style={{ height: "100%" }}>
       <Menu items={menuItems} mode="inline" selectedKeys={[audioId ?? ""]} />

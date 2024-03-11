@@ -10,7 +10,7 @@ export function RootLayout() {
         <Col
           span={8}
           style={{
-            minHeight: "100%",
+            minHeight: "100lvh",
             maxHeight: "100lvh",
             overflowY: "auto",
           }}
@@ -20,7 +20,6 @@ export function RootLayout() {
         <Col span={16}>
           <main
             style={{
-              minHeight: "100%",
               maxHeight: "100lvh",
               padding: "1rem",
               overflowY: "auto",
