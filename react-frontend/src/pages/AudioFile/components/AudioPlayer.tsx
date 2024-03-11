@@ -6,6 +6,7 @@ interface IAudioPlayerProps {
 }
 
 export function AudioPlayer({ audioId, subtitleId }: IAudioPlayerProps) {
+  console.log("audioId", audioId);
   return (
     <video controls style={{ flexGrow: 1 }} crossOrigin="anonymous">
       <source type="audio/mp3" src={`${baseUrl}/api/file/audio/${audioId}`} />
