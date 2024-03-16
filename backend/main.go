@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/middleware"
 	"backend/router"
 	directorytree "backend/services/directoryTree"
 	usecases "backend/useCases"
@@ -32,13 +33,24 @@ func main() {
 
 	directorytree.InitializeFileTree()
 	addRoutesToApp()
-	http.Handle("/", http.FileServer(http.Dir("./public")))
-	http.HandleFunc("/api/", router.HandleRouting)
-	http.ListenAndServe(ADDR, nil)
+
+	mux := http.NewServeMux()
+	mux.Handle("/", http.FileServer(http.Dir("./public")))
+
+	routerWithMiddlewares := addRouterWithMiddlewares()
+	mux.Handle("/api/", routerWithMiddlewares)
+	http.ListenAndServe(ADDR, mux)
 }
 
 func addRoutesToApp() {
 	router.Routes.AddRoute(usecases.GetAudioFileUseCaseRoute)
 	router.Routes.AddRoute(usecases.GetSubtitleFileUseCaseRoute)
 	router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
+}
+
+func addRouterWithMiddlewares() http.Handler {
+	routerHandler := http.HandlerFunc(router.Router)
+	corsHandler := middleware.CorsHandler(routerHandler)
+	requestLoggerMiddleware := middleware.RequestLoggerHandler(corsHandler)
+	return requestLoggerMiddleware
 }
