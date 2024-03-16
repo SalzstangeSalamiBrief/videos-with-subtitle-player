@@ -11,8 +11,7 @@ type routes []Route
 var acceptedMethods = [6]string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost, http.MethodOptions}
 var Routes = make(routes, 0)
 
-func HandleRouting(w http.ResponseWriter, r *http.Request) {
-	useCors(w, r)
+func Router(w http.ResponseWriter, r *http.Request) {
 
 	quitChannel := make(chan bool)
 
@@ -52,6 +51,7 @@ func HandleRouting(w http.ResponseWriter, r *http.Request) {
 		ErrorHandler(w, fmt.Sprintf("Could not get resource '%v' with method '%v'", r.URL.Path, r.Method), http.StatusBadRequest)
 	}
 }
+
 func (r *routes) AddRoute(routeToAdd Route) {
 	*r = append(*r, routeToAdd)
 }

@@ -33,8 +33,8 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		currentItemPath := parentPath + "\\" + itemName
 		isDirectory := item.IsDir()
 
+		log.Default().Printf("'%v' is a directory\n", itemName)
 		if isDirectory {
-			//log.Default().Printf("'%v' is a directory\n", itemName)
 			newDirectoryItems := getFullTree(currentItemPath)
 			currentFileItems = append(currentFileItems, newDirectoryItems...)
 			continue

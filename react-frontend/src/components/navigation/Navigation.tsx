@@ -8,7 +8,11 @@ import { FileTreeContext } from "../../contexts/FileTreeContextWrapper";
 export function Navigation() {
   const { audioId } = useParams();
   const { fileTrees } = useContext(FileTreeContext);
-  const menuItems = useMemo(() => fileTrees.map(getMenuTree), [fileTrees]);
+  const menuItems = useMemo(
+    () =>
+      fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
+    [fileTrees]
+  );
 
   return (
     <nav style={{ height: "100%" }}>
