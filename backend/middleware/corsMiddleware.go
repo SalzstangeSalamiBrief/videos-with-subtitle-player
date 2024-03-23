@@ -29,8 +29,6 @@ func CorsHandler(next http.Handler) http.Handler {
 			}
 		}
 
-		if next != nil {
-			next.ServeHTTP(w, r)
-		}
+		next.ServeHTTP(w, r)
 	})
 }

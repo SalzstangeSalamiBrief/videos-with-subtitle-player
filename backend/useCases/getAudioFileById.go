@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const chunkSize = 1024 * 1024 // 1mb
+const chunkSize = 3 * 1024 * 1024 // 3mb
 const GetAudioFileUseCasePath = `\/file\/audio\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
 var GetAudioFileUseCaseRoute = router.Route{
@@ -52,8 +52,8 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if end > fileSize-1 {
-		end = fileSize - 1
+	if end > fileSize {
+		end = fileSize
 	}
 
 	_, err = file.Seek(start, io.SeekStart)
