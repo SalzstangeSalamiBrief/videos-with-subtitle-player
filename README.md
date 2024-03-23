@@ -7,3 +7,5 @@
 - Display Videos
 - Fix styling of the GUI
 - Add simple tests
+- Error Handler Middleware
+- Logging
