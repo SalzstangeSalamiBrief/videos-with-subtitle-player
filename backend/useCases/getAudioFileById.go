@@ -23,7 +23,7 @@ var GetAudioFileUseCaseRoute = router.Route{
 func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/audio/")
-	audioFileInTree := utilities.GetFileByIdAndExtension(fileIdString, ".wav", ".mp3")
+	audioFileInTree := utilities.GetFileByIdAndExtension(fileIdString, ".wav", ".mp3", ".mp4")
 	if audioFileInTree.Id == "" {
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return

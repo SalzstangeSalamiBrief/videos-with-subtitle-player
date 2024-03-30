@@ -41,8 +41,21 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		fileExtension := path.Ext(itemName)
-		isSubtitleFile := fileExtension == ".vtt"
 
+		isVideoFile := fileExtension == ".mp4"
+		if isVideoFile {
+			videoFile := models.FileTreeItem{
+				Id:   uuid.New().String(),
+				Path: getFolderPath(currentItemPath),
+				Name: getFileNameWithoutExtension(itemName),
+				Type: "video",
+			}
+
+			currentFileItems = append(currentFileItems, videoFile)
+			continue
+		}
+
+		isSubtitleFile := fileExtension == ".vtt"
 		if !isSubtitleFile {
 			continue
 		}

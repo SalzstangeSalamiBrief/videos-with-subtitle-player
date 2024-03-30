@@ -39,45 +39,41 @@ export function PlayerPage() {
       >
         {currentFile.name}
       </h2>
-      <Flex gap="1rem" align="center">
-        {previousId && (
-          <Tooltip title="Previous track">
-            <ReactRouterLink
-              to={generatePath("/content/:fileId", {
-                fileId: previousId,
-              })}
+      <Flex gap="0.5rem" align="center">
+        <Tooltip title="Previous track">
+          <ReactRouterLink
+            to={generatePath("/content/:fileId", {
+              fileId: previousId ?? "",
+            })}
+            aria-label="previous track"
+          >
+            <Button
+              disabled={!previousId}
+              icon={<LeftOutlined />}
               aria-label="previous track"
-            >
-              <Button
-                disabled={!previousId}
-                icon={<LeftOutlined />}
-                aria-label="previous track"
-              />
-            </ReactRouterLink>
-          </Tooltip>
-        )}
-        (
+            />
+          </ReactRouterLink>
+        </Tooltip>
+
         <Player
           key={currentFile.id}
           audioId={currentFile.id}
           subtitleId={currentFile.subtitleFileId}
           fileType={currentFile.fileType}
         />
-        )
-        {nextId && (
-          <Tooltip title="Next track">
-            <ReactRouterLink
-              to={generatePath("/content/:fileId", { fileId: nextId })}
+
+        <Tooltip title="Next track">
+          <ReactRouterLink
+            to={generatePath("/content/:fileId", { fileId: nextId ?? "" })}
+            aria-label="next track"
+          >
+            <Button
+              disabled={!nextId}
+              icon={<RightOutlined />}
               aria-label="next track"
-            >
-              <Button
-                disabled={!nextId}
-                icon={<RightOutlined />}
-                aria-label="next track"
-              />
-            </ReactRouterLink>
-          </Tooltip>
-        )}
+            />
+          </ReactRouterLink>
+        </Tooltip>
       </Flex>
     </Flex>
   );
