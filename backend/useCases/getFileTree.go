@@ -3,12 +3,10 @@ package usecases
 import (
 	"backend/lib"
 	"backend/models"
-	"backend/models/enums"
 	"backend/router"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"path"
 	"strings"
 
 	"github.com/google/uuid"
@@ -122,29 +120,4 @@ func findChildIndexInChildrenOfFileTree(node *models.FileTreeDto, name string) i
 		}
 	}
 	return -1
-}
-
-func findChildIndexInAudioFilesOfFileTree(node *models.FileTreeDto, name string) int {
-	for i, child := range node.Files {
-		if child.Name == name {
-			return i
-		}
-	}
-	return -1
-}
-
-func getFileType(fileName string) (enums.FileType, error) {
-	extension := path.Ext(fileName)
-	switch extension {
-	case ".mp3":
-		return enums.AUDIO, nil
-	case ".mp4":
-		return enums.VIDEO, nil
-	case ".wav":
-		return enums.AUDIO, nil
-	case ".vtt":
-		return enums.SUBTITLE, nil
-	default:
-		return enums.UNKNOWN, fmt.Errorf("unknown file type for file '%v'", fileName)
-	}
 }

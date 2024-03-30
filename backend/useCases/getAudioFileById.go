@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const chunkSize = 3 * 1024 * 1024 // 3mb
+const chunkSize = 1 * 1024 * 1024 // 3mb
 const GetAudioFileUseCasePath = `\/file\/audio\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
 var GetAudioFileUseCaseRoute = router.Route{
