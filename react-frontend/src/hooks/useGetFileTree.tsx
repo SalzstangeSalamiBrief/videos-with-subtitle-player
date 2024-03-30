@@ -13,7 +13,7 @@ export function useGetFileTree() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(); // TODO TYPING
   const [fileTrees, setFileTrees] = useState<IFileTreeDto[]>([]);
-  const [audioFileGroups, setAudioFileGroups] = useState<IFileNode[][]>([]);
+  const [fileGroups, setFileGroups] = useState<IFileNode[][]>([]);
 
   async function getFileTree() {
     try {
@@ -22,8 +22,8 @@ export function useGetFileTree() {
       const json: IFileTreeDto[] = await response.json();
       const transformedTree = transformDtoTreeToFileTree(json);
       setFileTrees(transformedTree);
-      const flatAudioFiles = getFlatAudioFiles(transformedTree);
-      setAudioFileGroups(flatAudioFiles);
+      const flatAudioFiles = getFlatFilesGroups(transformedTree);
+      setFileGroups(flatAudioFiles);
     } catch (error) {
       setError(error);
     } finally {
@@ -31,24 +31,24 @@ export function useGetFileTree() {
     }
   }
 
-  return { isLoading, error, fileTrees, getFileTree, audioFileGroups };
+  return { isLoading, error, fileTrees, getFileTree, fileGroups };
 }
 
-function getFlatAudioFiles(fileTrees: IFileTreeDto[]) {
-  const audioFileGroups: IFileNode[][] = [];
+function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
+  const fileGroups: IFileNode[][] = [];
 
   fileTrees.forEach((fileTree) => {
     if (fileTree.files?.length) {
-      audioFileGroups.push(fileTree.files);
+      fileGroups.push(fileTree.files);
       return;
     }
 
     if (fileTree.children?.length) {
-      audioFileGroups.push(...getFlatAudioFiles(fileTree.children));
+      fileGroups.push(...getFlatFilesGroups(fileTree.children));
     }
   });
 
-  return audioFileGroups;
+  return fileGroups;
 }
 
 function transformDtoTreeToFileTree(dtoTree: IFileTreeDto[]): IFileTree[] {

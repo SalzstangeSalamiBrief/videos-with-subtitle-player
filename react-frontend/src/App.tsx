@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { RootLayout } from "./layout/RootLayout";
-import { AudioFilePage } from "./pages/AudioFile/AudioFilePage";
+import { PlayerPage } from "./pages/AudioFile/PlayerPage";
 import { NotFoundPage } from "./pages/notFound/NotFoundPage";
 import ErrorBoundary from "./components/errorBoundary/ErrorBoundary";
 
@@ -10,7 +10,7 @@ export function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<RootLayout />}>
-            <Route path="audio/:audioId" element={<AudioFilePage />} />
+            <Route path="content/:fileId" element={<PlayerPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />}></Route>
         </Routes>

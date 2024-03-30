@@ -13,7 +13,7 @@ export function Navigation() {
       fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
     [fileTrees]
   );
-  console.log(fileTrees);
+
   return (
     <nav style={{ height: "100%" }}>
       <Menu items={menuItems} mode="inline" selectedKeys={[audioId ?? ""]} />
@@ -32,8 +32,8 @@ function getMenuTree(fileTree: IFileTreeDto): MenuItem {
     children = [
       ...children,
       ...fileTree.files.map<MenuItem>((file) => {
-        const targetUrl = generatePath("/audio/:audioId", {
-          audioId: file.id,
+        const targetUrl = generatePath("/content/:fileId", {
+          fileId: file.id,
         });
         return {
           key: file.id,

@@ -2,17 +2,13 @@ import { FileType } from "../../../models/enums/FileType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
-interface IAudioPlayerProps {
+interface IPlayerProps {
   audioId: string;
   subtitleId?: string;
   fileType: FileType;
 }
 
-export function AudioPlayer({
-  audioId,
-  subtitleId,
-  fileType,
-}: IAudioPlayerProps) {
+export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
   return (
     <video controls style={{ flexGrow: 1 }} crossOrigin="anonymous" autoPlay>
       <source type="audio/mp3" src={`${baseUrl}/api/file/audio/${audioId}`} />

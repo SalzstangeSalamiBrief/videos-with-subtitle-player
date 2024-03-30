@@ -7,7 +7,7 @@ import { IFileNode } from "../models/fileTree";
 
 interface IFileTreeContext {
   fileTrees: IFileTreeDto[];
-  audioFileGroups: IFileNode[][];
+  fileGroups: IFileNode[][];
 }
 
 interface IFileTreeContextWrapperProps {
@@ -16,13 +16,13 @@ interface IFileTreeContextWrapperProps {
 
 export const FileTreeContext = createContext<IFileTreeContext>({
   fileTrees: [],
-  audioFileGroups: [],
+  fileGroups: [],
 });
 
 export function FileTreeContextWrapper({
   children,
 }: IFileTreeContextWrapperProps) {
-  const { getFileTree, fileTrees, isLoading, error, audioFileGroups } =
+  const { getFileTree, fileTrees, isLoading, error, fileGroups } =
     useGetFileTree();
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function FileTreeContextWrapper({
   }
 
   return (
-    <FileTreeContext.Provider value={{ fileTrees, audioFileGroups }}>
+    <FileTreeContext.Provider value={{ fileTrees, fileGroups }}>
       {children}
     </FileTreeContext.Provider>
   );
