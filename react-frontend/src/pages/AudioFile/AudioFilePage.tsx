@@ -7,19 +7,24 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { IFileTreeDto } from "../../models/dtos/fileTreeDto";
 import { AudioPlayer } from "./components/AudioPlayer";
 import { IFileNode } from "../../models/fileTree";
+import { ErrorMessage } from "../../components/errorMessage/ErrorMessage";
 
 export function AudioFilePage() {
   const { audioFileGroups, fileTrees } = useContext(FileTreeContext);
   const { audioId } = useParams();
   const fields = getFileIds(audioFileGroups, audioId ?? "");
   console.log(fields);
-  const {
-    currentAudioId,
-    currentSubtitleId,
-    nextAudioId,
-    previousAudioId,
-    currentAudioName,
-  } = fields;
+  const { nextAudioId, previousAudioId, currentFile } = fields;
+  if (!currentFile) {
+    return (
+      <ErrorMessage
+        error="Could not find file."
+        message="Something went wrong"
+        description="Please try again later."
+      />
+    );
+  }
+
   return (
     <Flex vertical>
       <h1 style={{ fontSize: "1.25rem", margin: 0 }}>
@@ -33,7 +38,7 @@ export function AudioFilePage() {
           color: "hsl(0, 0%, 10%)",
         }}
       >
-        {currentAudioName}
+        {currentFile.name}
       </h2>
       <Flex gap="1rem" align="center">
         <Tooltip title="Previous track">
@@ -48,13 +53,14 @@ export function AudioFilePage() {
             />
           </ReactRouterLink>
         </Tooltip>
-        {currentAudioId && currentSubtitleId && (
-          <AudioPlayer
-            key={currentAudioId}
-            audioId={currentAudioId}
-            subtitleId={currentSubtitleId}
-          />
-        )}
+        (
+        <AudioPlayer
+          key={currentFile.id}
+          audioId={currentFile.id}
+          subtitleId={currentFile.subtitleFileId}
+          fileType={currentFile.fileType}
+        />
+        )
         <Tooltip title="Next track">
           <ReactRouterLink to={`/audio/${nextAudioId}`} aria-label="next track">
             <Button
@@ -72,20 +78,16 @@ export function AudioFilePage() {
 interface IGetFileFieldsReturn {
   previousAudioId: string | undefined;
   nextAudioId: string | undefined;
-  currentSubtitleId: string | undefined;
-  currentAudioId: string | undefined;
-  currentAudioName: string;
+  currentFile: IFileNode | undefined;
 }
 const getFileIds = (
   audioFileGroups: IFileNode[][],
   audioId: string
 ): IGetFileFieldsReturn => {
   const result: IGetFileFieldsReturn = {
-    currentAudioId: undefined,
-    currentSubtitleId: undefined,
-    nextAudioId: undefined,
+    currentFile: undefined,
     previousAudioId: undefined,
-    currentAudioName: "",
+    nextAudioId: undefined,
   };
   console.log("audioFileGroups", audioFileGroups);
   const matchingAudioFileGroup = audioFileGroups.find((audioFileGroup) => {
@@ -116,15 +118,9 @@ const getFileIds = (
       ? matchingAudioFileIndex + 1
       : -1;
 
-  const currentAudioId = matchingAudioFileGroup[matchingAudioFileIndex].id;
-  const currentSubtitleId =
-    matchingAudioFileGroup[matchingAudioFileIndex].subtitleFileId;
-
   result.previousAudioId = matchingAudioFileGroup[previousAudioIndex]?.id;
   result.nextAudioId = matchingAudioFileGroup[nextAudioIndex]?.id;
-  result.currentSubtitleId = currentSubtitleId;
-  result.currentAudioId = currentAudioId;
-  result.currentAudioName = matchingAudioFileGroup[matchingAudioFileIndex].name;
+  result.currentFile = matchingAudioFileGroup[matchingAudioFileIndex];
 
   return result;
 };
