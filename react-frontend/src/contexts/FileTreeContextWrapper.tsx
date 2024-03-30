@@ -1,13 +1,13 @@
 import { createContext, useEffect } from "react";
 import { useGetFileTree } from "../hooks/useGetFileTree";
-import { IFileTreeDto } from "../models/fileTreeDto";
+import { IFileTreeDto } from "../models/dtos/fileTreeDto";
 import { LoadingSpinner } from "../components/loadingSpinner/LoadingSpinner";
 import { ErrorMessage } from "../components/errorMessage/ErrorMessage";
-import { IAudioFileDto } from "../models/audioFileDto";
+import { IFileNode } from "../models/fileTree";
 
 interface IFileTreeContext {
   fileTrees: IFileTreeDto[];
-  audioFileGroups: IAudioFileDto[][];
+  audioFileGroups: IFileNode[][];
 }
 
 interface IFileTreeContextWrapperProps {

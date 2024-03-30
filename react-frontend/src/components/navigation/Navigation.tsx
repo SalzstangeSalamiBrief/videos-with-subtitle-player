@@ -1,5 +1,5 @@
 import { Menu, MenuProps } from "antd";
-import { IFileTreeDto } from "../../models/fileTreeDto";
+import { IFileTreeDto } from "../../models/dtos/fileTreeDto";
 import { useContext, useMemo } from "react";
 import { generatePath, useParams } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -13,7 +13,7 @@ export function Navigation() {
       fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
     [fileTrees]
   );
-
+  console.log(fileTrees);
   return (
     <nav style={{ height: "100%" }}>
       <Menu items={menuItems} mode="inline" selectedKeys={[audioId ?? ""]} />
@@ -28,18 +28,18 @@ function getMenuTree(fileTree: IFileTreeDto): MenuItem {
     children = [...children, ...fileTree.children.map(getMenuTree)];
   }
 
-  if (fileTree.audioFiles?.length) {
+  if (fileTree.files?.length) {
     children = [
       ...children,
-      ...fileTree.audioFiles.map<MenuItem>((audioFile) => {
+      ...fileTree.files.map<MenuItem>((file) => {
         const targetUrl = generatePath("/audio/:audioId", {
-          audioId: audioFile.audioFile.id,
+          audioId: file.id,
         });
         return {
-          key: audioFile.audioFile.id,
+          key: file.id,
           label: (
-            <ReactRouterLink to={targetUrl} title={audioFile.name}>
-              {audioFile.name}
+            <ReactRouterLink to={targetUrl} title={file.name}>
+              {file.name}
             </ReactRouterLink>
           ),
           type: "item",

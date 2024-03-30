@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { IFileTreeDto } from "../models/fileTreeDto";
-import { IAudioFileDto } from "../models/audioFileDto";
+import { IFileTreeDto, PossibleFilesDto } from "../models/dtos/fileTreeDto";
+import { IFileNode, IFileTree } from "../models/fileTree";
+import { IFileDto, ISubtitleFileDto } from "../models/dtos/fileDtos";
+import { FileType } from "../models/enums/FileType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL || "";
-console.log(baseUrl);
 const path = "/api/file-tree";
 
 const url = baseUrl + path;
@@ -12,32 +13,33 @@ export function useGetFileTree() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(); // TODO TYPING
   const [fileTrees, setFileTrees] = useState<IFileTreeDto[]>([]);
-  const [audioFileGroups, SetAudioFileGroups] = useState<IAudioFileDto[][]>([]);
+  const [audioFileGroups, setAudioFileGroups] = useState<IFileNode[][]>([]);
 
-  const getFileTree = async () => {
+  async function getFileTree() {
     try {
       setIsLoading(true);
       const response = await fetch(url);
       const json: IFileTreeDto[] = await response.json();
-      setFileTrees(json);
-      const flatAudioFiles = getFlatAudioFiles(json);
-      SetAudioFileGroups(flatAudioFiles);
+      const transformedTree = transformDtoTreeToFileTree(json);
+      setFileTrees(transformedTree);
+      const flatAudioFiles = getFlatAudioFiles(transformedTree);
+      setAudioFileGroups(flatAudioFiles);
     } catch (error) {
       setError(error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return { isLoading, error, fileTrees, getFileTree, audioFileGroups };
 }
 
-const getFlatAudioFiles = (fileTrees: IFileTreeDto[]) => {
-  const audioFileGroups: IAudioFileDto[][] = [];
+function getFlatAudioFiles(fileTrees: IFileTreeDto[]) {
+  const audioFileGroups: IFileNode[][] = [];
 
   fileTrees.forEach((fileTree) => {
-    if (fileTree.audioFiles?.length) {
-      audioFileGroups.push(fileTree.audioFiles);
+    if (fileTree.files?.length) {
+      audioFileGroups.push(fileTree.files);
       return;
     }
 
@@ -47,4 +49,92 @@ const getFlatAudioFiles = (fileTrees: IFileTreeDto[]) => {
   });
 
   return audioFileGroups;
-};
+}
+
+function transformDtoTreeToFileTree(dtoTree: IFileTreeDto[]): IFileTree[] {
+  const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
+    if (fileTree.files?.length) {
+      fileTree.files = replaceDtosWithFiles(fileTree.files);
+    }
+
+    if (fileTree.children?.length) {
+      fileTree.children = transformDtoTreeToFileTree(fileTree.children);
+    }
+
+    return fileTree;
+  });
+
+  return fileTrees;
+}
+
+function replaceDtosWithFiles(files: PossibleFilesDto[]): IFileNode[] {
+  const nodes: IFileNode[] = [];
+  let remainingFiles = structuredClone(files);
+
+  while (remainingFiles.length) {
+    const currentItem = remainingFiles.shift();
+    if (!currentItem) {
+      throw new Error("No files are remaining to be processed.");
+    }
+
+    const isAudio = isAudioFile(currentItem);
+
+    if (isAudio) {
+      const subtitle = remainingFiles.find(
+        (file) => isSubtitleFile(file) && file.audioFileId === currentItem.id
+      );
+
+      const item: IFileNode = {
+        id: currentItem.id,
+        name: currentItem.name,
+        fileType: currentItem.fileType,
+        subtitleFileId: subtitle?.id,
+      };
+
+      remainingFiles = remainingFiles.filter(
+        (file) => file.id !== subtitle?.id
+      );
+      nodes.push(item);
+      continue;
+    }
+
+    const isSubtitle = isSubtitleFile(currentItem);
+    if (isSubtitle) {
+      const audio = remainingFiles.find(
+        (file) =>
+          isAudioFile(file) &&
+          file.id === (currentItem as ISubtitleFileDto).audioFileId
+      );
+      if (!audio) {
+        throw new Error(
+          `Subtitle file '${
+            (currentItem as ISubtitleFileDto).id
+          }' does not have a corresponding audio file.`
+        );
+      }
+
+      const item: IFileNode = {
+        id: audio.id,
+        name: audio.name,
+        fileType: audio.fileType,
+        subtitleFileId: (currentItem as IFileDto).id,
+      };
+
+      remainingFiles = remainingFiles.filter((file) => file.id !== item.id);
+      nodes.push(item);
+      continue;
+    }
+
+    nodes.push(currentItem);
+  }
+
+  return nodes;
+}
+
+function isSubtitleFile(file: PossibleFilesDto): file is ISubtitleFileDto {
+  return file.fileType === FileType.SUBTITLE;
+}
+
+function isAudioFile(file: PossibleFilesDto): file is IFileDto {
+  return file.fileType === FileType.AUDIO;
+}

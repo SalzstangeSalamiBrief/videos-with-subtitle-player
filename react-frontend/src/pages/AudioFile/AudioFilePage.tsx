@@ -1,24 +1,25 @@
 import { useParams } from "react-router-dom";
 import { FileTreeContext } from "../../contexts/FileTreeContextWrapper";
 import { useContext } from "react";
-import { IAudioFileDto } from "../../models/audioFileDto";
 import { Button, Flex, Tooltip } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { IFileTreeDto } from "../../models/fileTreeDto";
+import { IFileTreeDto } from "../../models/dtos/fileTreeDto";
 import { AudioPlayer } from "./components/AudioPlayer";
+import { IFileNode } from "../../models/fileTree";
 
 export function AudioFilePage() {
   const { audioFileGroups, fileTrees } = useContext(FileTreeContext);
   const { audioId } = useParams();
+  const fields = getFileIds(audioFileGroups, audioId ?? "");
+  console.log(fields);
   const {
     currentAudioId,
     currentSubtitleId,
     nextAudioId,
     previousAudioId,
     currentAudioName,
-  } = getFileIds(audioFileGroups, audioId ?? "");
-
+  } = fields;
   return (
     <Flex vertical>
       <h1 style={{ fontSize: "1.25rem", margin: 0 }}>
@@ -76,7 +77,7 @@ interface IGetFileFieldsReturn {
   currentAudioName: string;
 }
 const getFileIds = (
-  audioFileGroups: IAudioFileDto[][],
+  audioFileGroups: IFileNode[][],
   audioId: string
 ): IGetFileFieldsReturn => {
   const result: IGetFileFieldsReturn = {
@@ -86,10 +87,10 @@ const getFileIds = (
     previousAudioId: undefined,
     currentAudioName: "",
   };
-
+  console.log("audioFileGroups", audioFileGroups);
   const matchingAudioFileGroup = audioFileGroups.find((audioFileGroup) => {
     const containsAudioFile = audioFileGroup.find(
-      (audioFile) => audioFile.audioFile.id === audioId
+      (audioFile) => audioFile.id === audioId
     );
     return containsAudioFile;
   });
@@ -100,7 +101,7 @@ const getFileIds = (
   }
 
   const matchingAudioFileIndex = matchingAudioFileGroup.findIndex(
-    (audioFile) => audioFile.audioFile.id === audioId
+    (audioFile) => audioFile.id === audioId
   );
 
   if (matchingAudioFileIndex < 0) {
@@ -115,14 +116,12 @@ const getFileIds = (
       ? matchingAudioFileIndex + 1
       : -1;
 
-  const currentAudioId =
-    matchingAudioFileGroup[matchingAudioFileIndex].audioFile.id;
+  const currentAudioId = matchingAudioFileGroup[matchingAudioFileIndex].id;
   const currentSubtitleId =
-    matchingAudioFileGroup[matchingAudioFileIndex].subtitleFile.id;
+    matchingAudioFileGroup[matchingAudioFileIndex].subtitleFileId;
 
-  result.previousAudioId =
-    matchingAudioFileGroup[previousAudioIndex]?.audioFile?.id;
-  result.nextAudioId = matchingAudioFileGroup[nextAudioIndex]?.audioFile?.id;
+  result.previousAudioId = matchingAudioFileGroup[previousAudioIndex]?.id;
+  result.nextAudioId = matchingAudioFileGroup[nextAudioIndex]?.id;
   result.currentSubtitleId = currentSubtitleId;
   result.currentAudioId = currentAudioId;
   result.currentAudioName = matchingAudioFileGroup[matchingAudioFileIndex].name;
@@ -148,9 +147,7 @@ const getParentName = (fileTrees: IFileTreeDto[], audioId: string): string => {
 };
 
 const isPartOfSubTree = (fileTree: IFileTreeDto, audioId: string): boolean => {
-  if (
-    fileTree.audioFiles?.find((audioFile) => audioFile.audioFile.id === audioId)
-  ) {
+  if (fileTree.files?.find((audioFile) => audioFile.id === audioId)) {
     return true;
   }
 

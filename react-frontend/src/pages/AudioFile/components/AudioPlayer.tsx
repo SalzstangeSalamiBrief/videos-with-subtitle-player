@@ -3,6 +3,7 @@ const baseUrl = import.meta.env.VITE_BASE_URL;
 interface IAudioPlayerProps {
   audioId: string;
   subtitleId: string;
+  // fileType: TODO
 }
 
 export function AudioPlayer({ audioId, subtitleId }: IAudioPlayerProps) {
