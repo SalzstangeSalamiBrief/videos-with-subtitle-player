@@ -1,8 +1,8 @@
 package utilities
 
 import (
+	"backend/lib"
 	"backend/models"
-	directorytree "backend/services/directoryTree"
 	"fmt"
 	"mime"
 	"net/http"
@@ -29,7 +29,7 @@ func AddPartialContentHeader(w http.ResponseWriter, start int64, end int64, size
 
 func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileTreeItem {
 	var file models.FileTreeItem
-	for _, fileTreeItem := range directorytree.FileTreeItems {
+	for _, fileTreeItem := range lib.FileTreeItems {
 		isMatch := fileTreeItem.Id == id
 		if !isMatch {
 			continue

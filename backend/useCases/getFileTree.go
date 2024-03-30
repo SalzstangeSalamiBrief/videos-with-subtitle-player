@@ -1,9 +1,10 @@
 package usecases
 
 import (
+	"backend/lib"
 	"backend/models"
+	"backend/models/enums"
 	"backend/router"
-	directorytree "backend/services/directoryTree"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -20,9 +21,8 @@ var GetFileTreeUseCaseRoute = router.Route{
 }
 
 func getFileTreeUseCase(w http.ResponseWriter, r *http.Request) {
-	fileTree := GetFileTreeDto(directorytree.FileTreeItems)
-	subTrees := fileTree.Children
-	encodedBytes, err := json.Marshal(subTrees)
+	fileTree := GetFileTreeDto(lib.FileTreeItems)
+	encodedBytes, err := json.Marshal(fileTree.Children)
 	if err != nil {
 		router.ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
 		return
@@ -66,10 +66,10 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		} else {
 			child := models.FileTreeDto{
-				Id:         uuid.New().String(),
-				Name:       currentPathPart,
-				Children:   []models.FileTreeDto{},
-				AudioFiles: []models.AudioFileDto{},
+				Id:       uuid.New().String(),
+				Name:     currentPathPart,
+				Children: []models.FileTreeDto{},
+				Files:    []models.FileDto{},
 			}
 			currentNode.Children = append(currentNode.Children, child)
 			currentNode = &child
@@ -83,6 +83,19 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 }
 
 func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
+
+	fileItem := models.FileDto{
+		Id:                    file.Id,
+		Name:                  file.Name,
+		Type:                  file.Type,
+		AssociatedAudioFileId: file.AssociatedAudioFileId,
+	}
+
+	currentNode.Files = append(currentNode.Files, fileItem)
+}
+
+func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathPartsWithFileExtension []string) *models.FileTreeDto {
 	var currentPathPart string
 	remainingPathParts := pathPartsWithFileExtension
 	currentNode := rootFileTree
@@ -99,30 +112,7 @@ func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, p
 		remainingPathParts = remainingPathParts[1:]
 	}
 
-	fileItem := models.FileItemDto{
-		Id:   file.Id,
-		Name: file.Name,
-	}
-
-	indexOfAudioContainer := findChildIndexInAudioFilesOfFileTree(currentNode, fileItem.Name)
-	if indexOfAudioContainer < 0 {
-		currentNode.AudioFiles = append(currentNode.AudioFiles,
-			models.AudioFileDto{
-				Name:         fileItem.Name,
-				AudioFile:    models.FileItemDto{},
-				SubtitleFile: models.FileItemDto{},
-			})
-		indexOfAudioContainer = len(currentNode.AudioFiles) - 1
-	}
-
-	extension := path.Ext(pathPartsWithFileExtension[len(pathPartsWithFileExtension)-1])
-	isSubtitleFile := extension == ".vtt"
-
-	if isSubtitleFile {
-		currentNode.AudioFiles[indexOfAudioContainer].SubtitleFile = fileItem
-	} else {
-		currentNode.AudioFiles[indexOfAudioContainer].AudioFile = fileItem
-	}
+	return currentNode
 }
 
 func findChildIndexInChildrenOfFileTree(node *models.FileTreeDto, name string) int {
@@ -135,10 +125,26 @@ func findChildIndexInChildrenOfFileTree(node *models.FileTreeDto, name string) i
 }
 
 func findChildIndexInAudioFilesOfFileTree(node *models.FileTreeDto, name string) int {
-	for i, child := range node.AudioFiles {
+	for i, child := range node.Files {
 		if child.Name == name {
 			return i
 		}
 	}
 	return -1
+}
+
+func getFileType(fileName string) (enums.FileType, error) {
+	extension := path.Ext(fileName)
+	switch extension {
+	case ".mp3":
+		return enums.AUDIO, nil
+	case ".mp4":
+		return enums.VIDEO, nil
+	case ".wav":
+		return enums.AUDIO, nil
+	case ".vtt":
+		return enums.SUBTITLE, nil
+	default:
+		return enums.UNKNOWN, fmt.Errorf("unknown file type for file '%v'", fileName)
+	}
 }

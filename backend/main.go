@@ -1,18 +1,17 @@
 package main
 
 import (
+	"backend/lib"
 	"backend/middleware"
 	"backend/router"
-	directorytree "backend/services/directoryTree"
 	usecases "backend/useCases"
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/joho/godotenv"
 )
 
 const ADDR = "localhost:3000"
@@ -31,7 +30,7 @@ func main() {
 		os.Exit(0)
 	}()
 
-	directorytree.InitializeFileTree()
+	lib.InitializeFileTree()
 	addRoutesToApp()
 
 	mux := http.NewServeMux()
