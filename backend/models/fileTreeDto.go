@@ -1,20 +1,18 @@
 package models
 
-// TODO maybe swagger??
+import "backend/models/enums"
+
 type FileTreeDto struct {
-	Name       string         `json:"name"`
-	Id         string         `json:"id"`
-	AudioFiles []AudioFileDto `json:"audioFiles"`
-	Children   []FileTreeDto  `json:"children"`
+	Name     string        `json:"name"`
+	Id       string        `json:"id"`
+	Files    []FileDto     `json:"files"`
+	Children []FileTreeDto `json:"children"`
 }
 
-type AudioFileDto struct {
-	Name         string      `json:"name"`
-	SubtitleFile FileItemDto `json:"subtitleFile"`
-	AudioFile    FileItemDto `json:"audioFile"`
-}
-
-type FileItemDto struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
+type FileDto struct {
+	Id   string         `json:"id"`
+	Name string         `json:"name"`
+	Type enums.FileType `json:"fileType"`
+	// used to associate subtitle files with audio files
+	AssociatedAudioFileId string `json:"audioFileId"`
 }

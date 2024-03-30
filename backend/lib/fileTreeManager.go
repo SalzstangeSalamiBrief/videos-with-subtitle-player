@@ -1,4 +1,4 @@
-package directorytree
+package lib
 
 import (
 	"backend/models"
@@ -41,8 +41,21 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		fileExtension := path.Ext(itemName)
-		isSubtitleFile := fileExtension == ".vtt"
 
+		isVideoFile := fileExtension == ".mp4"
+		if isVideoFile {
+			videoFile := models.FileTreeItem{
+				Id:   uuid.New().String(),
+				Path: getFolderPath(currentItemPath),
+				Name: getFileNameWithoutExtension(itemName),
+				Type: "video",
+			}
+
+			currentFileItems = append(currentFileItems, videoFile)
+			continue
+		}
+
+		isSubtitleFile := fileExtension == ".vtt"
 		if !isSubtitleFile {
 			continue
 		}
@@ -67,16 +80,20 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
+		audioFileId := uuid.New().String()
 		newSubtitleFile := models.FileTreeItem{
-			Id:   uuid.New().String(),
-			Path: getFolderPath(currentItemPath),
-			Name: getFileNameWithoutExtension(itemName),
+			Id:                    uuid.New().String(),
+			Path:                  getFolderPath(currentItemPath),
+			Name:                  getFileNameWithoutExtension(itemName),
+			Type:                  "subtitle",
+			AssociatedAudioFileId: audioFileId,
 		}
 
 		newAssociatedSourceFile := models.FileTreeItem{
-			Id:   uuid.New().String(),
+			Id:   audioFileId,
 			Path: getFolderPath(correspondingSourceFilePath),
 			Name: getFileNameWithoutExtension(itemName),
+			Type: "audio",
 		}
 
 		currentFileItems = append(currentFileItems, newSubtitleFile)

@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-const chunkSize = 3 * 1024 * 1024 // 3mb
+const chunkSize = 1 * 1024 * 1024 // 3mb
 const GetAudioFileUseCasePath = `\/file\/audio\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
 var GetAudioFileUseCaseRoute = router.Route{
@@ -23,7 +23,7 @@ var GetAudioFileUseCaseRoute = router.Route{
 func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/audio/")
-	audioFileInTree := utilities.GetFileByIdAndExtension(fileIdString, ".wav", ".mp3")
+	audioFileInTree := utilities.GetFileByIdAndExtension(fileIdString, ".wav", ".mp3", ".mp4")
 	if audioFileInTree.Id == "" {
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return
