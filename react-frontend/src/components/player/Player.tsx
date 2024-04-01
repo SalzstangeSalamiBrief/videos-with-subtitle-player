@@ -1,4 +1,4 @@
-import { FileType } from "../../../models/enums/FileType";
+import { FileType } from "../../enums/FileType";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -13,7 +13,7 @@ export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
     <div style={{ flexGrow: 1 }}>
       <video
         controls
-        style={{ width: "100%", maxWidth: "100%" }}
+        style={{ width: "100%" }}
         crossOrigin="anonymous"
         autoPlay
       >

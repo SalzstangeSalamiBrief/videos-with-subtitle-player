@@ -1,20 +1,17 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { RootLayout } from "./layout/RootLayout";
-import { PlayerPage } from "./pages/AudioFile/PlayerPage";
-import { NotFoundPage } from "./pages/notFound/NotFoundPage";
 import ErrorBoundary from "./components/errorBoundary/ErrorBoundary";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
+import { NotFoundPage } from "./components/notFoundPage/NotFoundPage";
+
+const router = createRouter({
+  routeTree,
+  defaultNotFoundComponent: NotFoundPage,
+});
 
 export function App() {
   return (
     <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<RootLayout />}>
-            <Route path="content/:fileId" element={<PlayerPage />} />
-          </Route>
-          <Route path="*" element={<NotFoundPage />}></Route>
-        </Routes>
-      </BrowserRouter>
+      <RouterProvider router={router} />
     </ErrorBoundary>
   );
 }

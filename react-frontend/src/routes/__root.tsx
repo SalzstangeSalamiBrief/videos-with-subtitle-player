@@ -1,9 +1,13 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Row, Col } from "antd";
 import { Navigation } from "../components/navigation/Navigation";
-import { Col, Row } from "antd";
 import { FileTreeContextWrapper } from "../contexts/FileTreeContextWrapper";
 
-export function RootLayout() {
+export const Route = createRootRoute({
+  component: Root,
+});
+
+function Root() {
   return (
     <FileTreeContextWrapper>
       <Row style={{ overflow: "hidden" }}>
