@@ -1,17 +1,21 @@
-import { generatePath, useParams } from "react-router-dom";
-import { FileTreeContext } from "../../contexts/FileTreeContextWrapper";
-import { useContext } from "react";
-import { Button, Flex, Tooltip } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Link as ReactRouterLink } from "react-router-dom";
-import { IFileTreeDto } from "../../models/dtos/fileTreeDto";
-import { Player } from "./components/Player";
-import { IFileNode } from "../../models/fileTree";
-import { ErrorMessage } from "../../components/errorMessage/ErrorMessage";
+import { createFileRoute } from "@tanstack/react-router";
+import { Flex, Tooltip, Button } from "antd";
+import { useContext } from "react";
+import { ErrorMessage } from "../../../components/errorMessage/ErrorMessage";
+import { FileTreeContext } from "../../../contexts/FileTreeContextWrapper";
+import { IFileTreeDto } from "../../../models/dtos/fileTreeDto";
+import { IFileNode } from "../../../models/fileTree";
+import { Player } from "../../../components/player/Player";
+import { Link as TansStackLink } from "@tanstack/react-router";
 
-export function PlayerPage() {
+export const Route = createFileRoute("/files/$fileId/")({
+  component: AudioFilePage,
+});
+
+function AudioFilePage() {
   const { fileGroups, fileTrees } = useContext(FileTreeContext);
-  const { fileId } = useParams();
+  const { fileId } = Route.useParams();
   const { nextId, previousId, currentFile } = getFileIds(fileGroups, fileId);
 
   if (!currentFile) {
@@ -41,10 +45,9 @@ export function PlayerPage() {
       </h2>
       <Flex gap="0.5rem" align="center">
         <Tooltip title="Previous track">
-          <ReactRouterLink
-            to={generatePath("/content/:fileId", {
-              fileId: previousId ?? "",
-            })}
+          <TansStackLink
+            to="/files/$fileId/"
+            params={{ fileId: previousId ?? "" }}
             aria-label="previous track"
           >
             <Button
@@ -52,7 +55,7 @@ export function PlayerPage() {
               icon={<LeftOutlined />}
               aria-label="previous track"
             />
-          </ReactRouterLink>
+          </TansStackLink>
         </Tooltip>
 
         <Player
@@ -63,8 +66,9 @@ export function PlayerPage() {
         />
 
         <Tooltip title="Next track">
-          <ReactRouterLink
-            to={generatePath("/content/:fileId", { fileId: nextId ?? "" })}
+          <TansStackLink
+            to="/files/$fileId/"
+            params={{ fileId: nextId ?? "" }}
             aria-label="next track"
           >
             <Button
@@ -72,7 +76,7 @@ export function PlayerPage() {
               icon={<RightOutlined />}
               aria-label="next track"
             />
-          </ReactRouterLink>
+          </TansStackLink>
         </Tooltip>
       </Flex>
     </Flex>

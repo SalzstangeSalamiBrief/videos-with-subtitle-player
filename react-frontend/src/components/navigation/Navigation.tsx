@@ -1,12 +1,11 @@
 import { Menu, MenuProps } from "antd";
 import { IFileTreeDto } from "../../models/dtos/fileTreeDto";
 import { useContext, useMemo } from "react";
-import { generatePath, useParams } from "react-router-dom";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as TanStackLink, useParams } from "@tanstack/react-router";
 import { FileTreeContext } from "../../contexts/FileTreeContextWrapper";
 
 export function Navigation() {
-  const { audioId } = useParams();
+  const { fileId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
   const menuItems = useMemo(
     () =>
@@ -16,7 +15,7 @@ export function Navigation() {
 
   return (
     <nav style={{ height: "100%" }}>
-      <Menu items={menuItems} mode="inline" selectedKeys={[audioId ?? ""]} />
+      <Menu items={menuItems} mode="inline" selectedKeys={[fileId ?? ""]} />
     </nav>
   );
 }
@@ -32,15 +31,16 @@ function getMenuTree(fileTree: IFileTreeDto): MenuItem {
     children = [
       ...children,
       ...fileTree.files.map<MenuItem>((file) => {
-        const targetUrl = generatePath("/content/:fileId", {
-          fileId: file.id,
-        });
         return {
           key: file.id,
           label: (
-            <ReactRouterLink to={targetUrl} title={file.name}>
+            <TanStackLink
+              to="files/$fileId"
+              title={file.name}
+              params={{ fileId: file.id }}
+            >
               {file.name}
-            </ReactRouterLink>
+            </TanStackLink>
           ),
           type: "item",
         };
