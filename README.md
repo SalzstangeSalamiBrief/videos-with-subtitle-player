@@ -9,4 +9,3 @@
 - Add simple tests
 - Error Handler Middleware
 - Logging
-  -TanstackRouter
