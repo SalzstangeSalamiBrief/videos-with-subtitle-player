@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// TODO RENAME FILE
 func getFileType(fileName string) (enums.FileType, error) {
 	extension := path.Ext(fileName)
 	switch extension {

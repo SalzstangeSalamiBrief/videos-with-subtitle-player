@@ -36,6 +36,7 @@ func getSubtitleFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", subtitleFileInTree.Name))
-	utilities.AddContentTypeHeader(w, subtitleFileInTree)
+	mimeType := utilities.GetContentTypeHeaderMimeType(subtitleFileInTree)
+	w.Header().Add("Content-Type", mimeType)
 	w.Write(fileBytes)
 }
