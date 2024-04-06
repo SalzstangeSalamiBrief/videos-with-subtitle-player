@@ -15,13 +15,17 @@ func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileT
 			continue
 		}
 
-		ext := filepath.Ext(fileTreeItem.Path)
-		doesExtensionMatch := slices.Contains(allowedExtension, ext)
-		if doesExtensionMatch {
+		if isFileExtensionAllowed(fileTreeItem, allowedExtension...) {
 			file = fileTreeItem
 			break
 		}
 	}
 
 	return file
+}
+
+func isFileExtensionAllowed(fileTreeItem models.FileTreeItem, allowedExtension ...string) bool {
+	ext := filepath.Ext(fileTreeItem.Path)
+	doesExtensionMatch := slices.Contains(allowedExtension, ext)
+	return doesExtensionMatch
 }
