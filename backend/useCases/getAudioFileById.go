@@ -38,23 +38,18 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fileInfo, err := file.Stat()
+	fileSize, err := getFileSize(file)
 	if err != nil {
 		fmt.Println(err.Error())
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", fileIdString), http.StatusInternalServerError)
 		return
 	}
 
-	fileSize := fileInfo.Size()
 	rangeHeaderWithPrefix := r.Header.Get("Range")
-	start, end := utilities.GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix, chunkSize)
+	start, end := utilities.GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix, chunkSize, fileSize)
 	if start == 0 && end == 0 {
 		router.ErrorHandler(w, fmt.Sprintf("The request does not contain a range header for file '%v'", fileIdString), http.StatusBadRequest)
 		return
-	}
-
-	if end > fileSize {
-		end = fileSize
 	}
 
 	_, err = file.Seek(start, io.SeekStart)
@@ -71,6 +66,16 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", mimeType)
 	w.WriteHeader(http.StatusPartialContent)
 	io.CopyN(w, file, end-start)
+}
+
+func getFileSize(file *os.File) (int64, error) {
+	fileInfo, err := file.Stat()
+	if err != nil {
+		return -1, err
+	}
+
+	fileSize := fileInfo.Size()
+	return fileSize, nil
 }
 
 func addPartialContentHeader(w http.ResponseWriter, start int64, end int64, size int64) {
