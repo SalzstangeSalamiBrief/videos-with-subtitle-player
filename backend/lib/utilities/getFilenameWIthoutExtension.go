@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GetFileNameWithoutExtension(filename string) string {
+func GetFilenameWithoutExtension(filename string) string {
 	fileExtension := path.Ext(filename)
 	fileNameWithoutExtension := strings.Replace(filename, fileExtension, "", 1)
 	// used if two file names are chained e. g. .mp3.vtt
