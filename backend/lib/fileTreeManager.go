@@ -49,7 +49,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		if isVideoFile {
 			videoFile := models.FileTreeItem{
 				Id:   uuid.New().String(),
-				Path: lib.GetFolderPath(currentItemPath, rootPath),
+				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
 				Name: lib.GetFilenameWithoutExtension(itemName),
 				Type: fileType,
 			}
@@ -78,7 +78,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		audioFileId := uuid.New().String()
 		newSubtitleFile := models.FileTreeItem{
 			Id:                    uuid.New().String(),
-			Path:                  lib.GetFolderPath(currentItemPath, rootPath),
+			Path:                  lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
 			Name:                  lib.GetFilenameWithoutExtension(itemName),
 			Type:                  enums.SUBTITLE,
 			AssociatedAudioFileId: audioFileId,
@@ -86,7 +86,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 		newAssociatedSourceFile := models.FileTreeItem{
 			Id:   audioFileId,
-			Path: lib.GetFolderPath(correspondingSourceFilePath, rootPath),
+			Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: correspondingSourceFilePath, RootPath: rootPath}),
 			Name: lib.GetFilenameWithoutExtension(itemName),
 			Type: enums.AUDIO,
 		}
