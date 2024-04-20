@@ -46,7 +46,7 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rangeHeaderWithPrefix := r.Header.Get("Range")
-	start, end := utilities.GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix, chunkSize, fileSize)
+	start, end := utilities.GetRequestedRangesFromHeaderField(utilities.GetRequestRangesInput{rangeHeaderWithPrefix, chunkSize, fileSize})
 	if start == 0 && end == 0 {
 		router.ErrorHandler(w, fmt.Sprintf("The request does not contain a range header for file '%v'", fileIdString), http.StatusBadRequest)
 		return

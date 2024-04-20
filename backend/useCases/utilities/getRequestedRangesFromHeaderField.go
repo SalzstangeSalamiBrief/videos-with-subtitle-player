@@ -6,19 +6,25 @@ import (
 	"strings"
 )
 
-func GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix string, chunkSize int64, fileSize int64) (start int64, end int64) {
-	if rangeHeaderWithPrefix == "" {
-		return 0, chunkSize
+type GetRequestRangesInput struct {
+	RangeHeaderWithPrefix string
+	ChunkSize             int64
+	FileSize              int64
+}
+
+func GetRequestedRangesFromHeaderField(input GetRequestRangesInput) (start int64, end int64) {
+	if input.RangeHeaderWithPrefix == "" {
+		return 0, input.ChunkSize
 	}
 
-	stringifiedStart, stringifiedEnd := getStringifiedRange(rangeHeaderWithPrefix)
+	stringifiedStart, stringifiedEnd := getStringifiedRange(input.RangeHeaderWithPrefix)
 	start, err := getStart(stringifiedStart)
 	if err != nil {
 		fmt.Println("start", err.Error())
 		return 0, 0
 	}
 
-	end, err = getEnd(getEndInput{stringifiedEnd, start, fileSize, chunkSize})
+	end, err = getEnd(getEndInput{stringifiedEnd, start, input.FileSize, input.ChunkSize})
 	if err != nil {
 		fmt.Println("end", err.Error())
 		return 0, 0

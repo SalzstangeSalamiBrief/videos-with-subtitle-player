@@ -80,3 +80,26 @@ func Test_getEnd(t *testing.T) {
 		})
 	}
 }
+
+func Test_GetRequestedRangesFromHeaderField(t *testing.T) {
+	inputs := []models.TestData[GetRequestRangesInput, [2]int64]{
+		{Input: GetRequestRangesInput{"", 1024, 0}, Expected: [2]int64{0, 1024}},
+		{Input: GetRequestRangesInput{"bytes=", 1024, 0}, Expected: [2]int64{0, 1024}},
+		{Input: GetRequestRangesInput{"bytes=1-", 1024, 0}, Expected: [2]int64{1, 1025}},
+		{Input: GetRequestRangesInput{"bytes=1-2000", 1024, 512}, Expected: [2]int64{1, 512}},
+		{Input: GetRequestRangesInput{"bytes=1-2000", 1024, 16000}, Expected: [2]int64{1, 2000}},
+	}
+
+	for _, input := range inputs {
+		t.Run(fmt.Sprintf("input '%#v'", input.Input), func(t *testing.T) {
+			start, end := GetRequestedRangesFromHeaderField(input.Input)
+			if start != input.Expected[0] {
+				t.Errorf("Expected '%v' but received '%v'", input.Expected[0], start)
+			}
+
+			if end != input.Expected[1] {
+				t.Errorf("Expected '%v' but received '%v'", input.Expected[1], end)
+			}
+		})
+	}
+}
