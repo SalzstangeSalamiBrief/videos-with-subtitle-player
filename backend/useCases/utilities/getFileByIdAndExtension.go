@@ -1,4 +1,4 @@
-package utilities
+package usecases
 
 import (
 	"backend/lib"

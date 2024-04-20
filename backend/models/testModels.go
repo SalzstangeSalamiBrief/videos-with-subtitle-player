@@ -6,6 +6,6 @@ type TestData[T any, K any] struct {
 }
 
 type ValueErrorCombination[T any] struct {
-	Value T
-	Error error
+	Value    T
+	HasError bool
 }

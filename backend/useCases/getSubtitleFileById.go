@@ -21,7 +21,7 @@ var GetSubtitleFileUseCaseRoute = router.Route{
 func getSubtitleFileHandler(w http.ResponseWriter, r *http.Request) {
 	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/subtitle/")
-	subtitleFileInTree := utilities.GetFileByIdAndExtension(fileIdString, ".vtt")
+	subtitleFileInTree := usecases.GetFileByIdAndExtension(fileIdString, ".vtt")
 	if subtitleFileInTree.Id == "" {
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return
@@ -36,7 +36,7 @@ func getSubtitleFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", subtitleFileInTree.Name))
-	mimeType := utilities.GetContentTypeHeaderMimeType(subtitleFileInTree)
+	mimeType := usecases.GetContentTypeHeaderMimeType(subtitleFileInTree)
 	w.Header().Add("Content-Type", mimeType)
 	w.Write(fileBytes)
 }

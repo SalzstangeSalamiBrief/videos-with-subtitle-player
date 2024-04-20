@@ -1,4 +1,4 @@
-package utilities
+package usecases
 
 import (
 	"backend/models"
@@ -30,10 +30,10 @@ func Test_getStringifiedRange(t *testing.T) {
 
 func Test_getStart(t *testing.T) {
 	inputs := []models.TestData[string, models.ValueErrorCombination[int64]]{
-		{Input: "", Expected: models.ValueErrorCombination[int64]{Value: 0, Error: nil}},
-		{Input: "abc", Expected: models.ValueErrorCombination[int64]{Value: 0, Error: fmt.Errorf("")}},
-		{Input: "-1", Expected: models.ValueErrorCombination[int64]{Value: -1, Error: nil}},
-		{Input: "1", Expected: models.ValueErrorCombination[int64]{Value: 1, Error: nil}},
+		{Input: "", Expected: models.ValueErrorCombination[int64]{Value: 0, HasError: false}},
+		{Input: "abc", Expected: models.ValueErrorCombination[int64]{Value: 0, HasError: true}},
+		{Input: "-1", Expected: models.ValueErrorCombination[int64]{Value: -1, HasError: false}},
+		{Input: "1", Expected: models.ValueErrorCombination[int64]{Value: 1, HasError: false}},
 	}
 
 	for _, input := range inputs {
@@ -43,11 +43,11 @@ func Test_getStart(t *testing.T) {
 				t.Errorf("Expected '%v' but received '%v'", input.Expected.Value, resultValue)
 			}
 
-			if input.Expected.Error != nil && resultError == nil {
+			if input.Expected.HasError && resultError == nil {
 				t.Error("Expected an error but received none")
 			}
 
-			if input.Expected.Error == nil && resultError != nil {
+			if !input.Expected.HasError && resultError != nil {
 				t.Errorf("Expected an error but received none")
 			}
 		})
@@ -56,11 +56,11 @@ func Test_getStart(t *testing.T) {
 
 func Test_getEnd(t *testing.T) {
 	inputs := []models.TestData[getEndInput, models.ValueErrorCombination[int64]]{
-		{Input: getEndInput{stringifiedEnd: "", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, Error: nil}},
-		{Input: getEndInput{stringifiedEnd: "0", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, Error: nil}},
-		{Input: getEndInput{stringifiedEnd: "a", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 0, Error: fmt.Errorf("")}},
-		{Input: getEndInput{stringifiedEnd: "10", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 10, Error: nil}},
-		{Input: getEndInput{stringifiedEnd: "2048", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, Error: nil}},
+		{Input: getEndInput{stringifiedEnd: "", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, HasError: false}},
+		{Input: getEndInput{stringifiedEnd: "0", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, HasError: false}},
+		{Input: getEndInput{stringifiedEnd: "a", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 0, HasError: true}},
+		{Input: getEndInput{stringifiedEnd: "10", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 10, HasError: false}},
+		{Input: getEndInput{stringifiedEnd: "2048", fileSize: 1024, chunkSize: 1024, start: 0}, Expected: models.ValueErrorCombination[int64]{Value: 1024, HasError: false}},
 	}
 
 	for _, input := range inputs {
@@ -70,11 +70,11 @@ func Test_getEnd(t *testing.T) {
 				t.Errorf("Expected '%v' but received '%v'", input.Expected.Value, resultValue)
 			}
 
-			if input.Expected.Error != nil && resultError == nil {
+			if input.Expected.HasError && resultError == nil {
 				t.Error("Expected an error but received none")
 			}
 
-			if input.Expected.Error == nil && resultError != nil {
+			if !input.Expected.HasError && resultError != nil {
 				t.Errorf("Expected an error but received none")
 			}
 		})

@@ -1,12 +1,13 @@
 package lib
 
 import (
+	"backend/enums"
+	lib "backend/lib/utilities"
 	"backend/models"
 	"github.com/google/uuid"
 	"log"
 	"os"
 	"path"
-	"regexp"
 	"strings"
 )
 
@@ -29,46 +30,40 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 	for _, item := range content {
 		itemName := item.Name()
-
 		currentItemPath := parentPath + "\\" + itemName
 		isDirectory := item.IsDir()
 
-		log.Default().Printf("'%v' is a directory\n", itemName)
 		if isDirectory {
+			log.Default().Printf("'%v' is a directory\n", itemName)
 			newDirectoryItems := getFullTree(currentItemPath)
 			currentFileItems = append(currentFileItems, newDirectoryItems...)
 			continue
 		}
 
-		fileExtension := path.Ext(itemName)
+		fileType := lib.GetFileType(itemName)
+		if fileType == enums.UNKNOWN {
+			continue
+		}
 
-		isVideoFile := fileExtension == ".mp4"
+		isVideoFile := fileType == enums.VIDEO
 		if isVideoFile {
 			videoFile := models.FileTreeItem{
 				Id:   uuid.New().String(),
-				Path: getFolderPath(currentItemPath),
-				Name: getFileNameWithoutExtension(itemName),
-				Type: "video",
+				Path: lib.GetFolderPath(currentItemPath, rootPath),
+				Name: lib.GetFileNameWithoutExtension(itemName),
+				Type: fileType,
 			}
 
 			currentFileItems = append(currentFileItems, videoFile)
 			continue
 		}
 
-		isSubtitleFile := fileExtension == ".vtt"
+		isSubtitleFile := fileType == enums.SUBTITLE
 		if !isSubtitleFile {
 			continue
 		}
 
-		mp3RegExp := regexp.MustCompile(".(mp3|wav).vtt$")
-		isAssociatedWithMp3File := mp3RegExp.MatchString(itemName)
-
-		if !isAssociatedWithMp3File {
-			log.Default().Printf("'%v' is not associated with an (mp3|wav) file\n", itemName)
-			continue
-		}
-
-		correspondingSourceFilePath := strings.Replace(currentItemPath, fileExtension, "", 1)
+		correspondingSourceFilePath := strings.Replace(currentItemPath, path.Ext(itemName), "", 1)
 		_, err := os.Stat(correspondingSourceFilePath)
 		if os.IsNotExist(err) {
 			log.Default().Printf("corresponding source file does not exist for '%v'\n", itemName)
@@ -83,17 +78,17 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		audioFileId := uuid.New().String()
 		newSubtitleFile := models.FileTreeItem{
 			Id:                    uuid.New().String(),
-			Path:                  getFolderPath(currentItemPath),
-			Name:                  getFileNameWithoutExtension(itemName),
-			Type:                  "subtitle",
+			Path:                  lib.GetFolderPath(currentItemPath, rootPath),
+			Name:                  lib.GetFileNameWithoutExtension(itemName),
+			Type:                  enums.SUBTITLE,
 			AssociatedAudioFileId: audioFileId,
 		}
 
 		newAssociatedSourceFile := models.FileTreeItem{
 			Id:   audioFileId,
-			Path: getFolderPath(correspondingSourceFilePath),
-			Name: getFileNameWithoutExtension(itemName),
-			Type: "audio",
+			Path: lib.GetFolderPath(correspondingSourceFilePath, rootPath),
+			Name: lib.GetFileNameWithoutExtension(itemName),
+			Type: enums.AUDIO,
 		}
 
 		currentFileItems = append(currentFileItems, newSubtitleFile)
