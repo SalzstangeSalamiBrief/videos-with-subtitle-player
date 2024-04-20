@@ -1,6 +1,8 @@
 package models
 
-import "backend/models/enums"
+import (
+	"backend/enums"
+)
 
 type FileTreeDto struct {
 	Name     string        `json:"name"`

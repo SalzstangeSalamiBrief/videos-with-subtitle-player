@@ -12,17 +12,13 @@ func GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix string, chunkSize i
 	}
 
 	stringifiedStart, stringifiedEnd := getStringifiedRange(rangeHeaderWithPrefix)
-	if stringifiedStart == "" && stringifiedEnd == "" {
-		return 0, 0
-	}
-
 	start, err := getStart(stringifiedStart)
 	if err != nil {
 		fmt.Println("start", err.Error())
 		return 0, 0
 	}
 
-	end, err = getEnd(stringifiedEnd, start, fileSize, chunkSize)
+	end, err = getEnd(getEndInput{stringifiedEnd, start, fileSize, chunkSize})
 	if err != nil {
 		fmt.Println("end", err.Error())
 		return 0, 0
@@ -32,16 +28,28 @@ func GetRequestedRangesFromHeaderField(rangeHeaderWithPrefix string, chunkSize i
 }
 
 func getStringifiedRange(rangeHeaderWithPrefix string) (stringifiedStart string, stringifiedEnd string) {
+	stringifiedStart = ""
+	stringifiedEnd = ""
 	rangeHeaderWithoutPrefix := strings.TrimPrefix(rangeHeaderWithPrefix, "bytes=")
 	rangeParts := strings.Split(rangeHeaderWithoutPrefix, "-")
-	if len(rangeParts) != 2 {
-		return "", ""
+
+	if len(rangeParts) == 1 {
+		stringifiedStart = rangeParts[0]
 	}
 
-	return rangeParts[0], rangeParts[1]
+	if len(rangeParts) == 2 {
+		stringifiedStart = rangeParts[0]
+		stringifiedEnd = rangeParts[1]
+	}
+
+	return stringifiedStart, stringifiedEnd
 }
 
 func getStart(stringifiedStart string) (int64, error) {
+	if stringifiedStart == "" {
+		return 0, nil
+	}
+
 	start, err := strconv.ParseInt(stringifiedStart, 10, 64)
 	if err != nil {
 		return 0, err
@@ -50,22 +58,29 @@ func getStart(stringifiedStart string) (int64, error) {
 	return start, nil
 }
 
-func getEnd(stringifiedEnd string, start int64, fileSize int64, chunkSize int64) (int64, error) {
-	if stringifiedEnd == "" {
-		return start + chunkSize, nil
+type getEndInput struct {
+	stringifiedEnd string
+	start          int64
+	fileSize       int64
+	chunkSize      int64
+}
+
+func getEnd(input getEndInput) (int64, error) {
+	if input.stringifiedEnd == "" {
+		return input.start + input.chunkSize, nil
 	}
 
-	end, err := strconv.ParseInt(stringifiedEnd, 10, 64)
+	end, err := strconv.ParseInt(input.stringifiedEnd, 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
 	if end == 0 {
-		end = start + chunkSize
+		end = input.start + input.chunkSize
 	}
 
-	if end > fileSize {
-		end = fileSize
+	if end > input.fileSize {
+		end = input.fileSize
 	}
 
 	return end, nil

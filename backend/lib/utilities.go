@@ -1,7 +1,7 @@
 package lib
 
 import (
-	"backend/models/enums"
+	"backend/enums"
 	"fmt"
 	"path"
 	"regexp"

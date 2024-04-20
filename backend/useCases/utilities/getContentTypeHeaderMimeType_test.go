@@ -5,29 +5,29 @@ import (
 	"testing"
 )
 
-func TestGetContentTypeHeaderMimeType(t *testing.T) {
-	testData := [][2]string{
-		{"path/to/file.vtt", "text/vtt"},
-		{"path/to/file.mp4", "video/mp4"},
-		{"path/to/file.mp3", "audio/mpeg"},
-		{"file", ""},
+func Test_GetContentTypeHeaderMimeType(t *testing.T) {
+	testData := []models.TestData[string, string]{
+		{Input: "path/to/file.vtt", Expected: "text/vtt"},
+		{Input: "path/to/file.mp4", Expected: "video/mp4"},
+		{Input: "path/to/file.mp3", Expected: "audio/mpeg"},
+		{Input: "file", Expected: ""},
 	}
 
 	for _, data := range testData {
 
-		t.Run(data[1], func(t *testing.T) {
+		t.Run(data.Input, func(t *testing.T) {
 			// arrange
 			file := models.FileTreeItem{
 				Id:   "1",
-				Path: data[0],
+				Path: data.Input,
 			}
 
 			// act
 			mimeType := GetContentTypeHeaderMimeType(file)
 
 			// assert
-			if mimeType != data[1] {
-				t.Errorf("Expected '%v' but received '%v'", data[1], mimeType)
+			if mimeType != data.Expected {
+				t.Errorf("Expected '%v' but received '%v'", data.Expected, mimeType)
 			}
 		})
 	}
