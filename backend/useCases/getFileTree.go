@@ -37,8 +37,8 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	}
 
 	for _, file := range filesArray {
-		pathPartsWithoutFileExtension := getPartsOfPath(file)
-		buildSubFileTree(&rootFileHierarchy, pathPartsWithoutFileExtension)
+		pathParts := getPartsOfPath(file)
+		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}
 
 	for _, file := range filesArray {
