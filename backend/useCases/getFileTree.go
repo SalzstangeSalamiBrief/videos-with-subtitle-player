@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strings"
 
 	"github.com/google/uuid"
@@ -36,17 +37,31 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	}
 
 	for _, file := range filesArray {
-		pathParts := strings.Split(file.Path, "/")[1:]                // first element is empty, so skip it
-		pathPartsWithoutFileExtension := pathParts[:len(pathParts)-1] // remove file extension
+		pathPartsWithoutFileExtension := getPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathPartsWithoutFileExtension)
 	}
 
 	for _, file := range filesArray {
-		pathParts := strings.Split(file.Path, "/")[1:] // first element is empty, so skip it
+		pathParts := getPartsOfPath(file) // first element is empty, so skip it
 		addFileToTree(&rootFileHierarchy, file, pathParts)
 	}
 
 	return rootFileHierarchy
+}
+
+func getPartsOfPath(file models.FileTreeItem) []string {
+	filePath, _ := filepath.Split(file.Path)
+	allParts := strings.Split(filePath, string(filepath.Separator))
+	var parts []string
+	for _, part := range allParts {
+		if part == "" {
+			continue
+		}
+
+		parts = append(parts, part)
+	}
+
+	return parts
 }
 
 func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtension []string) {
