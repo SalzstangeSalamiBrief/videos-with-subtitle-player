@@ -4,18 +4,17 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"slices"
 )
 
 type routes []Route
 
-var acceptedMethods = [6]string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost, http.MethodOptions}
+var acceptedMethods = []string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost, http.MethodOptions}
 var Routes = make(routes, 0)
 
 func Router(w http.ResponseWriter, r *http.Request) {
-
-	quitChannel := make(chan bool)
-
-	if !validateHttpMethod(w, r) {
+	if !slices.Contains(acceptedMethods, r.Method) {
+		ErrorHandler(w, fmt.Sprintf("The method '%v' is not acceptable", r.Method), http.StatusBadRequest)
 		return
 	}
 
@@ -38,13 +37,8 @@ func Router(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		go func() {
-			route.Handler(w, r)
-			hasMatched = true
-			quitChannel <- true
-		}()
-
-		<-quitChannel // wait till the goroutine is completed and discard value
+		route.Handler(w, r)
+		hasMatched = true
 	}
 
 	if !hasMatched {
@@ -54,21 +48,4 @@ func Router(w http.ResponseWriter, r *http.Request) {
 
 func (r *routes) AddRoute(routeToAdd Route) {
 	*r = append(*r, routeToAdd)
-}
-
-func validateHttpMethod(w http.ResponseWriter, r *http.Request) bool {
-	isAccepted := false
-
-	for _, method := range acceptedMethods {
-		if method == r.Method {
-			isAccepted = true
-			break
-		}
-	}
-
-	if !isAccepted {
-		ErrorHandler(w, fmt.Sprintf("The method '%v' is not acceptable", r.Method), http.StatusBadRequest)
-	}
-
-	return isAccepted
 }

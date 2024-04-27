@@ -3,13 +3,14 @@ package usecases
 import (
 	"backend/models"
 	"fmt"
+	"path/filepath"
 	"testing"
 )
 
 func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 	fileItem := models.FileTreeItem{
 		Id:   "1",
-		Path: "path/to/file.mp4",
+		Path: filepath.Join("path", "file.mp4"),
 	}
 
 	combinations := [][]string{
@@ -34,7 +35,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 	fileItem := models.FileTreeItem{
 		Id:   "1",
-		Path: "path/to/file.mp3",
+		Path: filepath.Join("path", "file.mp3"),
 	}
 
 	combinations := [][]string{
@@ -59,7 +60,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 	fileItem := models.FileTreeItem{
 		Id:   "1",
-		Path: "path/to/file.mp3.vtt",
+		Path: filepath.Join("path", "file.mp3.vtt"),
 	}
 
 	combinations := [][]string{
@@ -84,7 +85,7 @@ func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 func Test_IsFileExtensionAllowed_Invalid(t *testing.T) {
 	fileItem := models.FileTreeItem{
 		Id:   "1",
-		Path: "path/to/file.mp3.vtt",
+		Path: filepath.Join("path", "file.mp3.vtt"),
 	}
 	allowedExtensions := []string{".mp4", ".mp3"}
 

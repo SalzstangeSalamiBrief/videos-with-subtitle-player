@@ -5,10 +5,9 @@ import (
 )
 
 type FileTreeItem struct {
-	Id   string
-	Path string
-	Name string
-	Type enums.FileType
-	// used to associate subtilte files with audio files
+	Id                    string
+	Path                  string
+	Name                  string
+	Type                  enums.FileType
 	AssociatedAudioFileId string
 }
