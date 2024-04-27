@@ -12,9 +12,8 @@ type FileTreeDto struct {
 }
 
 type FileDto struct {
-	Id   string         `json:"id"`
-	Name string         `json:"name"`
-	Type enums.FileType `json:"fileType"`
-	// used to associate subtitle files with audio files
-	AssociatedAudioFileId string `json:"audioFileId"`
+	Id                    string         `json:"id"`
+	Name                  string         `json:"name"`
+	Type                  enums.FileType `json:"fileType"`
+	AssociatedAudioFileId string         `json:"audioFileId"`
 }

@@ -4,13 +4,11 @@ import (
 	"backend/lib"
 	"backend/models"
 	"backend/router"
+	usecases "backend/useCases/utilities"
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"path/filepath"
-	"strings"
-
 	"github.com/google/uuid"
+	"net/http"
 )
 
 var GetFileTreeUseCaseRoute = router.Route{
@@ -37,31 +35,16 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	}
 
 	for _, file := range filesArray {
-		pathParts := getPartsOfPath(file)
+		pathParts := usecases.GetPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}
 
 	for _, file := range filesArray {
-		pathParts := getPartsOfPath(file) // first element is empty, so skip it
+		pathParts := usecases.GetPartsOfPath(file)
 		addFileToTree(&rootFileHierarchy, file, pathParts)
 	}
 
 	return rootFileHierarchy
-}
-
-func getPartsOfPath(file models.FileTreeItem) []string {
-	filePath, _ := filepath.Split(file.Path)
-	allParts := strings.Split(filePath, string(filepath.Separator))
-	var parts []string
-	for _, part := range allParts {
-		if part == "" {
-			continue
-		}
-
-		parts = append(parts, part)
-	}
-
-	return parts
 }
 
 func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtension []string) {

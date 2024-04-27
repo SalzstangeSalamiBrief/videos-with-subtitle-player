@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -27,10 +28,9 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 	}
 
 	currentFileItems := make([]models.FileTreeItem, 0)
-
 	for _, item := range content {
 		itemName := item.Name()
-		currentItemPath := parentPath + "\\" + itemName
+		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
 
 		if isDirectory {
