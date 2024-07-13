@@ -1,12 +1,9 @@
 name: frontend-ci
 
-env:
-  FRONTEND_DIRECTORY: frontend
-
 on:
   pull_request:
     paths:
-      - "${{ FRONTEND_DIRECTORY }}/**"
+      - "frontend/**"
       - ".github/workflows/frontend.yaml"
 
 jobs:
@@ -21,10 +18,10 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Install dependencies
         run: pnpm install
-        working-directory: ${{ FRONTEND_DIRECTORY }}
+        working-directory: frontend
       - name: Run ESLint check
         run: pnpm run lint
-        working-directory: ${{ FRONTEND_DIRECTORY }}
+        working-directory: frontend
       - name: Run Prettier check
         run: pnpm run prettier:check
-        working-directory: ${{ FRONTEND_DIRECTORY }}
+        working-directory: frontend
