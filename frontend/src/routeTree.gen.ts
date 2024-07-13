@@ -10,9 +10,9 @@
 
 // Import Routes
 
-import {Route as rootRoute} from './routes/__root';
-import {Route as IndexImport} from './routes/index';
-import {Route as FilesFileIdIndexImport} from './routes/files/$fileId/index';
+import { Route as rootRoute } from './routes/__root';
+import { Route as IndexImport } from './routes/index';
+import { Route as FilesFileIdIndexImport } from './routes/files/$fileId/index';
 
 // Create/Update Routes
 
@@ -43,6 +43,9 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexRoute, FilesFileIdIndexRoute]);
+export const routeTree = rootRoute.addChildren([
+  IndexRoute,
+  FilesFileIdIndexRoute,
+]);
 
 /* prettier-ignore-end */

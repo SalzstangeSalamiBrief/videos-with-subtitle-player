@@ -1,8 +1,8 @@
-import {useState} from 'react';
-import {IFileTreeDto, PossibleFilesDto} from '../models/dtos/fileTreeDto';
-import {IFileNode, IFileTree} from '../models/fileTree';
-import {IFileDto, ISubtitleFileDto} from '../models/dtos/fileDtos';
-import {FileType} from '../enums/FileType';
+import { useState } from 'react';
+import { IFileTreeDto, PossibleFilesDto } from '../models/dtos/fileTreeDto';
+import { IFileNode, IFileTree } from '../models/fileTree';
+import { IFileDto, ISubtitleFileDto } from '../models/dtos/fileDtos';
+import { FileType } from '../enums/FileType';
 
 const baseUrl = import.meta.env.VITE_BASE_URL || '';
 const path = '/api/file-tree';
@@ -31,7 +31,7 @@ export function useGetFileTree() {
     }
   }
 
-  return {isLoading, error, fileTrees, getFileTree, fileGroups};
+  return { isLoading, error, fileTrees, getFileTree, fileGroups };
 }
 
 function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
@@ -81,7 +81,9 @@ function replaceDtosWithFiles(files: PossibleFilesDto[]): IFileNode[] {
     const isAudio = isAudioFile(currentItem);
 
     if (isAudio) {
-      const subtitle = remainingFiles.find((file) => isSubtitleFile(file) && file.audioFileId === currentItem.id);
+      const subtitle = remainingFiles.find(
+        (file) => isSubtitleFile(file) && file.audioFileId === currentItem.id,
+      );
 
       const item: IFileNode = {
         id: currentItem.id,
@@ -90,16 +92,24 @@ function replaceDtosWithFiles(files: PossibleFilesDto[]): IFileNode[] {
         subtitleFileId: subtitle?.id,
       };
 
-      remainingFiles = remainingFiles.filter((file) => file.id !== subtitle?.id);
+      remainingFiles = remainingFiles.filter(
+        (file) => file.id !== subtitle?.id,
+      );
       nodes.push(item);
       continue;
     }
 
     const isSubtitle = isSubtitleFile(currentItem);
     if (isSubtitle) {
-      const audio = remainingFiles.find((file) => isAudioFile(file) && file.id === (currentItem as ISubtitleFileDto).audioFileId);
+      const audio = remainingFiles.find(
+        (file) =>
+          isAudioFile(file) &&
+          file.id === (currentItem as ISubtitleFileDto).audioFileId,
+      );
       if (!audio) {
-        throw new Error(`Subtitle file '${(currentItem as ISubtitleFileDto).id}' does not have a corresponding audio file.`);
+        throw new Error(
+          `Subtitle file '${(currentItem as ISubtitleFileDto).id}' does not have a corresponding audio file.`,
+        );
       }
 
       const item: IFileNode = {

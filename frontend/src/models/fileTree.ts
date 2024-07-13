@@ -1,4 +1,4 @@
-import {IFileDto} from './dtos/fileDtos';
+import { IFileDto } from './dtos/fileDtos';
 
 export interface IFileTree {
   name: string;

@@ -1,7 +1,7 @@
-import {Outlet, createRootRoute} from '@tanstack/react-router';
-import {Row, Col} from 'antd';
-import {Navigation} from '../components/navigation/Navigation';
-import {FileTreeContextWrapper} from '../contexts/FileTreeContextWrapper';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
+import { Row, Col } from 'antd';
+import { Navigation } from '../components/navigation/Navigation';
+import { FileTreeContextWrapper } from '../contexts/FileTreeContextWrapper';
 
 export const Route = createRootRoute({
   component: Root,
@@ -10,7 +10,7 @@ export const Route = createRootRoute({
 function Root() {
   return (
     <FileTreeContextWrapper>
-      <Row style={{overflow: 'hidden'}}>
+      <Row style={{ overflow: 'hidden' }}>
         <Col
           span={8}
           style={{
