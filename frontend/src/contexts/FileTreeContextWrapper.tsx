@@ -1,5 +1,5 @@
-import { ErrorMessage } from '$components/errorMessage/ErrorMessage';
-import { LoadingSpinner } from '$components/loadingSpinner/LoadingSpinner';
+import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
+import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 import { useGetFileTree } from '$hooks/useGetFileTree';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { IFileNode } from '$models/fileTree';
