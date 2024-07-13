@@ -1,7 +1,21 @@
 # Videos with subtitle player
 
-This software streams multimedia files to a client that is able to display subtitle tracks, if required.
-The server streams the files and serves the frontend to the client.
+This software utilizes http streaming to stream multimedia files to a client.
+Such files could be video or audio files with or without subtitle tracks.
+
+## Contributors
+
+- [SalzstangeSalamiBrief](https://github.com/SalzstangeSalamiBrief)
+
+## Changelog
+
+| Date                    | Description                                       |
+| ----------------------- | ------------------------------------------------- |
+| 07.01.2024 - 30.03.2024 | Initialize Project by adding a front- and backend |
+| 30.03.2024              | Add support for videos                            |
+| 01.04.2024              | Replace ReactRouter with TanstackRouter           |
+| 20.04.2024              | Add tests                                         |
+| 24.04.2024 - 27.04.2024 | Refine router and path calculation in the backend |
 
 ## Motivation
 
