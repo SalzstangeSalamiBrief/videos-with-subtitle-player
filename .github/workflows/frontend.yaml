@@ -6,7 +6,7 @@ env:
 on:
   pull_request:
     paths:
-      - "${{ FRONTEND_DIRECTORY }}/**"
+      - "$FRONTEND_DIRECTORY/**"
       - ".github/workflows/frontend.yaml"
 
 jobs:
