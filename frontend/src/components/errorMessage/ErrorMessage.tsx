@@ -1,4 +1,4 @@
-import { Alert } from "antd";
+import {Alert} from 'antd';
 
 interface IErrorMessageProps {
   error: any;
@@ -6,14 +6,8 @@ interface IErrorMessageProps {
   description?: string;
 }
 
-export function ErrorMessage({
-  error,
-  message,
-  description,
-}: IErrorMessageProps) {
+export function ErrorMessage({error, message, description}: IErrorMessageProps) {
   console.error(error);
 
-  return (
-    <Alert message={message} description={description} type="error" showIcon />
-  );
+  return <Alert message={message} description={description} type="error" showIcon />;
 }

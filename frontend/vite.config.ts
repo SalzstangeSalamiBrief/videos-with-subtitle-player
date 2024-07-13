@@ -1,6 +1,6 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import {defineConfig} from 'vite';
+import react from '@vitejs/plugin-react';
+import {TanStackRouterVite} from '@tanstack/router-vite-plugin';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,7 +9,7 @@ export default defineConfig({
     port: 4200,
   },
   build: {
-    outDir: "../backend/public",
+    outDir: '../backend/public',
     minify: true,
     cssMinify: true,
   },
