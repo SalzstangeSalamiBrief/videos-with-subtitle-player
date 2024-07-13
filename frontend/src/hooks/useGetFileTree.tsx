@@ -1,8 +1,8 @@
+import { FileType } from '$enums/FileType';
+import { ISubtitleFileDto, IFileDto } from '$models/dtos/fileDtos';
+import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
+import { IFileNode, IFileTree } from '$models/fileTree';
 import { useState } from 'react';
-import { IFileTreeDto, PossibleFilesDto } from '../models/dtos/fileTreeDto';
-import { IFileNode, IFileTree } from '../models/fileTree';
-import { IFileDto, ISubtitleFileDto } from '../models/dtos/fileDtos';
-import { FileType } from '../enums/FileType';
 
 const baseUrl = import.meta.env.VITE_BASE_URL || '';
 const path = '/api/file-tree';

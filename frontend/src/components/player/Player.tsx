@@ -1,4 +1,4 @@
-import { FileType } from '../../enums/FileType';
+import { FileType } from '$enums/FileType';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 

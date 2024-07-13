@@ -1,7 +1,7 @@
-import ErrorBoundary from './components/errorBoundary/ErrorBoundary';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
-import { NotFoundPage } from './components/notFoundPage/NotFoundPage';
+import ErrorBoundary from '$components/errorBoundary/ErrorBoundary';
+import { NotFoundPage } from '$components/notFoundPage/NotFoundPage';
 
 const router = createRouter({
   routeTree,

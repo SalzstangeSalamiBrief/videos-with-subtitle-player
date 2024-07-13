@@ -2,12 +2,12 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { createFileRoute } from '@tanstack/react-router';
 import { Flex, Tooltip, Button } from 'antd';
 import { useContext } from 'react';
-import { ErrorMessage } from '../../../components/errorMessage/ErrorMessage';
-import { FileTreeContext } from '../../../contexts/FileTreeContextWrapper';
-import { IFileTreeDto } from '../../../models/dtos/fileTreeDto';
-import { IFileNode } from '../../../models/fileTree';
-import { Player } from '../../../components/player/Player';
 import { Link as TansStackLink } from '@tanstack/react-router';
+import { ErrorMessage } from '$components/errorMessage/ErrorMessage';
+import { Player } from '$components/player/Player';
+import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
+import { IFileTreeDto } from '$models/dtos/fileTreeDto';
+import { IFileNode } from '$models/fileTree';
 
 export const Route = createFileRoute('/files/$fileId/')({
   component: AudioFilePage,

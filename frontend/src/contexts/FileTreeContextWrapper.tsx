@@ -1,9 +1,9 @@
+import { ErrorMessage } from '$components/errorMessage/ErrorMessage';
+import { LoadingSpinner } from '$components/loadingSpinner/LoadingSpinner';
+import { useGetFileTree } from '$hooks/useGetFileTree';
+import { IFileTreeDto } from '$models/dtos/fileTreeDto';
+import { IFileNode } from '$models/fileTree';
 import { createContext, useEffect } from 'react';
-import { useGetFileTree } from '../hooks/useGetFileTree';
-import { IFileTreeDto } from '../models/dtos/fileTreeDto';
-import { LoadingSpinner } from '../components/loadingSpinner/LoadingSpinner';
-import { ErrorMessage } from '../components/errorMessage/ErrorMessage';
-import { IFileNode } from '../models/fileTree';
 
 interface IFileTreeContext {
   fileTrees: IFileTreeDto[];

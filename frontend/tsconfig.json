@@ -5,6 +5,14 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "paths": {
+      "$assets/*": ["./src/assets/*"],
+      "$components/*": ["./src/components/*"],
+      "$contexts/*": ["./src/contexts/*"],
+      "$models/*": ["./src/models/*"],
+      "$hooks/*": ["./src/hooks/*"],
+      "$enums/*": ["./src/enums/*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "bundler",

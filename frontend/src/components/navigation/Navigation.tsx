@@ -1,8 +1,8 @@
 import { Menu, MenuProps } from 'antd';
-import { IFileTreeDto } from '../../models/dtos/fileTreeDto';
 import { useContext, useMemo } from 'react';
 import { Link as TanStackLink, useParams } from '@tanstack/react-router';
-import { FileTreeContext } from '../../contexts/FileTreeContextWrapper';
+import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
+import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 
 export function Navigation() {
   const { fileId } = useParams({ strict: false });
