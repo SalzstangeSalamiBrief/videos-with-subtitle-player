@@ -40,11 +40,12 @@ function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
   fileTrees.forEach((fileTree) => {
     if (fileTree.files?.length) {
       fileGroups.push(fileTree.files);
-      return;
+      // return;
     }
 
     if (fileTree.children?.length) {
-      fileGroups.push(...getFlatFilesGroups(fileTree.children));
+      const flatGroup = getFlatFilesGroups(fileTree.children);
+      fileGroups.push(...flatGroup);
     }
   });
 
