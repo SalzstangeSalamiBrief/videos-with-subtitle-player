@@ -1,7 +1,7 @@
 name: frontend-ci
 
 env:
-  FRONTEND_DIRECTORY: "frontend"
+  FRONTEND_DIRECTORY: frontend
 
 on:
   pull_request:
