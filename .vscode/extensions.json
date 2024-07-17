@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "oderwat.indent-rainbow",
+    "yzane.markdown-pdf",
+    "esbenp.prettier-vscode",
+    "gruntfuggly.todo-tree",
+    "redhat.vscode-yaml"
+  ]
+}
