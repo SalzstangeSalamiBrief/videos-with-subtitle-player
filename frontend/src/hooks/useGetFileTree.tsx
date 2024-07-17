@@ -11,7 +11,7 @@ const url = baseUrl + path;
 
 export function useGetFileTree() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(); // TODO TYPING
+  const [error, setError] = useState<unknown>();
   const [fileTrees, setFileTrees] = useState<IFileTreeDto[]>([]);
   const [fileGroups, setFileGroups] = useState<IFileNode[][]>([]);
 

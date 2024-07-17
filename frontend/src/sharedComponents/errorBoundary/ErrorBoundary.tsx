@@ -1,5 +1,5 @@
 import { Alert } from 'antd';
-import React, { ReactNode } from 'react';
+import React, { ErrorInfo, ReactNode } from 'react';
 
 interface IProps {
   children?: ReactNode;
@@ -19,7 +19,7 @@ class ErrorBoundary extends React.Component<IProps, IState> {
     return { hasError: true };
   }
 
-  componentDidCatch(error: any, errorInfo: any) {
+  componentDidCatch(error: unknown, errorInfo: ErrorInfo) {
     console.error('error', error);
     console.error('errorInfo', errorInfo);
   }
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component<IProps, IState> {
     if (this.state.hasError) {
       return (
         <Alert
-          message="Sonething went wrong!"
+          message="Something went wrong!"
           description="Please try again later."
           type="error"
           showIcon

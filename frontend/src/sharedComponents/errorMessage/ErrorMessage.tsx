@@ -1,7 +1,7 @@
 import { Alert } from 'antd';
 
 interface IErrorMessageProps {
-  error: any;
+  error: unknown;
   message: string;
   description?: string;
 }
