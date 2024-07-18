@@ -35,7 +35,7 @@ function getMenuTree(fileTree: IFileTreeDto): MenuItem {
           key: file.id,
           label: (
             <TanStackLink
-              to="files/$fileId"
+              to="/files/$fileId"
               title={file.name}
               params={{ fileId: file.id }}
             >
