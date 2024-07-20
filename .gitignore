@@ -46,3 +46,4 @@ testem.log
 Thumbs.db
 backend.exe
 _debug_bin*.exe
+.vite
