@@ -21,7 +21,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 	}
 
 	for _, combination := range combinations {
-		t.Run(fmt.Sprintf("allowed extensions: %v", combination), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
 			isAllowed := isFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
@@ -46,7 +46,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 	}
 
 	for _, combination := range combinations {
-		t.Run(fmt.Sprintf("allowed extensions: %v", combination), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
 			isAllowed := isFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
@@ -71,7 +71,7 @@ func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 	}
 
 	for _, combination := range combinations {
-		t.Run(fmt.Sprintf("allowed extensions: %v", combination), func(t *testing.T) {
+		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
 			isAllowed := isFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
