@@ -6,16 +6,17 @@ import (
 )
 
 func Test_GetContentTypeHeaderMimeType(t *testing.T) {
+	// TODO ADD TITLE TO TESTDATA => ADD TITLE TO TEST DATA LIKE "SHOULD ..."
 	testData := []models.TestData[string, string]{
-		{Input: "path/to/file.vtt", Expected: "text/vtt"},
-		{Input: "path/to/file.mp4", Expected: "video/mp4"},
-		{Input: "path/to/file.mp3", Expected: "audio/mpeg"},
-		{Input: "file", Expected: ""},
+		{Title: "Should return subtitle mime type", Input: "path/to/file.vtt", Expected: "text/vtt"},
+		{Title: "Should return mp4 mime type", Input: "path/to/file.mp4", Expected: "video/mp4"},
+		{Title: "Should return mpeg mime type", Input: "path/to/file.mp3", Expected: "audio/mpeg"},
+		{Title: "Should return empty string", Input: "file", Expected: ""},
 	}
 
 	for _, data := range testData {
 
-		t.Run(data.Input, func(t *testing.T) {
+		t.Run(data.Title, func(t *testing.T) {
 			// arrange
 			file := models.FileTreeItem{
 				Id:   "1",

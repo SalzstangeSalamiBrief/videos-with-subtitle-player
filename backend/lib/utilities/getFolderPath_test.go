@@ -2,7 +2,6 @@ package lib
 
 import (
 	"backend/models"
-	"fmt"
 	"path/filepath"
 	"testing"
 )
@@ -10,18 +9,17 @@ import (
 func Test_GetFolderPath(t *testing.T) {
 	rootPath := filepath.Join("C:", "test")
 	inputs := []models.TestData[GetFolderPathInput, string]{
-		{Input: GetFolderPathInput{Path: "", RootPath: ""}, Expected: ""},
-		{Input: GetFolderPathInput{Path: "", RootPath: rootPath}, Expected: ""},
-		{Input: GetFolderPathInput{Path: filepath.Join("D:", "hello_world", "test"), RootPath: rootPath}, Expected: filepath.Join("D:", "hello_world", "test")},
-		{Input: GetFolderPathInput{Path: filepath.Join("D:", "hello_world", "test", "file.md"), RootPath: rootPath}, Expected: filepath.Join("D:", "hello_world", "test", "file.md")},
-		{Input: GetFolderPathInput{Path: filepath.Join("D:", "hello_world", "test", "file.md"), RootPath: rootPath}, Expected: filepath.Join("D:", "hello_world", "test", "file.md")},
-		{Input: GetFolderPathInput{Path: rootPath, RootPath: rootPath}, Expected: ""},
-		{Input: GetFolderPathInput{Path: filepath.Join(rootPath, "hello_world"), RootPath: rootPath}, Expected: filepath.Join("\\hello_world")},
-		{Input: GetFolderPathInput{Path: filepath.Join(rootPath, "hello_world", "file.md"), RootPath: rootPath}, Expected: filepath.Join("\\hello_world", "file.md")},
+		{Title: "Should return an empty string on empty inputs", Input: GetFolderPathInput{Path: "", RootPath: ""}, Expected: ""},
+		{Title: "Should return an empty string on empty path input", Input: GetFolderPathInput{Path: "", RootPath: rootPath}, Expected: ""},
+		{Title: "Should return a path based on input without file", Input: GetFolderPathInput{Path: filepath.Join("D:", "hello_world", "test"), RootPath: rootPath}, Expected: filepath.Join("D:", "hello_world", "test")},
+		{Title: "Should return a path based on input with file", Input: GetFolderPathInput{Path: filepath.Join("D:", "hello_world", "test", "file.md"), RootPath: rootPath}, Expected: filepath.Join("D:", "hello_world", "test", "file.md")},
+		{Title: "Should return an empty string on equal path and root path", Input: GetFolderPathInput{Path: rootPath, RootPath: rootPath}, Expected: ""},
+		{Title: "Should return path with one segment", Input: GetFolderPathInput{Path: filepath.Join(rootPath, "hello_world"), RootPath: rootPath}, Expected: filepath.Join("\\hello_world")},
+		{Title: "Should return path with one segment and file name", Input: GetFolderPathInput{Path: filepath.Join(rootPath, "hello_world", "file.md"), RootPath: rootPath}, Expected: filepath.Join("\\hello_world", "file.md")},
 	}
 
 	for _, input := range inputs {
-		t.Run(fmt.Sprintf("input: '%v'", input.Input), func(t *testing.T) {
+		t.Run(input.Title, func(t *testing.T) {
 			result := GetFolderPath(input.Input)
 
 			if result != input.Expected {
