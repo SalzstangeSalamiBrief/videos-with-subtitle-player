@@ -1,0 +1,11 @@
+.navigation {
+  height: 100%;
+}
+
+menu > li {
+  padding-left: 1rem;
+}
+
+nav > menu > li {
+  padding-left: 0;
+}
