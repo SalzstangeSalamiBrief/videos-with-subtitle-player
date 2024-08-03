@@ -6,15 +6,12 @@ import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import './Navigation.css';
 import { NavigationItem } from './NavigationItem';
 import { useParams } from '@tanstack/react-router';
+
 export function Navigation() {
   const { folderId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
   const activeFileIds = getActiveFolderIds(fileTrees, folderId);
-  // const menuItems = useMemo(
-  //   () =>
-  //     fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
-  //   [fileTrees],
-  // );
+
   return (
     <nav className="navigation">
       <Menu<IFileTreeDto>

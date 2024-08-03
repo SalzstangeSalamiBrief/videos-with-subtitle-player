@@ -1,6 +1,5 @@
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
-import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { Link as TanStackLink } from '@tanstack/react-router';
 
 interface INavigationItemProps {
@@ -45,21 +44,10 @@ function ItemStateIndicator({
     return null;
   }
 
-  //   TODO SIZE DIFFERS FROM TIME TOT IME
-  if (isActive) {
-    return (
-      <ChevronUpIcon
-        width={20}
-        className="shrink-0"
-        aria-label={`Open ${itemName}`}
-      />
-    );
-  }
-
   return (
     <ChevronDownIcon
       width={20}
-      className="shrink-0"
+      className={`shrink-0 transition-rotate duration-200 ease-linear ${isActive ? 'rotate-180' : 'rotate-0'}`}
       aria-label={`Close ${itemName}`}
     />
   );
