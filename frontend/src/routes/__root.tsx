@@ -1,5 +1,5 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { Navigation } from '$sharedComponents/navigation/Navigation';
+import { Navigation } from '$features/navigation/Navigation';
 import { FileTreeContextWrapper } from '$contexts/FileTreeContextWrapper';
 
 export const Route = createRootRoute({
