@@ -7,9 +7,9 @@ import './Navigation.css';
 import { NavigationItem } from './NavigationItem';
 import { useParams } from '@tanstack/react-router';
 export function Navigation() {
-  const { fileId } = useParams({ strict: false });
+  const { folderId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
-  const activeFileIds = getActiveFileIds(fileTrees, fileId);
+  const activeFileIds = getActiveFolderIds(fileTrees, folderId);
   // const menuItems = useMemo(
   //   () =>
   //     fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
@@ -36,11 +36,11 @@ export function Navigation() {
   );
 }
 
-function getActiveFileIds(
+function getActiveFolderIds(
   nodes: Maybe<IFileTreeDto[]>,
-  fileId: Maybe<string>,
+  folderId: Maybe<string>,
 ): string[] {
-  if (!fileId) {
+  if (!folderId) {
     return [];
   }
 
@@ -51,7 +51,7 @@ function getActiveFileIds(
   let activeFileIds: string[] = [];
   for (let i = 0; i < nodes.length; i += 1) {
     const currentNode = nodes[i];
-    const [hasMatch, matchingIds] = getActiveChildNodes(currentNode, fileId);
+    const [hasMatch, matchingIds] = getActiveChildNodes(currentNode, folderId);
     if (hasMatch) {
       activeFileIds = matchingIds;
       break;
@@ -63,14 +63,14 @@ function getActiveFileIds(
 
 function getActiveChildNodes(
   currentNode: IFileTreeDto,
-  fileId: Maybe<string>,
+  folderId: Maybe<string>,
 ): [hasMatch: boolean, childIds: string[]] {
-  if (!fileId) {
+  if (!folderId) {
     return [false, []];
   }
 
   const result = [currentNode.id];
-  if (currentNode.id === fileId) {
+  if (currentNode.id === folderId) {
     return [true, result];
   }
 
@@ -83,7 +83,7 @@ function getActiveChildNodes(
     const currentChild = currentNode.children[j];
     const [hasChildMatch, matchingChildIds] = getActiveChildNodes(
       currentChild,
-      fileId,
+      folderId,
     );
 
     if (hasChildMatch) {

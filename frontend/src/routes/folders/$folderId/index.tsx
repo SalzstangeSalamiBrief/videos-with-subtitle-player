@@ -9,14 +9,14 @@ import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { IFileNode } from '$models/fileTree';
 
-export const Route = createFileRoute('/files/$fileId/')({
+export const Route = createFileRoute('/folders/$folderId/')({
   component: AudioFilePage,
 });
 
 function AudioFilePage() {
   const { fileGroups, fileTrees } = useContext(FileTreeContext);
-  const { fileId } = Route.useParams();
-  const { nextId, previousId, currentFile } = getFileIds(fileGroups, fileId);
+  const { folderId } = Route.useParams();
+  const { nextId, previousId, currentFile } = getFileIds(fileGroups, folderId);
 
   if (!currentFile) {
     return (
@@ -31,7 +31,7 @@ function AudioFilePage() {
   return (
     <Flex vertical>
       <h1 style={{ fontSize: '1.25rem', margin: 0 }}>
-        {getParentName(fileTrees, fileId ?? '')}
+        {getParentName(fileTrees, folderId ?? '')}
       </h1>
       <h2
         style={{
@@ -137,15 +137,15 @@ const getFileIds = (
   return result;
 };
 
-const getParentName = (fileTrees: IFileTreeDto[], fileId: string): string => {
+const getParentName = (fileTrees: IFileTreeDto[], folderId: string): string => {
   let parentName = '';
 
-  if (fileTrees.length === 0 || !fileId) {
+  if (fileTrees.length === 0 || !folderId) {
     return parentName;
   }
 
   fileTrees.forEach((fileTree) => {
-    if (isPartOfSubTree(fileTree, fileId)) {
+    if (isPartOfSubTree(fileTree, folderId)) {
       parentName = fileTree.name;
       return;
     }

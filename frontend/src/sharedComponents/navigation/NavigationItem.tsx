@@ -17,9 +17,9 @@ export function NavigationItem({
   return (
     <TanStackLink
       className={getNavigationItemStyles(isActive)}
-      to="/files/$fileId"
+      to="/folders/$folderId"
       title={item.name}
-      params={{ fileId: item.id }}
+      params={{ folderId: item.id }}
     >
       <ItemStateIndicator
         hasChildren={hasChildren}
