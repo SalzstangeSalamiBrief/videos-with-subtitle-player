@@ -16,6 +16,8 @@ Such files could be video or audio files with or without subtitle tracks.
 | 01.04.2024              | Replace ReactRouter with TanstackRouter           |
 | 20.04.2024              | Add tests                                         |
 | 24.04.2024 - 27.04.2024 | Refine router and path calculation in the backend |
+| 01.04.2024              | Test refinement                                   |
+| 03.08.2024 - TODO       | Restructure information architecture              |
 
 ## Motivation
 
