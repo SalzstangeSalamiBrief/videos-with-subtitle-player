@@ -4,9 +4,12 @@ import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { Menu } from '$sharedComponents/menu/Menu';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import './Navigation.css';
+import { NavigationItem } from './NavigationItem';
+import { useParams } from '@tanstack/react-router';
 export function Navigation() {
-  // const { fileId } = useParams({ strict: false });
+  const { fileId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
+  const activeFileIds = getActiveFileIds(fileTrees, fileId);
   // const menuItems = useMemo(
   //   () =>
   //     fileTrees.sort((a, b) => a.name.localeCompare(b.name)).map(getMenuTree),
@@ -17,45 +20,78 @@ export function Navigation() {
       <Menu<IFileTreeDto>
         itemKey="id"
         items={fileTrees}
-        onRenderMenuItem={(item) => <span title={item.name}>{item.name}</span>}
+        activeItemIds={activeFileIds}
+        onRenderMenuItem={(item: IFileTreeDto) => {
+          const isActive = activeFileIds.includes(item.id);
+          return (
+            <NavigationItem
+              item={item}
+              isActive={isActive}
+              hasChildren={Boolean(item.children)}
+            />
+          );
+        }}
       />
     </nav>
   );
 }
 
-// type MenuItem = Required<MenuProps>['items'][number];
-// function getMenuTree(fileTree: IFileTreeDto): MenuItem {
-//   let children: MenuItem[] = [];
-//   if (fileTree.children?.length) {
-//     children = [...children, ...fileTree.children.map(getMenuTree)];
-//   }
+function getActiveFileIds(
+  nodes: Maybe<IFileTreeDto[]>,
+  fileId: Maybe<string>,
+): string[] {
+  if (!fileId) {
+    return [];
+  }
 
-//   if (fileTree.files?.length) {
-//     children = [
-//       ...children,
-//       ...fileTree.files.map<MenuItem>((file) => {
-//         return {
-//           key: file.id,
-//           label: (
-//             <TanStackLink
-//               to="/files/$fileId"
-//               title={file.name}
-//               params={{ fileId: file.id }}
-//             >
-//               {file.name}
-//             </TanStackLink>
-//           ),
-//           type: 'item',
-//         };
-//       }),
-//     ];
-//   }
+  if (!nodes) {
+    return [];
+  }
 
-//   const menuItem: MenuItem = {
-//     key: fileTree.id,
-//     label: <span title={fileTree.name}>{fileTree.name}</span>,
-//     children,
-//   };
+  let activeFileIds: string[] = [];
+  for (let i = 0; i < nodes.length; i += 1) {
+    const currentNode = nodes[i];
+    const [hasMatch, matchingIds] = getActiveChildNodes(currentNode, fileId);
+    if (hasMatch) {
+      activeFileIds = matchingIds;
+      break;
+    }
+  }
 
-//   return menuItem;
-// }
+  return activeFileIds;
+}
+
+function getActiveChildNodes(
+  currentNode: IFileTreeDto,
+  fileId: Maybe<string>,
+): [hasMatch: boolean, childIds: string[]] {
+  if (!fileId) {
+    return [false, []];
+  }
+
+  const result = [currentNode.id];
+  if (currentNode.id === fileId) {
+    return [true, result];
+  }
+
+  if (!currentNode.children?.length) {
+    return [false, []];
+  }
+
+  let hasMatch = false;
+  for (let j = 0; j < currentNode.children.length; j += 1) {
+    const currentChild = currentNode.children[j];
+    const [hasChildMatch, matchingChildIds] = getActiveChildNodes(
+      currentChild,
+      fileId,
+    );
+
+    if (hasChildMatch) {
+      result.push(...matchingChildIds);
+      hasMatch = true;
+      break;
+    }
+  }
+
+  return [hasMatch, result];
+}
