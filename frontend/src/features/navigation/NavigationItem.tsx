@@ -54,7 +54,7 @@ function ItemStateIndicator({
 }
 
 function getNavigationItemStyles(isActive: boolean): string {
-  const baseClasses = 'block px-2 py-2 rounded flex gap-4';
+  const baseClasses = 'block px-2 py-2 rounded-md flex gap-4 font-bold';
 
   if (!isActive) {
     return `${baseClasses} hover:bg-slate-700`;

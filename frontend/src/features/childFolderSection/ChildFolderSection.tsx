@@ -1,4 +1,5 @@
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
+import { Card } from '$sharedComponents/card/Card';
 
 interface IChildFolderSectionProps {
   selectedFolder: IFileTreeDto;
@@ -10,14 +11,16 @@ export function ChildFolderSection({
   // TODO MAYBE CREATE SECTION WRAPPER WITH NAME AND CHILDREN PROPERTY
   return (
     <section>
-      <h2>Nested folder</h2>
+      <h1>Nested folder</h1>
       {selectedFolder.children.length === 0 && (
         <p>This folder contains no nested folder</p>
       )}
       {selectedFolder.children.length > 0 && (
-        <ul>
+        <ul className="grid gap-4 grid-cols-2">
           {selectedFolder.children.map((child) => (
-            <li key={child.id}>{child.name}</li>
+            <li key={child.id}>
+              <Card title={child.name} imageUrl="/example.jpg"></Card>
+            </li>
           ))}
         </ul>
       )}

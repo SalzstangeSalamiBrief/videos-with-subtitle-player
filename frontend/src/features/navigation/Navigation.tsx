@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { Menu } from '$sharedComponents/menu/Menu';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
-import './Navigation.css';
+import styles from './Navigation.module.css';
 import { NavigationItem } from './NavigationItem';
 import { useParams } from '@tanstack/react-router';
 
@@ -13,7 +13,7 @@ export function Navigation() {
   const activeFileIds = getActiveFolderIds(fileTrees, folderId);
 
   return (
-    <nav className="navigation">
+    <nav className={styles.navigation}>
       <Menu<IFileTreeDto>
         itemKey="id"
         items={fileTrees}
