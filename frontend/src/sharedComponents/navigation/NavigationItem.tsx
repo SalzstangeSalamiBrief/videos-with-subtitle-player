@@ -45,11 +45,24 @@ function ItemStateIndicator({
     return null;
   }
 
+  //   TODO SIZE DIFFERS FROM TIME TOT IME
   if (isActive) {
-    return <ChevronUpIcon width="20px" aria-label={`Open ${itemName}`} />;
+    return (
+      <ChevronUpIcon
+        width={20}
+        className="shrink-0"
+        aria-label={`Open ${itemName}`}
+      />
+    );
   }
 
-  return <ChevronDownIcon width="20px" aria-label={`Close ${itemName}`} />;
+  return (
+    <ChevronDownIcon
+      width={20}
+      className="shrink-0"
+      aria-label={`Close ${itemName}`}
+    />
+  );
 }
 
 function getNavigationItemStyles(isActive: boolean): string {

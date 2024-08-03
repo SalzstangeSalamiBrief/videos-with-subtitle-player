@@ -27,7 +27,7 @@ export function Navigation() {
             <NavigationItem
               item={item}
               isActive={isActive}
-              hasChildren={Boolean(item.children)}
+              hasChildren={Boolean(item.children?.length)}
             />
           );
         }}
