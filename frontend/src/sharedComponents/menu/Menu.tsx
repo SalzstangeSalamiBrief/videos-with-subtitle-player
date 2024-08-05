@@ -20,6 +20,7 @@ export function Menu<T extends IMenuItemBase<T>>(props: IMenuProps<T>) {
         return (
           <li key={item[itemKey] as Key}>
             {onRenderMenuItem(item)}
+            {/* TODO ANIMATE HEIGHT */}
             {item.children &&
               item.children?.length > 0 &&
               activeItemIds.includes(item.id) && (
