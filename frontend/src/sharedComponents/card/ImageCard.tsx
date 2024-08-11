@@ -4,12 +4,12 @@ interface ICardProps {
   imageUrl: string;
 }
 
-export function Card({ title, imageUrl }: ICardProps) {
+export function ImageCard({ title, imageUrl }: ICardProps) {
   return (
     <article
-      className="grid gap-4 h-64 rounded-md bg-cover bg-no-repeat"
+      className="grid gap-4 h-64 rounded-md bg-cover bg-no-repeate"
       style={{
-        backgroundImage: `url(${imageUrl})`,
+        backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
       }}
     >
       <div

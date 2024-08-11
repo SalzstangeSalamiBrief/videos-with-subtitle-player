@@ -1,5 +1,5 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { ChildFolderSection } from '$features/childFolderSection/ChildFolderSection';
+import { FolderListSection } from '$features/folderListSection/folderListSection';
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { useContext } from 'react';
@@ -28,7 +28,7 @@ function AudioFilePage() {
 
   return (
     <div className="grid gap-4">
-      <ChildFolderSection selectedFolder={selectedFolder} />
+      <FolderListSection selectedFolder={selectedFolder} />
     </div>
   );
 }
