@@ -1,13 +1,13 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
-import { FolderListSection } from '$features/folderListSection/folderListSection';
+import { FolderListSection } from '$features/folderListSection/FolderListSection';
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { useContext } from 'react';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
+import { FileListSection } from '$features/fileListSection/FileListSection';
 
 export const Route = createFileRoute('/folders/$folderId/')({
   component: AudioFilePage,
-  // TODO VALIDATION OF THE PARAM
 });
 
 function AudioFilePage() {
@@ -29,6 +29,7 @@ function AudioFilePage() {
   return (
     <div className="grid gap-4">
       <FolderListSection selectedFolder={selectedFolder} />
+      <FileListSection selectedFolder={selectedFolder} />
     </div>
   );
 }
