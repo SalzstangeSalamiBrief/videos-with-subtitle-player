@@ -6,7 +6,7 @@ import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import styles from './Navigation.module.css';
 import { NavigationItem } from './NavigationItem';
 import { useParams } from '@tanstack/react-router';
-import { getFoldersInActiveTree } from '$lib/getFoldersInActiveTree';
+import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 
 export function Navigation() {
   const { folderId } = useParams({ strict: false });

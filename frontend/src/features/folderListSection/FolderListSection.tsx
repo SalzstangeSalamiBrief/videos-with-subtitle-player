@@ -1,3 +1,4 @@
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { ImageCard } from '$sharedComponents/card/ImageCard';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
@@ -21,6 +22,7 @@ export function FolderListSection({ selectedFolder }: IFolderListSectionProps) {
               <TanStackRouterLink
                 to="/folders/$folderId"
                 params={{ folderId: child.id }}
+                className={baseLinkStyles}
               >
                 <ImageCard title={child.name} imageUrl="/example.jpg" />
               </TanStackRouterLink>

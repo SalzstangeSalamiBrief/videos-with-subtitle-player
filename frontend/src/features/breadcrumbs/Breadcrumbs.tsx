@@ -1,10 +1,12 @@
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
-import { getFoldersInActiveTree } from '$lib/getFoldersInActiveTree';
+import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 import { useParams } from '@tanstack/react-router';
 import { useContext } from 'react';
+import { BreadcrumbItem } from './BreadcrumbItem';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 
-export function FolderBreadcrumbs() {
+export function Breadcrumbs() {
   const { folderId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
   const activeFolders = getFoldersInActiveTree(fileTrees, folderId);
@@ -16,16 +18,17 @@ export function FolderBreadcrumbs() {
   return (
     <nav>
       <menu className="flex gap-2">
-        {activeFolders.map((activeFolder) => (
-          <TanStackRouterLink
-            to="/folders/$folderId"
-            params={{ folderId: activeFolder.id }}
-            key={activeFolder.id}
-            className="block max-w-[30ch] overflow-x-hidden text-ellipsis whitespace-nowrap"
-            title={activeFolder.name}
-          >
-            / {activeFolder.name}
+        <li>
+          <TanStackRouterLink to="/" className={baseLinkStyles}>
+            Home
           </TanStackRouterLink>
+        </li>
+        {activeFolders.map((activeFolder, index) => (
+          <BreadcrumbItem
+            key={activeFolder.id}
+            item={activeFolder}
+            isLastItem={index === activeFolders.length - 1}
+          />
         ))}
       </menu>
     </nav>
