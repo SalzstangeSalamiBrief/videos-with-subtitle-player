@@ -5,6 +5,7 @@ import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { useContext } from 'react';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
+import { FolderBreadcrumbs } from '$features/FolderBreadcrumbs/FolderBreadcrumbs';
 
 export const Route = createFileRoute('/folders/$folderId/')({
   component: AudioFilePage,
@@ -28,6 +29,7 @@ function AudioFilePage() {
 
   return (
     <div className="grid gap-4">
+      <FolderBreadcrumbs />
       <FolderListSection selectedFolder={selectedFolder} />
       <FileListSection selectedFolder={selectedFolder} />
     </div>

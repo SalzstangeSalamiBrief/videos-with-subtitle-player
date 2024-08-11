@@ -12,7 +12,8 @@
       "$contexts/*": ["./src/contexts/*"],
       "$models/*": ["./src/models/*"],
       "$hooks/*": ["./src/hooks/*"],
-      "$enums/*": ["./src/enums/*"]
+      "$enums/*": ["./src/enums/*"],
+      "$lib/*": ["./src/lib/*"]
     },
 
     /* Bundler mode */
