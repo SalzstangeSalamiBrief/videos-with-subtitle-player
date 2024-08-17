@@ -8,12 +8,10 @@ interface IFolderListSectionProps {
 }
 
 export function FolderListSection({ selectedFolder }: IFolderListSectionProps) {
-  // TODO TOGGLE VISIBILTY?
   return (
-    <section>
-      <h1>Nested folder</h1>
+    <section role="presentation">
       {selectedFolder.children.length === 0 && (
-        <p>This folder contains no nested folder</p>
+        <p>This folder contains no subfolders</p>
       )}
       {selectedFolder.children.length > 0 && (
         <ul className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

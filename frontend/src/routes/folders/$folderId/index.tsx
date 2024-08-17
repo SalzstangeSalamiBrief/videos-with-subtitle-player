@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
 import { Breadcrumbs } from '$features/breadcrumbs/Breadcrumbs';
+import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 
 export const Route = createFileRoute('/folders/$folderId/')({
   component: AudioFilePage,
@@ -27,11 +28,21 @@ function AudioFilePage() {
     );
   }
 
+  const tabs: ITab[] = [
+    {
+      label: `Subfolders (${selectedFolder.children?.length})`,
+      content: <FolderListSection selectedFolder={selectedFolder} />,
+    },
+    {
+      label: `Video and audio files (${selectedFolder.files.length})`,
+      content: <FileListSection selectedFolder={selectedFolder} />,
+    },
+  ];
+
   return (
     <div className="grid gap-4">
       <Breadcrumbs />
-      <FolderListSection selectedFolder={selectedFolder} />
-      <FileListSection selectedFolder={selectedFolder} />
+      <Tabs tabs={tabs} label="Content" />
     </div>
   );
 }

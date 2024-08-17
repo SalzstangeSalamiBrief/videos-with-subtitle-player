@@ -6,11 +6,11 @@ interface IFileListSectionProps {
 }
 
 export function FileListSection({ selectedFolder }: IFileListSectionProps) {
-  // TODO TOGGLE VISIBILTY?
   return (
-    <section>
-      <h1>Files</h1>
-      {selectedFolder.files.length === 0 && <p>This folder no files</p>}
+    <section role="presentation">
+      {selectedFolder.files.length === 0 && (
+        <p>This folder contains no files</p>
+      )}
       {selectedFolder.files.length > 0 && (
         <ul className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {selectedFolder.files.map((file) => (

@@ -18,7 +18,7 @@ export function ImageCard({ title, imageUrl }: ICardProps) {
       >
         <header className="overflow-hidden h-fit rounded-b-md">
           <h1
-            className="line-clamp-3 whitespace-normal text-ellipsis overflow-hidden font-bold"
+            className="line-clamp-3 whitespace-normal text-ellipsis overflow-hidden font-bold max-w-text"
             title={title}
           >
             {title}
