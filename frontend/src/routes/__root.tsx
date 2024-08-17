@@ -22,6 +22,22 @@ export const Route = createRootRoute({
 
     return result;
   },
+  meta: () => [
+    {
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1',
+    },
+    { title: 'Video with subtitle player' },
+    {
+      name: 'Description',
+      content:
+        'Stream audio and video files with subtitle support, offering seamless playback for your media content.',
+    },
+    { lang: 'en' },
+    {
+      charSet: 'utf-8',
+    },
+  ],
 });
 
 function Root() {
