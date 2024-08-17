@@ -9,6 +9,7 @@ import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
+  // TODO ADD META  => SET TITLE AS TITLE OF THE FOLDER
 });
 
 function AudioFilePage() {

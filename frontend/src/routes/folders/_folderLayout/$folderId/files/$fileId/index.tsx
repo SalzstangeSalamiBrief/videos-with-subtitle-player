@@ -11,6 +11,7 @@ export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',
 )({
   component: FilePage,
+  // TODO ADD META  => SET TITLE AS TITLE OF THE FILE
 });
 
 function FilePage() {
