@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as FoldersFolderIdIndexImport } from './routes/folders/$folderId/index'
+import { Route as FoldersFolderIdFilesFileIdIndexImport } from './routes/folders/$folderId/files/$fileId/index'
 
 // Create/Update Routes
 
@@ -25,6 +26,12 @@ const FoldersFolderIdIndexRoute = FoldersFolderIdIndexImport.update({
   path: '/folders/$folderId/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const FoldersFolderIdFilesFileIdIndexRoute =
+  FoldersFolderIdFilesFileIdIndexImport.update({
+    path: '/folders/$folderId/files/$fileId/',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FoldersFolderIdIndexImport
       parentRoute: typeof rootRoute
     }
+    '/folders/$folderId/files/$fileId/': {
+      id: '/folders/$folderId/files/$fileId/'
+      path: '/folders/$folderId/files/$fileId'
+      fullPath: '/folders/$folderId/files/$fileId'
+      preLoaderRoute: typeof FoldersFolderIdFilesFileIdIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -52,6 +66,7 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren({
   IndexRoute,
   FoldersFolderIdIndexRoute,
+  FoldersFolderIdFilesFileIdIndexRoute,
 })
 
 /* prettier-ignore-end */
@@ -63,7 +78,8 @@ export const routeTree = rootRoute.addChildren({
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/folders/$folderId/"
+        "/folders/$folderId/",
+        "/folders/$folderId/files/$fileId/"
       ]
     },
     "/": {
@@ -71,6 +87,9 @@ export const routeTree = rootRoute.addChildren({
     },
     "/folders/$folderId/": {
       "filePath": "folders/$folderId/index.tsx"
+    },
+    "/folders/$folderId/files/$fileId/": {
+      "filePath": "folders/$folderId/files/$fileId/index.tsx"
     }
   }
 }
