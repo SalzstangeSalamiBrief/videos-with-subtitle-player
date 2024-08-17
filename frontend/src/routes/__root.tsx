@@ -4,12 +4,13 @@ import { getFileTreeQueryOptions } from '$queries/getFileTree/getFileTreeQueryOp
 import { queryClient } from '../App';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
+import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
 
 export const Route = createRootRoute({
   component: Root,
   meta: getPageMetadata,
   loader: () => queryClient.ensureQueryData(getFileTreeQueryOptions),
-  // TODO ERROR COMPONENT
+  errorComponent: ErrorComponent,
 });
 
 function Root() {
@@ -21,7 +22,7 @@ function Root() {
   if (isLoading) {
     return (
       <div style={{ paddingTop: '1.5rem' }}>
-        <LoadingSpinner text="Loading audio files..." />
+        <LoadingSpinner text="Loading data..." />
       </div>
     );
   }
