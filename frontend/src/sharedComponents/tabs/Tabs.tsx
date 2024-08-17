@@ -30,7 +30,7 @@ export function Tabs({ tabs, label }: ITabsProps) {
         {label}
       </h1>
 
-      <div role="tablist">
+      <div role="tablist" className="grid gap-8">
         <div role="presentation" className="flex gap-2">
           {tabs.map((tab, index) => {
             const isActive = index === activeTabIndex;
