@@ -13,7 +13,8 @@
       "$models/*": ["./src/models/*"],
       "$hooks/*": ["./src/hooks/*"],
       "$enums/*": ["./src/enums/*"],
-      "$lib/*": ["./src/lib/*"]
+      "$lib/*": ["./src/lib/*"],
+      "$queries/*": ["./src/queries/*"]
     },
 
     /* Bundler mode */

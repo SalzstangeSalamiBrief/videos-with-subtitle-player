@@ -44,7 +44,7 @@ function AudioFilePage() {
 
 function getFolderFromFileTree(
   fileTrees: IFileTreeDto[],
-  folderId: string,
+  folderId: string | undefined,
 ): Maybe<IFileTreeDto> {
   for (let i = 0; i < fileTrees.length; i += 1) {
     const currentTree = fileTrees[i];

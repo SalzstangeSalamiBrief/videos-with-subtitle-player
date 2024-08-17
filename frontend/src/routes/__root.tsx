@@ -1,20 +1,33 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { FileTreeContextWrapper } from '$contexts/FileTreeContextWrapper';
-
-export interface RootSearchParams {
-  activeTab: number | undefined;
-}
+import { getFileTreeQueryOptions } from '$queries/getFileTree/getFileTreeQueryOptions';
+import { queryClient } from '../App';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 
 export const Route = createRootRoute({
-  // TODO META TO ADD TAGS
   component: Root,
-  validateSearch: searchParamValidator,
   meta: getPageMetadata,
+  loader: () => queryClient.ensureQueryData(getFileTreeQueryOptions),
+  // TODO ERROR COMPONENT
 });
 
 function Root() {
+  const {
+    data: { fileGroups, fileTrees },
+    isLoading,
+  } = useSuspenseQuery(getFileTreeQueryOptions);
+
+  if (isLoading) {
+    return (
+      <div style={{ paddingTop: '1.5rem' }}>
+        <LoadingSpinner text="Loading audio files..." />
+      </div>
+    );
+  }
+
   return (
-    <FileTreeContextWrapper>
+    <FileTreeContextWrapper input={{ fileTrees, fileGroups }}>
       <div className="grid gap-4">
         <main className="p-4 overflow-y-auto max-h-[100lvh]">
           <Outlet />
@@ -41,20 +54,4 @@ function getPageMetadata() {
       charSet: 'utf-8',
     },
   ];
-}
-
-function searchParamValidator(
-  input: Record<string, unknown>,
-): RootSearchParams {
-  const result: RootSearchParams = { activeTab: undefined };
-  if (!input.activeTab) {
-    return result;
-  }
-
-  const activeTab = Number(input.activeTab);
-  if (!Number.isNaN(activeTab)) {
-    result.activeTab = activeTab;
-  }
-
-  return result;
 }

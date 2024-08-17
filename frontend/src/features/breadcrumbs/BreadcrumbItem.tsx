@@ -33,6 +33,7 @@ export function BreadcrumbItem({ isLastItem, item }: IBreadcrumbItemProps) {
       <TanStackRouterLink
         to="/folders/$folderId"
         params={{ folderId: item.id }}
+        search={{ activeTab: 0 }}
         className={linkClasses}
         title={item.name}
       >

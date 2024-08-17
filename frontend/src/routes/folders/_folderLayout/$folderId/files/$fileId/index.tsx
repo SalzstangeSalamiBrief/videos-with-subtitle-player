@@ -34,7 +34,7 @@ function FilePage() {
       <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>
       <div className="flex gap-4 items-center">
         <TansStackLink
-          to="/folders/$folderId/files/$fileId/"
+          to="/folders/$folderId/files/$fileId"
           params={{ fileId: previousId ?? '', folderId }}
           aria-label="previous track"
         >
@@ -57,7 +57,7 @@ function FilePage() {
         />
 
         <TansStackLink
-          to="/folders/$folderId/files/$fileId/"
+          to="/folders/$folderId/files/$fileId"
           params={{ fileId: nextId ?? '', folderId }}
           aria-label="Next track"
         >

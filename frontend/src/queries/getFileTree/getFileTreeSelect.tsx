@@ -2,36 +2,19 @@ import { FileType } from '$enums/FileType';
 import { ISubtitleFileDto, IFileDto } from '$models/dtos/fileDtos';
 import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
 import { IFileNode, IFileTree } from '$models/fileTree';
-import { useState } from 'react';
 
-const baseUrl = import.meta.env.VITE_BASE_URL || '';
-const path = '/api/file-tree';
+interface IGetFileTreeSelectReturn {
+  fileTrees: IFileTreeDto[];
+  fileGroups: IFileNode[][];
+}
 
-const url = baseUrl + path;
+export function getFileTreeSelect(
+  input: IFileTreeDto[],
+): IGetFileTreeSelectReturn {
+  const fileTrees = transformDtoTreeToFileTree(input);
+  const fileGroups = getFlatFilesGroups(fileTrees);
 
-export function useGetFileTree() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<unknown>();
-  const [fileTrees, setFileTrees] = useState<IFileTreeDto[]>([]);
-  const [fileGroups, setFileGroups] = useState<IFileNode[][]>([]);
-
-  async function getFileTree() {
-    try {
-      setIsLoading(true);
-      const response = await fetch(url);
-      const json: IFileTreeDto[] = await response.json();
-      const transformedTree = transformDtoTreeToFileTree(json);
-      setFileTrees(transformedTree);
-      const flatAudioFiles = getFlatFilesGroups(transformedTree);
-      setFileGroups(flatAudioFiles);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  return { isLoading, error, fileTrees, getFileTree, fileGroups };
+  return { fileGroups, fileTrees };
 }
 
 function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
@@ -40,7 +23,6 @@ function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
   fileTrees.forEach((fileTree) => {
     if (fileTree.files?.length) {
       fileGroups.push(fileTree.files);
-      // return;
     }
 
     if (fileTree.children?.length) {
