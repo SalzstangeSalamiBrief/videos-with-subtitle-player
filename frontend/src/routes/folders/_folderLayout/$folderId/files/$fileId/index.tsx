@@ -4,16 +4,17 @@ import { Link as TansStackLink } from '@tanstack/react-router';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { Player } from '$sharedComponents/player/Player';
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { IFileNode } from '$models/fileTree';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
-export const Route = createFileRoute('/folders/$folderId/files/$fileId/')({
+export const Route = createFileRoute(
+  '/folders/_folderLayout/$folderId/files/$fileId/',
+)({
   component: FilePage,
 });
 
 function FilePage() {
-  const { fileGroups, fileTrees } = useContext(FileTreeContext);
+  const { fileGroups } = useContext(FileTreeContext);
   const { fileId, folderId } = Route.useParams();
   const { nextId, previousId, currentFile } = getFileIds(fileGroups, fileId);
 
@@ -29,9 +30,7 @@ function FilePage() {
 
   return (
     <div className="grid">
-      <h1 style={{ fontSize: '1.25rem', margin: 0 }}>
-        {getParentName(fileTrees, fileId ?? '')}
-      </h1>
+      <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>
       <h2
         style={{
           fontWeight: 'normal',
@@ -138,33 +137,4 @@ const getFileIds = (
   result.currentFile = matchingAudioFileGroup[matchingAudioFileIndex];
 
   return result;
-};
-
-const getParentName = (fileTrees: IFileTreeDto[], fileId: string): string => {
-  let parentName = '';
-
-  if (fileTrees.length === 0 || !fileId) {
-    return parentName;
-  }
-
-  fileTrees.forEach((fileTree) => {
-    if (isPartOfSubTree(fileTree, fileId)) {
-      parentName = fileTree.name;
-      return;
-    }
-  });
-
-  return parentName;
-};
-
-const isPartOfSubTree = (fileTree: IFileTreeDto, audioId: string): boolean => {
-  if (fileTree.files?.find((audioFile) => audioFile.id === audioId)) {
-    return true;
-  }
-
-  if (fileTree.children?.length) {
-    return fileTree.children.some((child) => isPartOfSubTree(child, audioId));
-  }
-
-  return false;
 };

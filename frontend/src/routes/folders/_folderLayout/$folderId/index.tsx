@@ -5,10 +5,9 @@ import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { useContext } from 'react';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
-import { Breadcrumbs } from '$features/breadcrumbs/Breadcrumbs';
 import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 
-export const Route = createFileRoute('/folders/$folderId/')({
+export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
 });
 
@@ -39,12 +38,7 @@ function AudioFilePage() {
     },
   ];
 
-  return (
-    <div className="grid gap-4">
-      <Breadcrumbs />
-      <Tabs tabs={tabs} label="Content" />
-    </div>
-  );
+  return <Tabs tabs={tabs} label="Content" />;
 }
 
 function getFolderFromFileTree(

@@ -7,6 +7,7 @@ export interface RootSearchParams {
 }
 
 export const Route = createRootRoute({
+  // TODO META TO ADD TAGS
   component: Root,
   validateSearch(input: Record<string, unknown>): RootSearchParams {
     const result: RootSearchParams = { activeTab: undefined };
