@@ -1,4 +1,4 @@
-import { Flex, Spin } from 'antd';
+import styles from './LoadingSpinner.module.css';
 
 interface ILoadingSpinnerProps {
   text: string;
@@ -6,9 +6,9 @@ interface ILoadingSpinnerProps {
 
 export function LoadingSpinner({ text }: ILoadingSpinnerProps) {
   return (
-    <Flex align="center" vertical>
-      <Spin size="large" />
+    <div className="flex flex-col items-center">
+      <div className={styles.loader} />
       <p>{text}</p>
-    </Flex>
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { createFileRoute } from '@tanstack/react-router';
 import { useContext } from 'react';
 import { Link as TansStackLink } from '@tanstack/react-router';
@@ -7,6 +6,7 @@ import { Player } from '$sharedComponents/player/Player';
 import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { IFileNode } from '$models/fileTree';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 export const Route = createFileRoute('/folders/$folderId/files/$fileId/')({
   component: FilePage,
@@ -54,7 +54,7 @@ function FilePage() {
             aria-label="Previous track"
             title="Previous track"
           >
-            <LeftOutlined />
+            <ChevronLeftIcon />
             <span className="sr-only">Previous track</span>
           </button>
         </TansStackLink>
@@ -77,7 +77,7 @@ function FilePage() {
             aria-label="next track"
             title="Next track"
           >
-            <RightOutlined />
+            <ChevronRightIcon />
             <span className="sr-only">Next track</span>
           </button>
         </TansStackLink>
