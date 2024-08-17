@@ -8,20 +8,24 @@ export interface RootSearchParams {
 export const Route = createRootRoute({
   // TODO META TO ADD TAGS
   component: Root,
-  validateSearch(input: Record<string, unknown>): RootSearchParams {
-    const result: RootSearchParams = { activeTab: undefined };
-    if (!input.activeTab) {
-      return result;
-    }
+  validateSearch: searchParamValidator,
+  meta: getPageMetadata,
+});
 
-    const activeTab = Number(input.activeTab);
-    if (!Number.isNaN(activeTab)) {
-      result.activeTab = activeTab;
-    }
+function Root() {
+  return (
+    <FileTreeContextWrapper>
+      <div className="grid gap-4">
+        <main className="p-4 overflow-y-auto max-h-[100lvh]">
+          <Outlet />
+        </main>
+      </div>
+    </FileTreeContextWrapper>
+  );
+}
 
-    return result;
-  },
-  meta: () => [
+function getPageMetadata() {
+  return [
     {
       name: 'viewport',
       content: 'width=device-width, initial-scale=1',
@@ -36,17 +40,21 @@ export const Route = createRootRoute({
     {
       charSet: 'utf-8',
     },
-  ],
-});
+  ];
+}
 
-function Root() {
-  return (
-    <FileTreeContextWrapper>
-      <div className="grid gap-4">
-        <main className="p-4 overflow-y-auto max-h-[100lvh]">
-          <Outlet />
-        </main>
-      </div>
-    </FileTreeContextWrapper>
-  );
+function searchParamValidator(
+  input: Record<string, unknown>,
+): RootSearchParams {
+  const result: RootSearchParams = { activeTab: undefined };
+  if (!input.activeTab) {
+    return result;
+  }
+
+  const activeTab = Number(input.activeTab);
+  if (!Number.isNaN(activeTab)) {
+    result.activeTab = activeTab;
+  }
+
+  return result;
 }
