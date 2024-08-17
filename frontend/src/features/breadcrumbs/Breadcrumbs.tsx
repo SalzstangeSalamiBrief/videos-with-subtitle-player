@@ -9,6 +9,7 @@ import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 export function Breadcrumbs() {
   const { folderId } = useParams({ strict: false });
   const { fileTrees } = useContext(FileTreeContext);
+  // TODO: ON INITIAL LOAD THE CONTEXT IST EMPTY => MAYBE USE LOADER FUNCTIONS FROM THE ROUTER
   const activeFolders = getFoldersInActiveTree(fileTrees, folderId);
 
   if (!activeFolders.length) {

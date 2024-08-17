@@ -11,7 +11,7 @@ export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',
 )({
   component: FilePage,
-  // TODO ADD META  => SET TITLE AS TITLE OF THE FILE
+  // TODO ADD META  => SET TITLE AS TITLE OF THE FILE=> MAYBE USE ROUTER CONTEXT
 });
 
 function FilePage() {
@@ -32,16 +32,6 @@ function FilePage() {
   return (
     <div className="grid">
       <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>
-      <h2
-        style={{
-          fontWeight: 'normal',
-          fontSize: '1rem',
-          marginTop: 0,
-          color: 'hsl(0, 0%, 10%)',
-        }}
-      >
-        {currentFile.name}
-      </h2>
       <div className="flex gap-4 items-center">
         <TansStackLink
           to="/folders/$folderId/files/$fileId/"
@@ -49,12 +39,12 @@ function FilePage() {
           aria-label="previous track"
         >
           <button
-            className="p-4 bg-slate-800 hover:bg-slate-700"
+            className="p-1 bg-slate-800 hover:bg-slate-700"
             disabled={!previousId}
             aria-label="Previous track"
             title="Previous track"
           >
-            <ChevronLeftIcon />
+            <ChevronLeftIcon width="32px" height="32px" />
             <span className="sr-only">Previous track</span>
           </button>
         </TansStackLink>
@@ -72,12 +62,12 @@ function FilePage() {
           aria-label="Next track"
         >
           <button
-            className="p-4 bg-slate-800 hover:bg-slate-700"
+            className="p-1 bg-slate-800 hover:bg-slate-700"
             disabled={!nextId}
             aria-label="next track"
             title="Next track"
           >
-            <ChevronRightIcon />
+            <ChevronRightIcon width="32px" height="32px" />
             <span className="sr-only">Next track</span>
           </button>
         </TansStackLink>

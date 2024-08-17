@@ -1,5 +1,4 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { Navigation } from '$features/navigation/Navigation';
 import { FileTreeContextWrapper } from '$contexts/FileTreeContextWrapper';
 
 export interface RootSearchParams {
@@ -43,21 +42,10 @@ export const Route = createRootRoute({
 function Root() {
   return (
     <FileTreeContextWrapper>
-      <div className="flex">
-        <div className="grid min-h-[100lvh] max-h-[100lvh] overflow-y-auto">
-          <Navigation />
-        </div>
-        <div className="grid gap-4">
-          <main
-            style={{
-              maxHeight: '100lvh',
-              padding: '1rem',
-              overflowY: 'auto',
-            }}
-          >
-            <Outlet />
-          </main>
-        </div>
+      <div className="grid gap-4">
+        <main className="p-4 overflow-y-auto max-h-[100lvh]">
+          <Outlet />
+        </main>
       </div>
     </FileTreeContextWrapper>
   );
