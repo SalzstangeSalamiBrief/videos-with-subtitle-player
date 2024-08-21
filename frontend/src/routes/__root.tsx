@@ -1,40 +1,32 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { FileTreeContextWrapper } from '$contexts/FileTreeContextWrapper';
-import { getFileTreeQueryOptions } from '$queries/getFileTree/getFileTreeQueryOptions';
-import { queryClient } from '../App';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
+import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQuery';
+import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
 
 export const Route = createRootRoute({
   component: Root,
   meta: getPageMetadata,
-  loader: () => queryClient.ensureQueryData(getFileTreeQueryOptions),
+  loader: async () => {
+    const responseData = await getFileTreeQuery();
+    const result = getFileTreeSelect(responseData);
+    return result;
+  },
   errorComponent: ErrorComponent,
+  pendingComponent: () => (
+    <div style={{ paddingTop: '1.5rem' }}>
+      <LoadingSpinner text="Loading data..." />
+    </div>
+  ),
 });
 
 function Root() {
-  const {
-    data: { fileGroups, fileTrees },
-    isLoading,
-  } = useSuspenseQuery(getFileTreeQueryOptions);
-
-  if (isLoading) {
-    return (
-      <div style={{ paddingTop: '1.5rem' }}>
-        <LoadingSpinner text="Loading data..." />
-      </div>
-    );
-  }
-
   return (
-    <FileTreeContextWrapper input={{ fileTrees, fileGroups }}>
-      <div className="grid gap-4">
-        <main className="p-4 overflow-y-auto max-h-[100lvh]">
-          <Outlet />
-        </main>
-      </div>
-    </FileTreeContextWrapper>
+    <div className="grid gap-4">
+      <main className="p-4 overflow-y-auto max-h-[100lvh]">
+        <Outlet />
+      </main>
+    </div>
   );
 }
 

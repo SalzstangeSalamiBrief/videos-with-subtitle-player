@@ -22,7 +22,7 @@ export function FileListSection({ selectedFolder }: IFileListSectionProps) {
                 params={{ folderId: selectedFolder.id, fileId: file.id }}
                 className={baseLinkStyles}
               >
-                <ImageCard title={file.name} imageUrl="/example.jpg" />
+                <ImageCard title={file.name} imageUrl="/example.avif" />
               </TanStackRouterLink>
             </li>
           ))}

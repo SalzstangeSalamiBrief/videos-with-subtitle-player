@@ -1,7 +1,7 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { RootSearchParams } from '../../routes/__root';
 import { useId } from 'react';
 import { Route } from '../../routes';
+import { RootSearchParams } from '../../routes/folders/_folderLayout';
 
 export interface ITab {
   label: string;
@@ -12,7 +12,7 @@ interface ITabsProps {
   tabs: ITab[];
   label: string;
 }
-
+// TODO MOVE TO FEATURE
 export function Tabs({ tabs, label }: ITabsProps) {
   const labelId = useId();
   const searchParams: RootSearchParams = useSearch({ strict: false });

@@ -1,12 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext } from 'react';
 import { Link as TansStackLink } from '@tanstack/react-router';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { Player } from '$sharedComponents/player/Player';
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileNode } from '$models/fileTree';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-
+import { Route as RootLayoutRoute } from '../../../../../__root';
 export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',
 )({
@@ -15,7 +13,7 @@ export const Route = createFileRoute(
 });
 
 function FilePage() {
-  const { fileGroups } = useContext(FileTreeContext);
+  const { fileGroups } = RootLayoutRoute.useLoaderData();
   const { fileId, folderId } = Route.useParams();
   const { nextId, previousId, currentFile } = getFileIds(fileGroups, fileId);
 

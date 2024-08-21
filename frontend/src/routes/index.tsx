@@ -1,14 +1,14 @@
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import { createFileRoute } from '@tanstack/react-router';
-import { useContext } from 'react';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
 import { ImageCard } from '$sharedComponents/card/ImageCard';
+import { Route as RootLayoutRoute } from './__root';
 
 export const Route = createFileRoute('/')({ component: LandingPage });
 
 function LandingPage() {
-  const { fileTrees } = useContext(FileTreeContext);
+  const { fileTrees } = RootLayoutRoute.useLoaderData();
+
   // TODO HJANDLE NO ITEMS FOUND
   // TODO CHECK LOADING STATE
   // TODO REFACTOR COMPONENTS
@@ -21,7 +21,7 @@ function LandingPage() {
             params={{ folderId: fileTree.id }}
             className={baseLinkStyles}
           >
-            <ImageCard title={fileTree.name} imageUrl="/example.jpg" />
+            <ImageCard title={fileTree.name} imageUrl="/example.avif" />
           </TanStackRouterLink>
         </li>
       ))}

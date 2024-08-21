@@ -1,11 +1,10 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { FolderListSection } from '$features/folderListSection/FolderListSection';
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
-import { useContext } from 'react';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
 import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
+import { Route as RootLayoutRoute } from '../../../__root';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
@@ -13,7 +12,7 @@ export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
 });
 
 function AudioFilePage() {
-  const { fileTrees } = useContext(FileTreeContext);
+  const { fileTrees } = RootLayoutRoute.useLoaderData();
   const { folderId } = useParams({ strict: false });
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
 

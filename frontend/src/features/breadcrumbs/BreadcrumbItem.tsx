@@ -27,7 +27,7 @@ export function BreadcrumbItem({ isLastItem, item }: IBreadcrumbItemProps) {
       </li>
     );
   }
-  console.log(linkClasses);
+
   return (
     <li>
       <TanStackRouterLink

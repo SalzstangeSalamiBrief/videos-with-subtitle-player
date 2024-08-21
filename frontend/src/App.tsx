@@ -13,9 +13,6 @@ const router = createRouter({
   context: {
     queryClient,
   },
-  // TODO MAYBE REMOVE BOOTH PROPERTIES
-  defaultPreload: 'intent',
-  defaultPreloadStaleTime: 0,
 });
 
 export function App() {
