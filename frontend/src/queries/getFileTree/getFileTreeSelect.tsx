@@ -3,7 +3,7 @@ import { ISubtitleFileDto, IFileDto } from '$models/dtos/fileDtos';
 import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
 import { IFileNode, IFileTree } from '$models/fileTree';
 
-interface IGetFileTreeSelectReturn {
+export interface IGetFileTreeSelectReturn {
   fileTrees: IFileTreeDto[];
   fileGroups: IFileNode[][];
 }

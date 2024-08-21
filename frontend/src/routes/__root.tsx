@@ -1,24 +1,29 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
-import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
+import {
+  getFileTreeSelect,
+  IGetFileTreeSelectReturn,
+} from '$queries/getFileTree/getFileTreeSelect';
 import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
 
 export const Route = createRootRoute({
   component: Root,
   meta: getPageMetadata,
   loader: async () => {
-    const responseData = await getFileTreeQuery();
-    const result = getFileTreeSelect(responseData);
-    return result;
+    // TODO DOES NOT SHOW PENDING COMPONENT
+    return await new Promise<IGetFileTreeSelectReturn>((resolve) => {
+      setTimeout(async () => {
+        const responseData = await getFileTreeQuery();
+        const result = getFileTreeSelect(responseData);
+        resolve(result);
+        // return result;
+      }, 1500);
+    });
   },
   shouldReload: false,
   errorComponent: ErrorComponent,
-  pendingComponent: () => (
-    <div style={{ paddingTop: '1.5rem' }}>
-      <LoadingSpinner text="Loading data..." />
-    </div>
-  ),
+  pendingComponent: RootLoader,
 });
 
 function Root() {
@@ -31,6 +36,13 @@ function Root() {
   );
 }
 
+function RootLoader() {
+  return (
+    <div style={{ paddingTop: '1.5rem' }}>
+      <LoadingSpinner text="Loading data..." />
+    </div>
+  );
+}
 function getPageMetadata() {
   return [
     {

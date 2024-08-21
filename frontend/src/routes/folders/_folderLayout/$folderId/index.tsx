@@ -30,7 +30,7 @@ function AudioFilePage() {
   const tabs: ITab[] = [
     {
       label: `Subfolders (${selectedFolder.children?.length})`,
-      content: <FolderListSection selectedFolder={selectedFolder} />,
+      content: <FolderListSection folders={selectedFolder.children} />,
     },
     {
       label: `Video and audio files (${selectedFolder.files.length})`,

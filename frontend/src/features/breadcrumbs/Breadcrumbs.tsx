@@ -1,14 +1,13 @@
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 import { useParams } from '@tanstack/react-router';
-import { useContext } from 'react';
 import { BreadcrumbItem } from './BreadcrumbItem';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import { Route as RootLayoutRoute } from '../../routes/__root';
 
 export function Breadcrumbs() {
   const { folderId } = useParams({ strict: false });
-  const { fileTrees } = useContext(FileTreeContext);
+  const { fileTrees } = RootLayoutRoute.useLoaderData();
   // TODO: ON INITIAL LOAD THE CONTEXT IST EMPTY => MAYBE USE LOADER FUNCTIONS FROM THE ROUTER
   const activeFolders = getFoldersInActiveTree(fileTrees, folderId);
 

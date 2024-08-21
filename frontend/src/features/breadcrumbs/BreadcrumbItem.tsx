@@ -1,10 +1,9 @@
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
 import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 import { useParams } from '@tanstack/react-router';
-import { useContext } from 'react';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
 import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import { Route as RootLayoutRoute } from '../../routes/__root';
 
 interface IBreadcrumbItemProps {
   item: IFileTreeDto;
@@ -13,7 +12,7 @@ interface IBreadcrumbItemProps {
 
 export function BreadcrumbItem({ isLastItem, item }: IBreadcrumbItemProps) {
   const { folderId } = useParams({ strict: false });
-  const { fileTrees } = useContext(FileTreeContext);
+  const { fileTrees } = RootLayoutRoute.useLoaderData();
   const items = getFoldersInActiveTree(fileTrees, folderId);
 
   if (!items.length) {
