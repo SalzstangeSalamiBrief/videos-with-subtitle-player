@@ -1,8 +1,8 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
-import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQuery';
 import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
+import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
 
 export const Route = createRootRoute({
   component: Root,
@@ -12,6 +12,7 @@ export const Route = createRootRoute({
     const result = getFileTreeSelect(responseData);
     return result;
   },
+  shouldReload: false,
   errorComponent: ErrorComponent,
   pendingComponent: () => (
     <div style={{ paddingTop: '1.5rem' }}>

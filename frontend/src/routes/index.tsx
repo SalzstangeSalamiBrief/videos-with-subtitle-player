@@ -14,17 +14,20 @@ function LandingPage() {
   // TODO REFACTOR COMPONENTS
   return (
     <ul className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {fileTrees.map((fileTree) => (
-        <li key={fileTree.id}>
-          <TanStackRouterLink
-            to="/folders/$folderId"
-            params={{ folderId: fileTree.id }}
-            className={baseLinkStyles}
-          >
-            <ImageCard title={fileTree.name} imageUrl="/example.avif" />
-          </TanStackRouterLink>
-        </li>
-      ))}
+      {fileTrees.map((fileTree) => {
+        // console.log(fileTree);
+        return (
+          <li key={fileTree.id}>
+            <TanStackRouterLink
+              to="/folders/$folderId"
+              params={{ folderId: fileTree.id }}
+              className={baseLinkStyles}
+            >
+              <ImageCard title={fileTree.name} imageUrl="/example.avif" />
+            </TanStackRouterLink>
+          </li>
+        );
+      })}
     </ul>
   );
 }
