@@ -1,0 +1,19 @@
+.navigation {
+  height: 100%;
+  width: 500px;
+  white-space: break-spaces;
+
+  & menu,
+  & li {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  & menu > li {
+    padding-left: 1rem;
+  }
+
+  & nav > menu > li {
+    padding-left: 0;
+  }
+}

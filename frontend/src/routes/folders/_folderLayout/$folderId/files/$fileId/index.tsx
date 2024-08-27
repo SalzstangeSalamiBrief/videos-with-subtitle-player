@@ -1,21 +1,20 @@
-import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { createFileRoute } from '@tanstack/react-router';
-import { Flex, Tooltip, Button } from 'antd';
-import { useContext } from 'react';
 import { Link as TansStackLink } from '@tanstack/react-router';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { Player } from '$sharedComponents/player/Player';
-import { FileTreeContext } from '$contexts/FileTreeContextWrapper';
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { IFileNode } from '$models/fileTree';
-
-export const Route = createFileRoute('/files/$fileId/')({
-  component: AudioFilePage,
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { Route as RootLayoutRoute } from '../../../../../__root';
+export const Route = createFileRoute(
+  '/folders/_folderLayout/$folderId/files/$fileId/',
+)({
+  component: FilePage,
+  // TODO ADD META  => SET TITLE AS TITLE OF THE FILE=> MAYBE USE ROUTER CONTEXT
 });
 
-function AudioFilePage() {
-  const { fileGroups, fileTrees } = useContext(FileTreeContext);
-  const { fileId } = Route.useParams();
+function FilePage() {
+  const { fileGroups } = RootLayoutRoute.useLoaderData();
+  const { fileId, folderId } = Route.useParams();
   const { nextId, previousId, currentFile } = getFileIds(fileGroups, fileId);
 
   if (!currentFile) {
@@ -29,34 +28,24 @@ function AudioFilePage() {
   }
 
   return (
-    <Flex vertical>
-      <h1 style={{ fontSize: '1.25rem', margin: 0 }}>
-        {getParentName(fileTrees, fileId ?? '')}
-      </h1>
-      <h2
-        style={{
-          fontWeight: 'normal',
-          fontSize: '1rem',
-          marginTop: 0,
-          color: 'hsl(0, 0%, 10%)',
-        }}
-      >
-        {currentFile.name}
-      </h2>
-      <Flex gap="0.5rem" align="center">
-        <Tooltip title="Previous track">
-          <TansStackLink
-            to="/files/$fileId/"
-            params={{ fileId: previousId ?? '' }}
-            aria-label="previous track"
+    <div className="grid">
+      <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>
+      <div className="flex gap-4 items-center">
+        <TansStackLink
+          to="/folders/$folderId/files/$fileId"
+          params={{ fileId: previousId ?? '', folderId }}
+          aria-label="previous track"
+        >
+          <button
+            className="p-1 bg-slate-800 hover:bg-slate-700"
+            disabled={!previousId}
+            aria-label="Previous track"
+            title="Previous track"
           >
-            <Button
-              disabled={!previousId}
-              icon={<LeftOutlined />}
-              aria-label="previous track"
-            />
-          </TansStackLink>
-        </Tooltip>
+            <ChevronLeftIcon width="32px" height="32px" />
+            <span className="sr-only">Previous track</span>
+          </button>
+        </TansStackLink>
 
         <Player
           key={currentFile.id}
@@ -65,21 +54,23 @@ function AudioFilePage() {
           fileType={currentFile.fileType}
         />
 
-        <Tooltip title="Next track">
-          <TansStackLink
-            to="/files/$fileId/"
-            params={{ fileId: nextId ?? '' }}
+        <TansStackLink
+          to="/folders/$folderId/files/$fileId"
+          params={{ fileId: nextId ?? '', folderId }}
+          aria-label="Next track"
+        >
+          <button
+            className="p-1 bg-slate-800 hover:bg-slate-700"
+            disabled={!nextId}
             aria-label="next track"
+            title="Next track"
           >
-            <Button
-              disabled={!nextId}
-              icon={<RightOutlined />}
-              aria-label="next track"
-            />
-          </TansStackLink>
-        </Tooltip>
-      </Flex>
-    </Flex>
+            <ChevronRightIcon width="32px" height="32px" />
+            <span className="sr-only">Next track</span>
+          </button>
+        </TansStackLink>
+      </div>
+    </div>
   );
 }
 
@@ -135,33 +126,4 @@ const getFileIds = (
   result.currentFile = matchingAudioFileGroup[matchingAudioFileIndex];
 
   return result;
-};
-
-const getParentName = (fileTrees: IFileTreeDto[], fileId: string): string => {
-  let parentName = '';
-
-  if (fileTrees.length === 0 || !fileId) {
-    return parentName;
-  }
-
-  fileTrees.forEach((fileTree) => {
-    if (isPartOfSubTree(fileTree, fileId)) {
-      parentName = fileTree.name;
-      return;
-    }
-  });
-
-  return parentName;
-};
-
-const isPartOfSubTree = (fileTree: IFileTreeDto, audioId: string): boolean => {
-  if (fileTree.files?.find((audioFile) => audioFile.id === audioId)) {
-    return true;
-  }
-
-  if (fileTree.children?.length) {
-    return fileTree.children.some((child) => isPartOfSubTree(child, audioId));
-  }
-
-  return false;
 };

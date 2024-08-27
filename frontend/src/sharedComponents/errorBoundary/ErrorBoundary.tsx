@@ -1,4 +1,3 @@
-import { Alert } from 'antd';
 import React, { ErrorInfo, ReactNode } from 'react';
 
 interface IProps {
@@ -27,12 +26,10 @@ class ErrorBoundary extends React.Component<IProps, IState> {
   render() {
     if (this.state.hasError) {
       return (
-        <Alert
-          message="Something went wrong!"
-          description="Please try again later."
-          type="error"
-          showIcon
-        />
+        <section className="bg-red-800">
+          <h1>Something went wrong!</h1>
+          <p>Please try again later.</p>
+        </section>
       );
     }
     return this.props.children;
