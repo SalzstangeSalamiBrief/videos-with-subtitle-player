@@ -1,24 +1,15 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
-import {
-  getFileTreeSelect,
-  IGetFileTreeSelectReturn,
-} from '$queries/getFileTree/getFileTreeSelect';
+import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
 import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
 
 export const Route = createRootRoute({
   component: Root,
   meta: getPageMetadata,
   loader: async () => {
-    // TODO DOES NOT SHOW PENDING COMPONENT
-    return await new Promise<IGetFileTreeSelectReturn>((resolve) => {
-      setTimeout(async () => {
-        const responseData = await getFileTreeQuery();
-        const result = getFileTreeSelect(responseData);
-        resolve(result);
-        // return result;
-      }, 1500);
-    });
+    const responseData = await getFileTreeQuery();
+    const result = getFileTreeSelect(responseData);
+    return result;
   },
   shouldReload: false,
   errorComponent: ErrorComponent,
