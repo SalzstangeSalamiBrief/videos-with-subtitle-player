@@ -1,5 +1,4 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
 import {
   getFileTreeSelect,
@@ -23,7 +22,6 @@ export const Route = createRootRoute({
   },
   shouldReload: false,
   errorComponent: ErrorComponent,
-  pendingComponent: RootLoader,
 });
 
 function Root() {
@@ -36,13 +34,6 @@ function Root() {
   );
 }
 
-function RootLoader() {
-  return (
-    <div style={{ paddingTop: '1.5rem' }}>
-      <LoadingSpinner text="Loading data..." />
-    </div>
-  );
-}
 function getPageMetadata() {
   return [
     {

@@ -5,6 +5,8 @@ interface ICardProps {
 }
 
 export function ImageCard({ title, imageUrl }: ICardProps) {
+  // TODO IMAGE IS OPTIONAL
+  // TODO USE IAMGE AND SCALE ON HOVER
   return (
     <article
       className="grid gap-4 h-64 rounded-md bg-cover bg-no-repeate"
