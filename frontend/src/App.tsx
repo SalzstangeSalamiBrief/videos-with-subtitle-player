@@ -14,7 +14,6 @@ const router = createRouter({
   context: {
     queryClient,
   },
-  defaultPendingComponent: DefaultPendingComponent,
 });
 
 export function App() {
@@ -27,7 +26,7 @@ export function App() {
   );
 }
 
-function DefaultPendingComponent() {
+export function DefaultPendingComponent() {
   return (
     <div style={{ paddingTop: '1.5rem' }}>
       <LoadingSpinner text="Loading data..." />
