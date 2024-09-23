@@ -2,6 +2,7 @@ import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
 import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
 import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
+import { DefaultPendingComponent } from '../App';
 
 export const Route = createRootRoute({
   component: Root,
@@ -13,6 +14,8 @@ export const Route = createRootRoute({
   },
   shouldReload: false,
   errorComponent: ErrorComponent,
+  pendingComponent: DefaultPendingComponent,
+  wrapInSuspense: true,
 });
 
 function Root() {

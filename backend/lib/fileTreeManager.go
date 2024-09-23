@@ -4,6 +4,7 @@ import (
 	"backend/enums"
 	lib "backend/lib/utilities"
 	"backend/models"
+	"fmt"
 	"github.com/google/uuid"
 	"log"
 	"os"
@@ -58,41 +59,40 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
-		isSubtitleFile := fileType == enums.SUBTITLE
-		if !isSubtitleFile {
-			continue
+		isAudioFile := fileType == enums.AUDIO
+		if isAudioFile {
+			audioFile := models.FileTreeItem{
+				Id:   uuid.New().String(),
+				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
+				Name: lib.GetFilenameWithoutExtension(itemName),
+				Type: fileType,
+			}
+			currentFileItems = append(currentFileItems, audioFile)
+
+			possibleSubtitleFileName := strings.Replace(currentItemPath, path.Ext(itemName), fmt.Sprintf("%v.vtt", path.Ext(itemName)), 1)
+			_, err := os.Stat(possibleSubtitleFileName)
+			if err != nil {
+				log.Default().Printf("error while checking if a matching subttile file exists. Sourcefile '%v'; Error: '%v'\n", itemName, err.Error())
+				continue
+			}
+
+			isNotAssociatedWithSubtitleFile := os.IsNotExist(err)
+			if isNotAssociatedWithSubtitleFile {
+				log.Default().Printf("No matching subtitle file for audio file '%v' exists\n", itemName)
+				continue
+			}
+			subtitleFile := models.FileTreeItem{
+				Id:   uuid.New().String(),
+				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
+				// TODO NAME INCLUDES THE WHOLE PATH
+				Name:                  lib.GetFilenameWithoutExtension(possibleSubtitleFileName),
+				Type:                  enums.SUBTITLE,
+				AssociatedAudioFileId: audioFile.Id,
+			}
+			currentFileItems = append(currentFileItems, subtitleFile)
+
 		}
 
-		correspondingSourceFilePath := strings.Replace(currentItemPath, path.Ext(itemName), "", 1)
-		_, err := os.Stat(correspondingSourceFilePath)
-		if os.IsNotExist(err) {
-			log.Default().Printf("corresponding source file does not exist for '%v'\n", itemName)
-			continue
-		}
-
-		if err != nil {
-			log.Default().Printf("error while checking if corresponding source file exists for '%v': '%v'\n", itemName, err.Error())
-			continue
-		}
-
-		audioFileId := uuid.New().String()
-		newSubtitleFile := models.FileTreeItem{
-			Id:                    uuid.New().String(),
-			Path:                  lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
-			Name:                  lib.GetFilenameWithoutExtension(itemName),
-			Type:                  enums.SUBTITLE,
-			AssociatedAudioFileId: audioFileId,
-		}
-
-		newAssociatedSourceFile := models.FileTreeItem{
-			Id:   audioFileId,
-			Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: correspondingSourceFilePath, RootPath: rootPath}),
-			Name: lib.GetFilenameWithoutExtension(itemName),
-			Type: enums.AUDIO,
-		}
-
-		currentFileItems = append(currentFileItems, newSubtitleFile)
-		currentFileItems = append(currentFileItems, newAssociatedSourceFile)
 	}
 
 	return currentFileItems
