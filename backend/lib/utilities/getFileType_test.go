@@ -14,6 +14,12 @@ func Test_GetFileType(t *testing.T) {
 		{Title: "Return audio for mp3 file", Input: "example.mp3", Expected: enums.AUDIO},
 		{Title: "Return audio for wav file", Input: "example.wav", Expected: enums.AUDIO},
 		{Title: "Return video for mp4 file", Input: "example.mp4", Expected: enums.VIDEO},
+		{Title: "Return unknown for svg file", Input: "example.svg", Expected: enums.UNKNOWN},
+		{Title: "Return video for jpg file", Input: "example.jpg", Expected: enums.IMAGE},
+		{Title: "Return video for jpeg file", Input: "example.jpeg", Expected: enums.IMAGE},
+		{Title: "Return video for avif file", Input: "example.avif", Expected: enums.IMAGE},
+		{Title: "Return video for webp file", Input: "example.webp", Expected: enums.IMAGE},
+		{Title: "Return video for png file", Input: "example.png", Expected: enums.IMAGE},
 	}
 
 	for _, input := range inputs {

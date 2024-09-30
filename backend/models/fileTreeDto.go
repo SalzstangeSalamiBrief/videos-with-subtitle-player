@@ -5,10 +5,11 @@ import (
 )
 
 type FileTreeDto struct {
-	Name     string        `json:"name"`
-	Id       string        `json:"id"`
-	Files    []FileDto     `json:"files"`
-	Children []FileTreeDto `json:"children"`
+	Name      string        `json:"name"`
+	Id        string        `json:"id"`
+	Thumbnail string        `json:thumbnail`
+	Files     []FileDto     `json:"files"`
+	Children  []FileTreeDto `json:"children"`
 }
 
 type FileDto struct {

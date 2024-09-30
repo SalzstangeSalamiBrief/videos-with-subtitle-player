@@ -33,7 +33,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		itemName := item.Name()
 		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
-
+		// TODO REFACTOR INTO SWITCH WITH FUNCTION CALLS
 		if isDirectory {
 			log.Default().Printf("'%v' is a directory\n", itemName)
 			newDirectoryItems := getFullTree(currentItemPath)
@@ -46,28 +46,20 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
-		isVideoFile := fileType == enums.VIDEO
-		if isVideoFile {
-			videoFile := models.FileTreeItem{
-				Id:   uuid.New().String(),
-				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
-				Name: lib.GetFilenameWithoutExtension(itemName),
-				Type: fileType,
-			}
+		newFileItem := models.FileTreeItem{
+			Id:   uuid.New().String(),
+			Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
+			Name: lib.GetFilenameWithoutExtension(itemName),
+			Type: fileType,
+		}
 
-			currentFileItems = append(currentFileItems, videoFile)
+		if fileType == enums.VIDEO || fileType == enums.IMAGE {
+			currentFileItems = append(currentFileItems, newFileItem)
 			continue
 		}
 
-		isAudioFile := fileType == enums.AUDIO
-		if isAudioFile {
-			audioFile := models.FileTreeItem{
-				Id:   uuid.New().String(),
-				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
-				Name: lib.GetFilenameWithoutExtension(itemName),
-				Type: fileType,
-			}
-			currentFileItems = append(currentFileItems, audioFile)
+		if fileType == enums.AUDIO {
+			currentFileItems = append(currentFileItems, newFileItem)
 
 			possibleSubtitleFileName := strings.Replace(currentItemPath, path.Ext(itemName), fmt.Sprintf("%v.vtt", path.Ext(itemName)), 1)
 			_, err := os.Stat(possibleSubtitleFileName)
@@ -81,18 +73,18 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 				log.Default().Printf("No matching subtitle file for audio file '%v' exists\n", itemName)
 				continue
 			}
+
 			subtitleFile := models.FileTreeItem{
 				Id:   uuid.New().String(),
 				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
 				// TODO NAME INCLUDES THE WHOLE PATH
 				Name:                  lib.GetFilenameWithoutExtension(possibleSubtitleFileName),
 				Type:                  enums.SUBTITLE,
-				AssociatedAudioFileId: audioFile.Id,
+				AssociatedAudioFileId: newFileItem.Id,
 			}
 			currentFileItems = append(currentFileItems, subtitleFile)
 
 		}
-
 	}
 
 	return currentFileItems

@@ -6,5 +6,6 @@ const (
 	VIDEO    FileType = "video"
 	AUDIO    FileType = "audio"
 	SUBTITLE FileType = "subtitle"
+	IMAGE    FileType = "image"
 	UNKNOWN  FileType = "unknown"
 )
