@@ -1,12 +1,12 @@
 import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 import { useParams } from '@tanstack/react-router';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import { Route as RootLayoutRoute } from '../../routes/__root';
+import { IFileTree } from '$models/fileTree';
 
 interface IBreadcrumbItemProps {
-  item: IFileTreeDto;
+  item: IFileTree;
   isLastItem: boolean;
 }
 
