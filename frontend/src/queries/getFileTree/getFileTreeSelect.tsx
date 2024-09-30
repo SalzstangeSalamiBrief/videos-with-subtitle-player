@@ -4,7 +4,7 @@ import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
 import { IFileNode, IFileTree } from '$models/fileTree';
 
 export interface IGetFileTreeSelectReturn {
-  fileTrees: IFileTreeDto[];
+  fileTrees: IFileTree[];
   fileGroups: IFileNode[][];
 }
 
@@ -17,7 +17,7 @@ export function getFileTreeSelect(
   return { fileGroups, fileTrees };
 }
 
-function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
+function getFlatFilesGroups(fileTrees: IFileTree[]) {
   const fileGroups: IFileNode[][] = [];
 
   fileTrees.forEach((fileTree) => {
@@ -36,15 +36,23 @@ function getFlatFilesGroups(fileTrees: IFileTreeDto[]) {
 
 function transformDtoTreeToFileTree(dtoTree: IFileTreeDto[]): IFileTree[] {
   const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
+    const result: IFileTree = {
+      id: fileTree.id,
+      name: fileTree.name,
+      thumbnailId: fileTree.thumbnailId || undefined,
+      children: [],
+      files: [],
+    };
+
     if (fileTree.files?.length) {
-      fileTree.files = replaceDtosWithFiles(fileTree.files);
+      result.files = replaceDtosWithFiles(fileTree.files);
     }
 
     if (fileTree.children?.length) {
-      fileTree.children = transformDtoTreeToFileTree(fileTree.children);
+      result.children = transformDtoTreeToFileTree(fileTree.children);
     }
 
-    return fileTree;
+    return result;
   });
 
   return fileTrees;

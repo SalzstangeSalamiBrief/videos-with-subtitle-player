@@ -21,7 +21,7 @@ export function FolderListSection({ folders }: IFolderListSectionProps) {
             params={{ folderId: child.id }}
             className={baseLinkStyles}
           >
-            <ImageCard title={child.name} imageUrl="/example.avif" />
+            <ImageCard title={child.name} imageUrl={child.thumbnailId} />
           </TanStackRouterLink>
         </li>
       ))}
