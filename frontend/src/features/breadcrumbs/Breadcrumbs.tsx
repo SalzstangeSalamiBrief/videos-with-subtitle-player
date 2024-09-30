@@ -16,7 +16,7 @@ export function Breadcrumbs() {
   }
 
   return (
-    <nav>
+    <nav className="h-fit">
       <menu className="flex gap-2">
         <li>
           <TanStackRouterLink to="/" className={baseLinkStyles}>
@@ -27,7 +27,7 @@ export function Breadcrumbs() {
           <BreadcrumbItem
             key={activeFolder.id}
             item={activeFolder}
-            isLastItem={index === activeFolders.length - 1}
+            isLastItem={index === activeFolders.length - 1} // TODO IF VIDEO IS ACTIVE ENABLE
           />
         ))}
       </menu>

@@ -14,7 +14,10 @@ export function ImageCard({ title, imageUrl }: ICardProps) {
         backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
       }}
     >
-      <div className="rounded-md min-w-0 p-4 flex items-end bg-gradient-to-t from-slate-800 from-[5ch] to-[20ch]">
+      <div
+        role="presentation"
+        className="rounded-md min-w-0 p-4 flex items-end bg-gradient-to-t from-slate-800 from-[5ch] to-[20ch]"
+      >
         <header className="overflow-hidden h-fit rounded-b-md">
           <h1
             className="line-clamp-3 whitespace-normal text-ellipsis overflow-hidden font-bold max-w-text"

@@ -5,6 +5,7 @@ import { FileListSection } from '$features/fileListSection/FileListSection';
 import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 import { Route as RootLayoutRoute } from '../../../__root';
 import { IFileTree } from '$models/fileTree';
+import { ImageListSection } from '$features/imageListSection/ImageListSection';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
@@ -31,6 +32,7 @@ function AudioFilePage() {
       label: `Subfolders (${selectedFolder.children?.length})`,
       content: <FolderListSection folders={selectedFolder.children} />,
     },
+    // TODO INCONSISTENT USAGE OF TABS => IMAGE TAB AS REFERENCE
     {
       label: `Video and audio files (${selectedFolder.continuousFiles.length})`,
       content: (
@@ -39,6 +41,10 @@ function AudioFilePage() {
           files={selectedFolder.continuousFiles}
         />
       ),
+    },
+    {
+      label: `Image (${selectedFolder.images.length})`,
+      content: <ImageListSection images={selectedFolder.images} />,
     },
   ];
 

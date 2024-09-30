@@ -12,10 +12,12 @@ export const Route = createFileRoute('/folders/_folderLayout')({
 
 function FolderLayoutComponent() {
   return (
-    <div className="grid gap-4">
-      <Breadcrumbs />
-      <Outlet />
-    </div>
+    <>
+      <div className="flex flex-col gap-4 h-full">
+        <Breadcrumbs />
+        <Outlet />
+      </div>
+    </>
   );
 }
 
