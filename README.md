@@ -90,3 +90,4 @@ Using a cache would increase the complexity of the app and the update behavior o
 - breadcrumbs: display the current folder while watching a video
 - Reload of the frontend crashes the app => Maybe use the loader of the current route instead of the \_\_root => is it merged by tanstack query?
 - cards: try to make the title clickable and not the whole card? Test and evaluate
+- change backend folder structure. Currently it feels cluttered
