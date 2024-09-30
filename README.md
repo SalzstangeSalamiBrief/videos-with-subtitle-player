@@ -9,15 +9,17 @@ Such files could be video or audio files with or without subtitle tracks.
 
 ## Changelog
 
-| Date                    | Description                                       |
-| ----------------------- | ------------------------------------------------- |
-| 07.01.2024 - 30.03.2024 | Initialize Project by adding a front- and backend |
-| 30.03.2024              | Add support for videos                            |
-| 01.04.2024              | Replace ReactRouter with TanstackRouter           |
-| 20.04.2024              | Add tests                                         |
-| 24.04.2024 - 27.04.2024 | Refine router and path calculation in the backend |
-| 01.04.2024              | Test refinement                                   |
-| 03.08.2024 - TODO       | Restructure information architecture              |
+| Date                     | Description                                                                         |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| 07.01.2024 - 30.03.2024  | Initialize Project by adding a front- and backend                                   |
+| 30.03.2024               | Add support for videos                                                              |
+| 01.04.2024               | Replace ReactRouter with TanstackRouter                                             |
+| 20.04.2024               | Add tests                                                                           |
+| 24.04.2024 - 27.04.2024  | Refine router and path calculation in the backend                                   |
+| 01.04.2024               | Test refinement                                                                     |
+| 03.08.2024 - 230.08.2024 | Restructure information architecture                                                |
+| 23.09.2024               | Add JSONServer as alternative for the real backend while developing                 |
+| 30.09.2024               | Add image (thumbnail) support to the backend and display thumbnails in the frontend |
 
 ## Motivation
 
@@ -80,15 +82,22 @@ Using a cache would increase the complexity of the app and the update behavior o
 
 ## TODOs
 
-- Display Illustrations
-- Fix styling of the GUI
+### Feature
+
+- Display Illustrations (image tab)
 - Add integrations tests
 - Error Handler Middleware
 - Logging
+
+### Optimization
+
 - generic, chainable middlewares without an order
-- Empty root folder crashes the application
-- breadcrumbs: display the current folder while watching a video
-- Reload of the frontend crashes the app => Maybe use the loader of the current route instead of the \_\_root => is it merged by tanstack query?
 - cards: try to make the title clickable and not the whole card? Test and evaluate
 - change backend folder structure. Currently it feels cluttered
-- image tab
+
+### Bugs
+
+- Reload of the frontend crashes the app => Maybe use the loader of the current route instead of the \_\_root => is it merged by tanstack query?
+- breadcrumbs: The current folder is not listed while watching a continuous medium
+- Scroll bug after navigation: After navigation
+- Empty root folder crashes the application
