@@ -8,7 +8,7 @@ var AllowedVideoFileExtensions = []string{".mp4"}
 
 var AllowedContinuousFileExtensions = slices.Concat(AllowedAudioFileExtensions, AllowedVideoFileExtensions)
 
-var AllowedImageFileExtensions = []string{".avif", ".png", ".jpeg", ".jpg"}
+var AllowedImageFileExtensions = []string{".avif", ".png", ".jpeg", ".jpg", ".webp"}
 
 var AllowedSubtitleFileExtensions = []string{".vtt"}
 
