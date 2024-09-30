@@ -13,7 +13,6 @@ export function getFileTreeSelect(
 ): IGetFileTreeSelectReturn {
   const fileTrees = transformDtoTreeToFileTree(input);
   const fileGroups = getFlatFilesGroups(fileTrees);
-  console.log('select', fileTrees);
   return { fileGroups, fileTrees };
 }
 

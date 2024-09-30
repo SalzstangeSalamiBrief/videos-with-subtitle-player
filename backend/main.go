@@ -42,8 +42,8 @@ func main() {
 }
 
 func addRoutesToApp() {
-	router.Routes.AddRoute(usecases.GetAudioFileUseCaseRoute)
-	router.Routes.AddRoute(usecases.GetSubtitleFileUseCaseRoute)
+	router.Routes.AddRoute(usecases.GetContinuousFileUseCaseRoute)
+	router.Routes.AddRoute(usecases.GetDiscreteFileUseCaseRoute)
 	router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
 }
 
