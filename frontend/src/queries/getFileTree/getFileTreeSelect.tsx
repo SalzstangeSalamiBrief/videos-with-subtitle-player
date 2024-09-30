@@ -20,10 +20,15 @@ function getFlatFilesGroups(fileTrees: IFileTree[]) {
   const fileGroups: IFileNode[][] = [];
 
   fileTrees.forEach((fileTree) => {
-    fileGroups.push(fileTree.continuousFiles);
-    fileGroups.push(fileTree.images);
+    if (fileTree.continuousFiles.length) {
+      fileGroups.push(fileTree.continuousFiles);
+    }
 
-    if (fileTree.continuousFiles?.length) {
+    if (fileTree.images.length) {
+      fileGroups.push(fileTree.images);
+    }
+
+    if (fileTree.children?.length) {
       const flatGroup = getFlatFilesGroups(fileTree.children);
       fileGroups.push(...flatGroup);
     }
@@ -40,14 +45,9 @@ function transformDtoTreeToFileTree(
   }
 
   const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
-    const images = replaceDtosWithFiles(
-      fileTree.files?.filter((file) => file.fileType === FileType.IMAGE),
-    );
+    const images = replaceDtosWithFiles(fileTree.files?.filter(isImageFile));
     const continuousFiles = replaceDtosWithFiles(
-      fileTree.files?.filter(
-        (file) =>
-          file.fileType === FileType.AUDIO || file.fileType === FileType.VIDEO,
-      ),
+      fileTree.files?.filter((file) => isAudioFile(file) || isVideoFile(file)),
     );
     const children = transformDtoTreeToFileTree(fileTree.children);
 
@@ -112,4 +112,12 @@ function isSubtitleFile(file: PossibleFilesDto): file is ISubtitleFileDto {
 
 function isAudioFile(file: PossibleFilesDto): file is IFileDto {
   return file.fileType === FileType.AUDIO;
+}
+
+function isVideoFile(file: PossibleFilesDto): file is IFileDto {
+  return file.fileType === FileType.VIDEO;
+}
+
+function isImageFile(file: PossibleFilesDto): file is IFileDto {
+  return file.fileType === FileType.IMAGE;
 }

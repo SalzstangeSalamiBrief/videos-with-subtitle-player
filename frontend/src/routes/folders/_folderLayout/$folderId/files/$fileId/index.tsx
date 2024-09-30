@@ -21,8 +21,7 @@ function FilePage() {
     return (
       <ErrorMessage
         error="Could not find file."
-        message="Something went wrong"
-        description="Please try again later."
+        message="Could not find file."
       />
     );
   }

@@ -15,7 +15,6 @@ function AudioFilePage() {
   const { fileTrees } = RootLayoutRoute.useLoaderData();
   const { folderId } = useParams({ strict: false });
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
-  console.log({ folderId, fileTrees });
   if (!selectedFolder) {
     const message = `Could not find folder with id '${folderId}'`;
     return (
