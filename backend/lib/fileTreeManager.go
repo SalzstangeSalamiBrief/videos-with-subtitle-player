@@ -2,7 +2,7 @@ package lib
 
 import (
 	"backend/enums"
-	lib "backend/lib/utilities"
+	"backend/lib/utilities/logic"
 	"backend/models"
 	"fmt"
 	"github.com/google/uuid"
@@ -41,15 +41,15 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
-		fileType := lib.GetFileType(itemName)
+		fileType := logic.GetFileType(itemName)
 		if fileType == enums.UNKNOWN {
 			continue
 		}
 
 		newFileItem := models.FileTreeItem{
 			Id:   uuid.New().String(),
-			Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
-			Name: lib.GetFilenameWithoutExtension(itemName),
+			Path: logic.GetFolderPath(logic.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
+			Name: logic.GetFilenameWithoutExtension(itemName),
 			Type: fileType,
 		}
 
@@ -76,9 +76,9 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 			subtitleFile := models.FileTreeItem{
 				Id:   uuid.New().String(),
-				Path: lib.GetFolderPath(lib.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
+				Path: logic.GetFolderPath(logic.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
 				// TODO NAME INCLUDES THE WHOLE PATH
-				Name:                  lib.GetFilenameWithoutExtension(possibleSubtitleFileName),
+				Name:                  logic.GetFilenameWithoutExtension(possibleSubtitleFileName),
 				Type:                  enums.SUBTITLE,
 				AssociatedAudioFileId: newFileItem.Id,
 			}

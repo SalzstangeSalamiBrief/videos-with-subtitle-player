@@ -1,7 +1,7 @@
 package usecases
 
 import (
-	lib "backend/lib/utilities"
+	lib "backend/lib/utilities/models"
 	"backend/router"
 	"backend/useCases/utilities"
 	"fmt"
