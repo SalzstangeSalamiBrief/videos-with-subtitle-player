@@ -2,7 +2,6 @@ package models
 
 import "slices"
 
-// TODO CREATE A FOLDER FOR THIS
 var AllowedAudioFileExtensions = []string{".mp3", ".wav"}
 
 var AllowedVideoFileExtensions = []string{".mp4"}

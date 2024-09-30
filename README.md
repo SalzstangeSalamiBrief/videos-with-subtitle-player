@@ -81,10 +81,12 @@ Using a cache would increase the complexity of the app and the update behavior o
 ## TODOs
 
 - Display Illustrations
-- Display audios without vtt file
 - Fix styling of the GUI
 - Add integrations tests
 - Error Handler Middleware
 - Logging
-- Content of Landing Page
 - generic, chainable middlewares without an order
+- Empty root folder crashes the application
+- breadcrumbs: display the current folder while watching a video
+- Reload of the frontend crashes the app => Maybe use the loader of the current route instead of the \_\_root => is it merged by tanstack query?
+- cards: try to make the title clickable and not the whole card? Test and evaluate
