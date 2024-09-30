@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	"backend/enums"
 	"backend/lib"
 	"backend/models"
 	"backend/router"
@@ -9,6 +10,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"net/http"
+	"regexp"
 )
 
 var GetFileTreeUseCaseRoute = router.Route{
@@ -37,6 +39,11 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	for _, file := range filesArray {
 		pathParts := usecases.GetPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathParts)
+	}
+
+	for _, file := range filesArray {
+		pathParts := usecases.GetPartsOfPath(file)
+		addThumbnailToTree(&rootFileHierarchy, file, pathParts)
 	}
 
 	for _, file := range filesArray {
@@ -76,6 +83,24 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			isGettingMatchingItemInHierarchy = false
 		}
 	}
+}
+
+func addThumbnailToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+	if file.Type != enums.IMAGE {
+		return
+	}
+
+	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
+	if currentNode.ThumbnailId != "" {
+		return
+	}
+
+	isThumbnailImage := regexp.MustCompile(`(?i)Thumbnail`).MatchString(file.Name)
+	if !isThumbnailImage {
+		return
+	}
+
+	currentNode.ThumbnailId = file.Id
 }
 
 func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {

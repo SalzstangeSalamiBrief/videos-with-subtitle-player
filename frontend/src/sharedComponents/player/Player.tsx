@@ -17,13 +17,16 @@ export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
         crossOrigin="anonymous"
         autoPlay
       >
-        <source type="audio/mp3" src={`${baseUrl}/api/file/audio/${audioId}`} />
+        <source
+          type="audio/mp3"
+          src={`${baseUrl}/api/file/continuous/${audioId}`}
+        />
         {fileType === FileType.AUDIO && subtitleId && (
           <track
             default
             kind="captions"
             srcLang="en"
-            src={`${baseUrl}/api/file/subtitle/${subtitleId}`}
+            src={`${baseUrl}/api/file/discrete/${subtitleId}`}
           />
         )}
       </video>

@@ -1,6 +1,7 @@
 package usecases
 
 import (
+	lib "backend/lib/utilities/models"
 	"backend/router"
 	"backend/useCases/utilities"
 	"fmt"
@@ -12,24 +13,24 @@ import (
 )
 
 const chunkSize = 1 * 1024 * 1024 // 3mb
-const GetAudioFileUseCasePath = `\/file\/audio\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
+const GetContinuousFileUseCasePath = `\/file\/continuous\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
-var GetAudioFileUseCaseRoute = router.Route{
-	Path:    GetAudioFileUseCasePath,
+var GetContinuousFileUseCaseRoute = router.Route{
+	Path:    GetContinuousFileUseCasePath,
 	Method:  http.MethodGet,
-	Handler: getAudioFileHandler,
+	Handler: getContinuousFileHandler,
 }
 
-func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
+func getContinuousFileHandler(w http.ResponseWriter, r *http.Request) {
 	rootPath := os.Getenv("ROOT_PATH")
-	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/audio/")
-	audioFileInTree := usecases.GetFileByIdAndExtension(fileIdString, ".wav", ".mp3", ".mp4")
-	if audioFileInTree.Id == "" {
+	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
+	continuousFileInTree := usecases.GetFileByIdAndExtension(fileIdString, lib.AllowedContinuousFileExtensions...)
+	if continuousFileInTree.Id == "" {
 		router.ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return
 	}
 
-	filePathOnHardDisk := path.Join(rootPath, audioFileInTree.Path)
+	filePathOnHardDisk := path.Join(rootPath, continuousFileInTree.Path)
 	file, err := os.Open(filePathOnHardDisk)
 	defer file.Close()
 	if err != nil {
@@ -46,7 +47,7 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rangeHeaderWithPrefix := r.Header.Get("Range")
-	start, end := usecases.GetRequestedRangesFromHeaderField(usecases.GetRequestRangesInput{rangeHeaderWithPrefix, chunkSize, fileSize})
+	start, end := usecases.GetRequestedRangesFromHeaderField(usecases.GetRequestRangesInput{RangeHeaderWithPrefix: rangeHeaderWithPrefix, ChunkSize: chunkSize, FileSize: fileSize})
 	if start == 0 && end == 0 {
 		router.ErrorHandler(w, fmt.Sprintf("The request does not contain a range header for file '%v'", fileIdString), http.StatusBadRequest)
 		return
@@ -60,9 +61,9 @@ func getAudioFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	addPartialContentHeader(w, start, end, fileSize)
-	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", audioFileInTree.Name))
+	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", continuousFileInTree.Name))
 
-	mimeType := usecases.GetContentTypeHeaderMimeType(audioFileInTree)
+	mimeType := usecases.GetContentTypeHeaderMimeType(continuousFileInTree)
 	w.Header().Add("Content-Type", mimeType)
 	w.WriteHeader(http.StatusPartialContent)
 	io.CopyN(w, file, end-start)
