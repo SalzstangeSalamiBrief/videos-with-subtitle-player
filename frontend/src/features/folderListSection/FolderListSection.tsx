@@ -1,11 +1,11 @@
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import { getImageUrlForId } from '$lib/utilities/getImageUrl';
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
+import { IFileTree } from '$models/fileTree';
 import { ImageCard } from '$sharedComponents/card/ImageCard';
 import { Link as TanStackRouterLink } from '@tanstack/react-router';
 
 interface IFolderListSectionProps {
-  folders: IFileTreeDto[];
+  folders: IFileTree[];
 }
 
 export function FolderListSection({ folders }: IFolderListSectionProps) {

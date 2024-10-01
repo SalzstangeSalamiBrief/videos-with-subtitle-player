@@ -25,12 +25,12 @@ export function Tabs({ tabs, label }: ITabsProps) {
 
   const activeTab = tabs[activeTabIndex];
   return (
-    <section aria-labelledby={labelId}>
+    <section aria-labelledby={labelId} className="h-full pb-8">
       <h1 id={labelId} className="sr-only">
         {label}
       </h1>
 
-      <div role="tablist" className="grid gap-8">
+      <div role="tablist" className="flex flex-col gap-8 h-full">
         <div role="presentation" className="flex gap-2">
           {tabs.map((tab, index) => {
             const isActive = index === activeTabIndex;
@@ -56,6 +56,7 @@ export function Tabs({ tabs, label }: ITabsProps) {
         </div>
 
         <div
+          className="flex-grow"
           id={getTabPanelId(activeTabIndex)}
           role="tabpanel"
           tabIndex={0}

@@ -1,5 +1,8 @@
-import { FileType } from '$enums/FileType';
-import { ISubtitleFileDto, IFileDto } from '$models/dtos/fileDtos';
+import {
+  isImageFile,
+  isSubtitleFile,
+  isAudioFile,
+} from '$lib/type-predicates/file-type-predicates';
 import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
 import { IFileNode, IFileTree } from '$models/fileTree';
 
@@ -20,8 +23,12 @@ function getFlatFilesGroups(fileTrees: IFileTree[]) {
   const fileGroups: IFileNode[][] = [];
 
   fileTrees.forEach((fileTree) => {
-    if (fileTree.files?.length) {
-      fileGroups.push(fileTree.files);
+    if (fileTree.continuousFiles.length) {
+      fileGroups.push(fileTree.continuousFiles);
+    }
+
+    if (fileTree.images.length) {
+      fileGroups.push(fileTree.images);
     }
 
     if (fileTree.children?.length) {
@@ -33,23 +40,28 @@ function getFlatFilesGroups(fileTrees: IFileTree[]) {
   return fileGroups;
 }
 
-function transformDtoTreeToFileTree(dtoTree: IFileTreeDto[]): IFileTree[] {
+function transformDtoTreeToFileTree(
+  dtoTree: IFileTreeDto[] | undefined,
+): IFileTree[] {
+  if (!dtoTree?.length) {
+    return [];
+  }
+
   const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
+    const images = replaceDtosWithFiles(fileTree.files?.filter(isImageFile));
+    const continuousFiles = replaceDtosWithFiles(
+      fileTree.files?.filter((file) => !isImageFile(file)),
+    );
+    const children = transformDtoTreeToFileTree(fileTree.children);
+
     const result: IFileTree = {
       id: fileTree.id,
       name: fileTree.name,
       thumbnailId: fileTree.thumbnailId || undefined,
-      children: [],
-      files: [],
+      continuousFiles,
+      images,
+      children,
     };
-
-    if (fileTree.files?.length) {
-      result.files = replaceDtosWithFiles(fileTree.files);
-    }
-
-    if (fileTree.children?.length) {
-      result.children = transformDtoTreeToFileTree(fileTree.children);
-    }
 
     return result;
   });
@@ -57,7 +69,13 @@ function transformDtoTreeToFileTree(dtoTree: IFileTreeDto[]): IFileTree[] {
   return fileTrees;
 }
 
-function replaceDtosWithFiles(input: PossibleFilesDto[]): IFileNode[] {
+function replaceDtosWithFiles(
+  input: PossibleFilesDto[] | undefined,
+): IFileNode[] {
+  if (!input?.length) {
+    return [];
+  }
+
   const nodes: IFileNode[] = [];
   const subtitleFiles = input.filter((file) => isSubtitleFile(file));
   const mediaFiles = input.filter((file) => !isSubtitleFile(file));
@@ -89,12 +107,4 @@ function replaceDtosWithFiles(input: PossibleFilesDto[]): IFileNode[] {
   }
 
   return nodes;
-}
-
-function isSubtitleFile(file: PossibleFilesDto): file is ISubtitleFileDto {
-  return file.fileType === FileType.SUBTITLE;
-}
-
-function isAudioFile(file: PossibleFilesDto): file is IFileDto {
-  return file.fileType === FileType.AUDIO;
 }

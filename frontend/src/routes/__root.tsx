@@ -20,11 +20,11 @@ export const Route = createRootRoute({
 
 function Root() {
   return (
-    <div className="grid gap-4">
-      <main className="p-4 overflow-y-auto max-h-[100lvh]">
-        <Outlet />
-      </main>
-    </div>
+    // <div className="grid gap-4">
+    <main className="p-4 overflow-y-auto h-full max-h-[100lvh]">
+      <Outlet />
+    </main>
+    // </div>
   );
 }
 

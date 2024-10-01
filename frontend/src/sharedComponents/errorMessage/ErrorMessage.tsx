@@ -12,7 +12,7 @@ export function ErrorMessage({
   console.error(error);
   // TODO IMPROVE
   return (
-    <section className="bg-red-50 text-red-900 p-4 rounded-md">
+    <section className="bg-red-50 text-red-900 p-4 rounded-md h-fit">
       <h1 className="font-bold text-lg">{message}</h1>
       <p>{description}</p>
     </section>

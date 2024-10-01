@@ -1,10 +1,11 @@
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { FolderListSection } from '$features/folderListSection/FolderListSection';
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
 import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 import { Route as RootLayoutRoute } from '../../../__root';
+import { IFileTree } from '$models/fileTree';
+import { ImageListSection } from '$features/imageListSection/ImageListSection';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
@@ -15,7 +16,6 @@ function AudioFilePage() {
   const { fileTrees } = RootLayoutRoute.useLoaderData();
   const { folderId } = useParams({ strict: false });
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
-  console.log({ folderId, fileTrees });
   if (!selectedFolder) {
     const message = `Could not find folder with id '${folderId}'`;
     return (
@@ -32,9 +32,19 @@ function AudioFilePage() {
       label: `Subfolders (${selectedFolder.children?.length})`,
       content: <FolderListSection folders={selectedFolder.children} />,
     },
+    // TODO INCONSISTENT USAGE OF TABS => IMAGE TAB AS REFERENCE
     {
-      label: `Video and audio files (${selectedFolder.files.length})`,
-      content: <FileListSection selectedFolder={selectedFolder} />,
+      label: `Video and audio files (${selectedFolder.continuousFiles.length})`,
+      content: (
+        <FileListSection
+          folderId={selectedFolder.id}
+          files={selectedFolder.continuousFiles}
+        />
+      ),
+    },
+    {
+      label: `Image (${selectedFolder.images.length})`,
+      content: <ImageListSection images={selectedFolder.images} />,
     },
   ];
 
@@ -42,9 +52,9 @@ function AudioFilePage() {
 }
 
 function getFolderFromFileTree(
-  fileTrees: IFileTreeDto[],
+  fileTrees: IFileTree[],
   folderId: string | undefined,
-): Maybe<IFileTreeDto> {
+): Maybe<IFileTree> {
   for (let i = 0; i < fileTrees.length; i += 1) {
     const currentTree = fileTrees[i];
     if (currentTree.id === folderId) {

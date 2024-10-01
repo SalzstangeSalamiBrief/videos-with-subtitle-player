@@ -1,9 +1,9 @@
-import { IFileTreeDto } from '$models/dtos/fileTreeDto';
+import { IFileTree } from '$models/fileTree';
 
 export function getFoldersInActiveTree(
-  nodes: Maybe<IFileTreeDto[]>,
+  nodes: Maybe<IFileTree[]>,
   folderId: Maybe<string>,
-): IFileTreeDto[] {
+): IFileTree[] {
   if (!folderId) {
     return [];
   }
@@ -12,7 +12,7 @@ export function getFoldersInActiveTree(
     return [];
   }
 
-  let activeFileIds: IFileTreeDto[] = [];
+  let activeFileIds: IFileTree[] = [];
   for (let i = 0; i < nodes.length; i += 1) {
     const currentNode = nodes[i];
     const [hasMatch, matchingIds] = getActiveChildNodes(currentNode, folderId);
@@ -26,9 +26,9 @@ export function getFoldersInActiveTree(
 }
 
 function getActiveChildNodes(
-  currentNode: IFileTreeDto,
+  currentNode: IFileTree,
   folderId: Maybe<string>,
-): [hasMatch: boolean, childIds: IFileTreeDto[]] {
+): [hasMatch: boolean, childIds: IFileTree[]] {
   if (!folderId) {
     return [false, []];
   }
