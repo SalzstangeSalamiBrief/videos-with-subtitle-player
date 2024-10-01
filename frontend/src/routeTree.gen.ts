@@ -95,15 +95,90 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  FoldersRoute: FoldersRoute.addChildren({
-    FoldersFolderLayoutRoute: FoldersFolderLayoutRoute.addChildren({
-      FoldersFolderLayoutFolderIdIndexRoute,
-      FoldersFolderLayoutFolderIdFilesFileIdIndexRoute,
-    }),
-  }),
-})
+interface FoldersFolderLayoutRouteChildren {
+  FoldersFolderLayoutFolderIdIndexRoute: typeof FoldersFolderLayoutFolderIdIndexRoute
+  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute: typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
+}
+
+const FoldersFolderLayoutRouteChildren: FoldersFolderLayoutRouteChildren = {
+  FoldersFolderLayoutFolderIdIndexRoute: FoldersFolderLayoutFolderIdIndexRoute,
+  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute:
+    FoldersFolderLayoutFolderIdFilesFileIdIndexRoute,
+}
+
+const FoldersFolderLayoutRouteWithChildren =
+  FoldersFolderLayoutRoute._addFileChildren(FoldersFolderLayoutRouteChildren)
+
+interface FoldersRouteChildren {
+  FoldersFolderLayoutRoute: typeof FoldersFolderLayoutRouteWithChildren
+}
+
+const FoldersRouteChildren: FoldersRouteChildren = {
+  FoldersFolderLayoutRoute: FoldersFolderLayoutRouteWithChildren,
+}
+
+const FoldersRouteWithChildren =
+  FoldersRoute._addFileChildren(FoldersRouteChildren)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersRouteWithChildren
+  '/folders/_folderLayout': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/_folderLayout/$folderId/': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/_folderLayout/$folderId/files/$fileId/': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/folders'
+    | '/folders/$folderId'
+    | '/folders/$folderId/files/$fileId'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/folders'
+    | '/folders/$folderId'
+    | '/folders/$folderId/files/$fileId'
+  id:
+    | '__root__'
+    | '/'
+    | '/folders'
+    | '/folders/_folderLayout'
+    | '/folders/_folderLayout/$folderId/'
+    | '/folders/_folderLayout/$folderId/files/$fileId/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  FoldersRoute: typeof FoldersRouteWithChildren
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  FoldersRoute: FoldersRouteWithChildren,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
