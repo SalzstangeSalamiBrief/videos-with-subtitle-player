@@ -15,10 +15,6 @@ export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
 function AudioFilePage() {
   const { fileTrees } = RootLayoutRoute.useLoaderData();
   const { folderId } = useParams({ strict: false });
-  const baka = Route.useLoaderData();
-  console.log('RR', baka);
-
-  console.log('TT', folderId, fileTrees);
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
   if (!selectedFolder) {
     const message = `Could not find folder with id '${folderId}'`;
