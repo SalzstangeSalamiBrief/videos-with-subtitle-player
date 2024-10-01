@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Route as RootLayoutRoute } from './__root';
-import { FolderListSection } from '$features/folderListSection/FolderListSection';
+import { FolderList } from '$sharedComponents/folderList/FolderList';
 
 export const Route = createFileRoute('/')({ component: LandingPage });
 
@@ -10,5 +10,9 @@ function LandingPage() {
   // TODO HJANDLE NO ITEMS FOUND
   // TODO CHECK LOADING STATE
   // TODO REFACTOR COMPONENTS
-  return <FolderListSection folders={fileTrees} />;
+  if (!fileTrees.length) {
+    return <p>The app does not contain any folders and files.</p>;
+  }
+
+  return <FolderList folders={fileTrees} />;
 }
