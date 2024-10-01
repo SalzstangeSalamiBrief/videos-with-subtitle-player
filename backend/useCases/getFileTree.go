@@ -69,7 +69,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		} else {
 			child := models.FileTreeDto{
-				Id:       uuid.New().String(),
+				Id:       currentNode.Id,
 				Name:     currentPathPart,
 				Children: []models.FileTreeDto{},
 				Files:    []models.FileDto{},
