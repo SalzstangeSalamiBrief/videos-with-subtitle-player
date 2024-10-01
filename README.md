@@ -20,7 +20,7 @@ Such files could be video or audio files with or without subtitle tracks.
 | 03.08.2024 - 230.08.2024 | Restructure information architecture                                                |
 | 23.09.2024               | Add JSONServer as alternative for the real backend while developing                 |
 | 30.09.2024               | Add image (thumbnail) support to the backend and display thumbnails in the frontend |
-| 01.10.2024               | Create a Github project and move todos from the readme to the project               |
+| 01.10.2024               | <ul><li>Create a Github project and move todos from the readme to the project</li><li>Fix an issue that created a new id for each item on page refresh</li></ul>               |
 
 ## Motivation
 
