@@ -1,5 +1,8 @@
-import { FileType } from '$enums/FileType';
-import { ISubtitleFileDto, IFileDto } from '$models/dtos/fileDtos';
+import {
+  isImageFile,
+  isSubtitleFile,
+  isAudioFile,
+} from '$lib/type-predicates/file-type-predicates';
 import { IFileTreeDto, PossibleFilesDto } from '$models/dtos/fileTreeDto';
 import { IFileNode, IFileTree } from '$models/fileTree';
 
@@ -47,7 +50,7 @@ function transformDtoTreeToFileTree(
   const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
     const images = replaceDtosWithFiles(fileTree.files?.filter(isImageFile));
     const continuousFiles = replaceDtosWithFiles(
-      fileTree.files?.filter((file) => isAudioFile(file) || isVideoFile(file)),
+      fileTree.files?.filter((file) => !isImageFile(file)),
     );
     const children = transformDtoTreeToFileTree(fileTree.children);
 
@@ -104,20 +107,4 @@ function replaceDtosWithFiles(
   }
 
   return nodes;
-}
-
-function isSubtitleFile(file: PossibleFilesDto): file is ISubtitleFileDto {
-  return file.fileType === FileType.SUBTITLE;
-}
-
-function isAudioFile(file: PossibleFilesDto): file is IFileDto {
-  return file.fileType === FileType.AUDIO;
-}
-
-function isVideoFile(file: PossibleFilesDto): file is IFileDto {
-  return file.fileType === FileType.VIDEO;
-}
-
-function isImageFile(file: PossibleFilesDto): file is IFileDto {
-  return file.fileType === FileType.IMAGE;
 }
