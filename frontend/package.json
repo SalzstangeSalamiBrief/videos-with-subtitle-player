@@ -1,7 +1,11 @@
 {
-  "name": "react-backend",
+  "name": "video-with-subtitle-player",
+  "author": {
+    "name": "SalzstangeSalamiBrief"
+  },
+  "description": "A GUI that is able to display and stream a hierarchy of images, video files, and audio files with subtitles.",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.5.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,29 +18,29 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.1.5",
-    "@tanstack/react-query": "^5.51.23",
-    "@tanstack/react-router": "^1.45.0",
+    "@tanstack/react-query": "^5.56.2",
+    "@tanstack/react-router": "^1.58.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@tanstack/router-vite-plugin": "^1.45.0",
-    "@types/node": "^20.14.10",
-    "@types/react": "^18.3.3",
+    "@tanstack/router-vite-plugin": "^1.58.12",
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.10",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.3.1",
-    "autoprefixer": "^10.4.19",
-    "eslint": "^8.57.0",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.8",
+    "eslint-plugin-react-refresh": "^0.4.12",
     "json-server": "0.17.4",
-    "postcss": "^8.4.40",
-    "prettier": "^3.3.2",
-    "tailwindcss": "^3.4.7",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
+    "vite": "^5.4.8",
     "vite-tsconfig-paths": "^4.3.2"
   }
 }
