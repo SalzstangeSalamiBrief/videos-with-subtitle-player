@@ -19,8 +19,13 @@ var GetFileTreeUseCaseRoute = router.Route{
 	Method:  http.MethodGet,
 }
 
+var fileTree models.FileTreeDto
+
 func getFileTreeUseCase(w http.ResponseWriter, r *http.Request) {
-	fileTree := GetFileTreeDto(lib.FileTreeItems)
+	if fileTree.Id == "" {
+		fileTree = GetFileTreeDto(lib.FileTreeItems)
+	}
+
 	encodedBytes, err := json.Marshal(fileTree.Children)
 	if err != nil {
 		router.ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
@@ -43,7 +48,7 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 
 	for _, file := range filesArray {
 		pathParts := usecases.GetPartsOfPath(file)
-		addThumbnailToTree(&rootFileHierarchy, file, pathParts)
+		getThumbnailOfTree(&rootFileHierarchy, file, pathParts)
 	}
 
 	for _, file := range filesArray {
@@ -55,37 +60,30 @@ func GetFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 }
 
 func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtension []string) {
-	var currentPathPart string
 	remainingPathParts := pathPartsWithoutFileExtension
 	currentNode := parentTree
 
-	isGettingMatchingItemInHierarchy := len(remainingPathParts[0]) > 0
-	for isGettingMatchingItemInHierarchy {
-		currentPathPart = remainingPathParts[0]
+	for i := 0; i < len(remainingPathParts); i += 1 {
+		currentPathPart := remainingPathParts[i]
 		indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, currentPathPart)
 
-		hasMatchingChild := indexOfMatchingChild >= 0
-		if hasMatchingChild {
+		if indexOfMatchingChild >= 0 {
 			currentNode = &currentNode.Children[indexOfMatchingChild]
-		} else {
-			child := models.FileTreeDto{
-				Id:       uuid.New().String(),
-				Name:     currentPathPart,
-				Children: []models.FileTreeDto{},
-				Files:    []models.FileDto{},
-			}
-			currentNode.Children = append(currentNode.Children, child)
-			currentNode = &child
+			continue
 		}
 
-		remainingPathParts = remainingPathParts[1:]
-		if len(remainingPathParts) == 0 {
-			isGettingMatchingItemInHierarchy = false
+		child := models.FileTreeDto{
+			Id:       uuid.New().String(),
+			Name:     currentPathPart,
+			Children: []models.FileTreeDto{},
+			Files:    []models.FileDto{},
 		}
+		currentNode.Children = append(currentNode.Children, child)
+		currentNode = &child
 	}
 }
 
-func addThumbnailToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
 	if file.Type != enums.IMAGE {
 		return
 	}
@@ -121,16 +119,12 @@ func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathParts
 	remainingPathParts := pathPartsWithFileExtension
 	currentNode := rootFileTree
 
-	for len(remainingPathParts) > 0 {
-		currentPathPart = remainingPathParts[0]
+	for i := 0; i < len(pathPartsWithFileExtension); i += 1 {
+		currentPathPart = remainingPathParts[i]
 		indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, currentPathPart)
-		hasMatchingChild := indexOfMatchingChild >= 0 // cannot have match on the last element because the file name with extension is not included in the file tree
-
-		if hasMatchingChild {
+		if indexOfMatchingChild >= 0 {
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		}
-
-		remainingPathParts = remainingPathParts[1:]
 	}
 
 	return currentNode
