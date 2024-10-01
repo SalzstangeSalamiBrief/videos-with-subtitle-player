@@ -73,7 +73,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 		}
 
 		child := models.FileTreeDto{
-			Id:       currentNode.Id,
+			Id:       uuid.New().String(),
 			Name:     currentPathPart,
 			Children: []models.FileTreeDto{},
 			Files:    []models.FileDto{},
@@ -81,27 +81,6 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 		currentNode.Children = append(currentNode.Children, child)
 		currentNode = &child
 	}
-
-	//for isGettingMatchingItemInHierarchy {
-	//	indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, remainingPathParts[0])
-	//
-	//	hasMatchingChild := indexOfMatchingChild >= 0
-	//	if hasMatchingChild {
-	//		currentNode = &currentNode.Children[indexOfMatchingChild]
-	//	} else {
-	//		child := models.FileTreeDto{
-	//			Id:       currentNode.Id,
-	//			Name:     currentPathPart,
-	//			Children: []models.FileTreeDto{},
-	//			Files:    []models.FileDto{},
-	//		}
-	//		currentNode.Children = append(currentNode.Children, child)
-	//		currentNode = &child
-	//	}
-	//
-	//	remainingPathParts = remainingPathParts[1:]
-	//	isGettingMatchingItemInHierarchy = len(remainingPathParts) > 0
-	//}
 }
 
 func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
@@ -140,16 +119,12 @@ func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathParts
 	remainingPathParts := pathPartsWithFileExtension
 	currentNode := rootFileTree
 
-	for len(remainingPathParts) > 0 {
-		currentPathPart = remainingPathParts[0]
+	for i := 0; i < len(pathPartsWithFileExtension); i += 1 {
+		currentPathPart = remainingPathParts[i]
 		indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, currentPathPart)
-		hasMatchingChild := indexOfMatchingChild >= 0 // cannot have match on the last element because the file name with extension is not included in the file tree
-
-		if hasMatchingChild {
+		if indexOfMatchingChild >= 0 {
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		}
-
-		remainingPathParts = remainingPathParts[1:]
 	}
 
 	return currentNode
