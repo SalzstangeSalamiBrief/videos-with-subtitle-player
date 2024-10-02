@@ -7,10 +7,10 @@ import { IFileTree } from '$models/fileTree';
 
 interface IBreadcrumbItemProps {
   item: IFileTree;
-  isLastItem: boolean;
+  isLink: boolean;
 }
 
-export function BreadcrumbItem({ isLastItem, item }: IBreadcrumbItemProps) {
+export function BreadcrumbItem({ isLink, item }: IBreadcrumbItemProps) {
   const { folderId } = useParams({ strict: false });
   const { fileTrees } = RootLayoutRoute.useLoaderData();
   const items = getFoldersInActiveTree(fileTrees, folderId);
@@ -19,7 +19,7 @@ export function BreadcrumbItem({ isLastItem, item }: IBreadcrumbItemProps) {
     return null;
   }
 
-  if (isLastItem) {
+  if (!isLink) {
     return (
       <li className={baseClasses} title={item.name}>
         &gt; {item.name}

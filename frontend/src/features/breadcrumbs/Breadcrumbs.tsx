@@ -6,9 +6,8 @@ import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import { Route as RootLayoutRoute } from '../../routes/__root';
 
 export function Breadcrumbs() {
-  const { folderId } = useParams({ strict: false });
+  const { folderId, fileId } = useParams({ strict: false });
   const { fileTrees } = RootLayoutRoute.useLoaderData();
-  // TODO: ON INITIAL LOAD THE CONTEXT IST EMPTY => MAYBE USE LOADER FUNCTIONS FROM THE ROUTER
   const activeFolders = getFoldersInActiveTree(fileTrees, folderId);
 
   if (!activeFolders.length) {
@@ -23,13 +22,17 @@ export function Breadcrumbs() {
             Home
           </TanStackRouterLink>
         </li>
-        {activeFolders.map((activeFolder, index) => (
-          <BreadcrumbItem
-            key={activeFolder.id}
-            item={activeFolder}
-            isLastItem={index === activeFolders.length - 1} // TODO IF VIDEO IS ACTIVE ENABLE
-          />
-        ))}
+        {activeFolders.map((activeFolder, index) => {
+          const isLastItem = index === activeFolders.length - 1;
+          const isFileSelected = fileId !== undefined;
+          return (
+            <BreadcrumbItem
+              key={activeFolder.id}
+              item={activeFolder}
+              isLink={!isLastItem || isFileSelected}
+            />
+          );
+        })}
       </menu>
     </nav>
   );
