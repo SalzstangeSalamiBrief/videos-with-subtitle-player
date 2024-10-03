@@ -9,18 +9,18 @@ Such files could be video or audio files with or without subtitle tracks.
 
 ## Changelog
 
-| Date                     | Description                                                                         |
-| ------------------------ | ----------------------------------------------------------------------------------- |
-| 07.01.2024 - 30.03.2024  | Initialize Project by adding a front- and backend                                   |
-| 30.03.2024               | Add support for videos                                                              |
-| 01.04.2024               | Replace ReactRouter with TanstackRouter                                             |
-| 20.04.2024               | Add tests                                                                           |
-| 24.04.2024 - 27.04.2024  | Refine router and path calculation in the backend                                   |
-| 01.04.2024               | Test refinement                                                                     |
-| 03.08.2024 - 230.08.2024 | Restructure information architecture                                                |
-| 23.09.2024               | Add JSONServer as alternative for the real backend while developing                 |
-| 30.09.2024               | Add image (thumbnail) support to the backend and display thumbnails in the frontend |
-| 01.10.2024               | <ul><li>Create a Github project and move todos from the readme to the project</li><li>Fix an issue that created a new id for each item on page refresh</li></ul>               |
+| Date                     | Description                                                                                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 07.01.2024 - 30.03.2024  | Initialize Project by adding a front- and backend                                                                                                                |
+| 30.03.2024               | Add support for videos                                                                                                                                           |
+| 01.04.2024               | Replace ReactRouter with TanstackRouter                                                                                                                          |
+| 20.04.2024               | Add tests                                                                                                                                                        |
+| 24.04.2024 - 27.04.2024  | Refine router and path calculation in the backend                                                                                                                |
+| 01.04.2024               | Test refinement                                                                                                                                                  |
+| 03.08.2024 - 230.08.2024 | Restructure information architecture                                                                                                                             |
+| 23.09.2024               | Add JSONServer as alternative for the real backend while developing                                                                                              |
+| 30.09.2024               | Add image (thumbnail) support to the backend and display thumbnails in the frontend                                                                              |
+| 01.10.2024               | <ul><li>Create a Github project and move todos from the readme to the project</li><li>Fix an issue that created a new id for each item on page refresh</li></ul> |
 
 ## Motivation
 
@@ -55,6 +55,41 @@ This project ist contains a frontend and a backend with their own technology sta
 ## Configuration
 
 ## How to develop
+
+### How to debug the player
+
+```javascript
+const player = document.querySelector("video");
+const events = [
+  "abort",
+  "canplay",
+  "canplaythrough",
+  "durationchange",
+  "emptied",
+  "encrypted",
+  "ended",
+  "error",
+  "interruptbegin",
+  "interruptend",
+  "loadeddata",
+  "loadedmetadata",
+  "loadstart",
+  "mozaudioavailable",
+  "pause",
+  "play",
+  "playing",
+  "progress",
+  "ratechange",
+  "seeked",
+  "seeking",
+  "stalled",
+  "suspend",
+  "timeupdate",
+  "volumechange",
+  "waiting"
+];
+events.forEach(a => player.addEventListener(a, (e) => console.log(e.type, e));
+```
 
 ## How to build
 
