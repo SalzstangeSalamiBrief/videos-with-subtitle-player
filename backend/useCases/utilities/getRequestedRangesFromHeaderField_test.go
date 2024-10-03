@@ -83,8 +83,10 @@ func Test_getEnd(t *testing.T) {
 func Test_GetRequestedRangesFromHeaderField(t *testing.T) {
 	inputs := []models.TestData[GetRequestRangesInput, [2]int64]{
 		{Title: "Should return zero to chunk size on empty range header", Input: GetRequestRangesInput{"", 1024, 0}, Expected: [2]int64{0, 1024}},
-		{Title: "Should return zero to chuck size on incomplete range header", Input: GetRequestRangesInput{"bytes=", 1024, 0}, Expected: [2]int64{0, 1024}},
-		{Title: "Should return start and sum of chunk size with start on range header with only start", Input: GetRequestRangesInput{"bytes=1-", 1024, 0}, Expected: [2]int64{1, 1025}},
+		{Title: "Should return zero to chuck size on incomplete range header", Input: GetRequestRangesInput{"bytes=", 1024, 1080}, Expected: [2]int64{0, 1024}},
+		{Title: "Should return zero to chuck size on incomplete range header and zero file size", Input: GetRequestRangesInput{"bytes=", 1024, 0}, Expected: [2]int64{0, 0}},
+		{Title: "Should return start and sum of chunk size with only start on range header", Input: GetRequestRangesInput{"bytes=1-", 1024, 1080}, Expected: [2]int64{1, 1025}},
+		{Title: "Should return start and zero with only start on range header and zero file size", Input: GetRequestRangesInput{"bytes=1-", 1024, 0}, Expected: [2]int64{1, 0}},
 		{Title: "Should return start and file size on header greater than chunk size", Input: GetRequestRangesInput{"bytes=1-2000", 1024, 512}, Expected: [2]int64{1, 512}},
 		{Title: "Should return start and end from range header", Input: GetRequestRangesInput{"bytes=1-2000", 1024, 16000}, Expected: [2]int64{1, 2000}},
 	}
