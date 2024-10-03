@@ -86,9 +86,11 @@ const events = [
   "suspend",
   "timeupdate",
   "volumechange",
-  "waiting"
+  "waiting",
 ];
-events.forEach(a => player.addEventListener(a, (e) => console.log(e.type, e));
+events.forEach((a) =>
+  player.addEventListener(a, (e) => console.log(e.type, e))
+);
 ```
 
 ## How to build
