@@ -33,9 +33,9 @@ func GetRequestedRangesFromHeaderField(input GetRequestRangesInput) (start int64
 	return start, end
 }
 
-func getStringifiedRange(rangeHeaderWithPrefix string) (stringifiedStart string, stringifiedEnd string) {
-	stringifiedStart = ""
-	stringifiedEnd = ""
+func getStringifiedRange(rangeHeaderWithPrefix string) (string, string) {
+	stringifiedStart := ""
+	stringifiedEnd := ""
 	rangeHeaderWithoutPrefix := strings.TrimPrefix(rangeHeaderWithPrefix, "bytes=")
 	rangeParts := strings.Split(rangeHeaderWithoutPrefix, "-")
 
@@ -72,17 +72,17 @@ type getEndInput struct {
 }
 
 func getEnd(input getEndInput) (int64, error) {
-	if input.stringifiedEnd == "" {
-		return input.start + input.chunkSize, nil
-	}
+	end := input.start + input.chunkSize
 
-	end, err := strconv.ParseInt(input.stringifiedEnd, 10, 64)
-	if err != nil {
-		return 0, err
-	}
+	if input.stringifiedEnd != "" {
+		parsedEnd, err := strconv.ParseInt(input.stringifiedEnd, 10, 64)
+		if err != nil {
+			return 0, err
+		}
 
-	if end == 0 {
-		end = input.start + input.chunkSize
+		if parsedEnd != 0 {
+			end = parsedEnd
+		}
 	}
 
 	if end > input.fileSize {
