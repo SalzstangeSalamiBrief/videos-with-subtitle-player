@@ -25,7 +25,7 @@ function FilePage() {
       />
     );
   }
-
+  console.log(currentFile);
   return (
     <div className="grid">
       <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>

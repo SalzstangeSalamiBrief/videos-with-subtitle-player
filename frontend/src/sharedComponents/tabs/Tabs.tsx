@@ -14,10 +14,17 @@ interface ITabsProps {
 }
 // TODO MOVE TO FEATURE
 export function Tabs({ tabs, label }: ITabsProps) {
+  const navigate = useNavigate({ from: Route.fullPath });
   const labelId = useId();
   const searchParams: RootSearchParams = useSearch({ strict: false });
-  const activeTabIndex = searchParams.activeTab ?? 0;
-  const navigate = useNavigate({ from: Route.fullPath });
+  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
+  if (activeTabIndex !== searchParams.activeTab) {
+    navigate({
+      search: () => ({
+        activeTab: activeTabIndex,
+      }),
+    });
+  }
 
   if (!tabs.length) {
     return null;
@@ -67,6 +74,29 @@ export function Tabs({ tabs, label }: ITabsProps) {
       </div>
     </section>
   );
+}
+
+function getActiveTabIndex(
+  input: number | undefined,
+  numberOfTabs: number,
+): number {
+  if (input === undefined) {
+    return 0;
+  }
+
+  if (Number.isNaN(input)) {
+    return 0;
+  }
+
+  if (input < 0) {
+    return 0;
+  }
+
+  if (numberOfTabs < input) {
+    return numberOfTabs - 1;
+  }
+
+  return input;
 }
 
 function getTabId(index: number): string {
