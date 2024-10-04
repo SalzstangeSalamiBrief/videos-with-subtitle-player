@@ -32,13 +32,21 @@ function AudioFilePage() {
       label: `Subfolders (${selectedFolder.children?.length})`,
       content: <FolderListSection folders={selectedFolder.children} />,
     },
-    // TODO INCONSISTENT USAGE OF TABS => IMAGE TAB AS REFERENCE
     {
-      label: `Video and audio files (${selectedFolder.continuousFiles.length})`,
+      label: `Videos (${selectedFolder.videos?.length})`,
       content: (
         <FileListSection
           folderId={selectedFolder.id}
-          files={selectedFolder.continuousFiles}
+          files={selectedFolder.videos}
+        />
+      ),
+    },
+    {
+      label: `Audio files (${selectedFolder.audios.length})`,
+      content: (
+        <FileListSection
+          folderId={selectedFolder.id}
+          files={selectedFolder.audios}
         />
       ),
     },

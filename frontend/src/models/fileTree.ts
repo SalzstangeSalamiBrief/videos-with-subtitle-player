@@ -5,8 +5,9 @@ export interface IFileTree {
   id: string;
   thumbnailId: string | undefined;
   children: IFileTree[];
-  continuousFiles: IFileNode[];
   images: IFileNode[];
+  audios: IFileNode[];
+  videos: IFileNode[];
 }
 
 export interface IFileNode extends IFileDto {
