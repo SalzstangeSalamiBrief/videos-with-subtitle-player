@@ -1,4 +1,4 @@
-import { getTabId, getTabPanelId } from './Tabs';
+import { getTabId, getTabPanelId } from './tabUtilities';
 
 interface ITabButtonProps {
   label: string;
