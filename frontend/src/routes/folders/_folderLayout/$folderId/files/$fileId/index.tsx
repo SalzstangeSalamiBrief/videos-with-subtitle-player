@@ -29,14 +29,14 @@ function FilePage() {
   return (
     <div className="grid">
       <h1 style={{ fontSize: '1.25rem', margin: 0 }}>{currentFile.name}</h1>
-      <div className="flex gap-4 items-center">
+      <div className="flex items-center gap-4">
         <TansStackLink
           to="/folders/$folderId/files/$fileId"
           params={{ fileId: previousId ?? '', folderId }}
           aria-label="previous track"
         >
           <button
-            className="p-1 bg-slate-800 hover:bg-slate-700"
+            className="bg-slate-800 p-1 hover:bg-slate-700"
             disabled={!previousId}
             aria-label="Previous track"
             title="Previous track"
@@ -59,7 +59,7 @@ function FilePage() {
           aria-label="Next track"
         >
           <button
-            className="p-1 bg-slate-800 hover:bg-slate-700"
+            className="bg-slate-800 p-1 hover:bg-slate-700"
             disabled={!nextId}
             aria-label="next track"
             title="Next track"

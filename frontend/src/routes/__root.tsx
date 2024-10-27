@@ -20,7 +20,7 @@ export const Route = createRootRoute({
 
 function Root() {
   return (
-    <main className="p-4 overflow-y-auto h-full max-h-[100lvh]">
+    <main className="h-full max-h-[100lvh] overflow-y-auto p-4">
       <Outlet />
     </main>
   );
