@@ -1,11 +1,17 @@
-import { createFileRoute, useParams } from '@tanstack/react-router';
-import { FolderListSection } from '$features/folderListSection/FolderListSection';
-import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { FileListSection } from '$features/fileListSection/FileListSection';
-import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
-import { Route as RootLayoutRoute } from '../../../__root';
-import { IFileTree } from '$models/fileTree';
+import { FolderListSection } from '$features/folderListSection/FolderListSection';
 import { ImageListSection } from '$features/imageListSection/ImageListSection';
+import { IFileTree } from '$models/fileTree';
+import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
+import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+  useSearch,
+} from '@tanstack/react-router';
+import { Route as RootLayoutRoute } from '../../../__root';
+import { IFolderLayoutSearchParams } from '../../_folderLayout';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
@@ -14,6 +20,8 @@ export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
 
 function AudioFilePage() {
   const { fileTrees } = RootLayoutRoute.useLoaderData();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const searchParams: IFolderLayoutSearchParams = useSearch({ strict: false });
   const { folderId } = useParams({ strict: false });
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
   if (!selectedFolder) {
@@ -56,7 +64,27 @@ function AudioFilePage() {
     },
   ];
 
-  return <Tabs tabs={tabs} label="Content" />;
+  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
+  if (activeTabIndex !== searchParams.activeTab) {
+    navigate({
+      search: () => ({
+        activeTab: activeTabIndex,
+      }),
+    });
+  }
+
+  return (
+    <Tabs
+      tabs={tabs}
+      label="Content"
+      activeTabIndex={activeTabIndex}
+      onChangeTab={(newIndex: number) =>
+        navigate({
+          search: () => ({ activeTab: newIndex }),
+        })
+      }
+    />
+  );
 }
 
 function getFolderFromFileTree(
@@ -81,4 +109,27 @@ function getFolderFromFileTree(
       return matchingFolderFromChild;
     }
   }
+}
+
+function getActiveTabIndex(
+  input: number | undefined,
+  numberOfTabs: number,
+): number {
+  if (input === undefined) {
+    return 0;
+  }
+
+  if (Number.isNaN(input)) {
+    return 0;
+  }
+
+  if (input < 0) {
+    return 0;
+  }
+
+  if (numberOfTabs < input) {
+    return numberOfTabs - 1;
+  }
+
+  return input;
 }

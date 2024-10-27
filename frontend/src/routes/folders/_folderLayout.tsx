@@ -1,7 +1,7 @@
 import { Breadcrumbs } from '$features/breadcrumbs/Breadcrumbs';
 import { createFileRoute, Outlet } from '@tanstack/react-router';
 
-export interface RootSearchParams {
+export interface IFolderLayoutSearchParams {
   activeTab?: number;
 }
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute('/folders/_folderLayout')({
 function FolderLayoutComponent() {
   return (
     <>
-      <div className="flex flex-col gap-4 h-full">
+      <div className="flex h-full flex-col gap-4">
         <Breadcrumbs />
         <Outlet />
       </div>
@@ -23,8 +23,8 @@ function FolderLayoutComponent() {
 
 function searchParamValidator(
   input: Record<string, unknown>,
-): RootSearchParams {
-  const result: RootSearchParams = { activeTab: undefined };
+): IFolderLayoutSearchParams {
+  const result: IFolderLayoutSearchParams = { activeTab: undefined };
   if (!input.activeTab) {
     return result;
   }
