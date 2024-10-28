@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/internal/config"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/middlewares"
@@ -21,6 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+	config.InitializeConfiguration()
 
 	go func() {
 		exit := make(chan os.Signal, 1)

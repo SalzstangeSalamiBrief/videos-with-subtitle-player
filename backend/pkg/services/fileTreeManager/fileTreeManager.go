@@ -1,6 +1,7 @@
 package fileTreeManager
 
 import (
+	"backend/internal/config"
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
@@ -13,12 +14,10 @@ import (
 	"strings"
 )
 
-var rootPath string
 var FileTreeItems []models.FileTreeItem
 
 func InitializeFileTree() {
-	rootPath = os.Getenv("ROOT_PATH")
-	fullTree := getFullTree(rootPath)
+	fullTree := getFullTree(config.AppConfiguration.RootPath)
 	FileTreeItems = fullTree
 }
 
@@ -48,7 +47,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 		newFileItem := models.FileTreeItem{
 			Id:   uuid.New().String(),
-			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: rootPath}),
+			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: config.AppConfiguration.RootPath}),
 			Name: utilities.GetFilenameWithoutExtension(itemName),
 			Type: fileType,
 		}
@@ -76,7 +75,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 			subtitleFile := models.FileTreeItem{
 				Id:   uuid.New().String(),
-				Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
+				Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: config.AppConfiguration.RootPath}),
 				// TODO NAME INCLUDES THE WHOLE PATH
 				Name:                  utilities.GetFilenameWithoutExtension(possibleSubtitleFileName),
 				Type:                  enums.SUBTITLE,

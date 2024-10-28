@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/config"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
@@ -14,7 +15,6 @@ import (
 const chunkSize = 1 * 1024 * 1024 // 3mb
 
 func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
-	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
 	continuousFileInTree := utilities.GetFileByIdAndExtension(fileIdString, constants.AllowedContinuousFileExtensions...)
 	if continuousFileInTree.Id == "" {
@@ -22,7 +22,7 @@ func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filePathOnHardDisk := path.Join(rootPath, continuousFileInTree.Path)
+	filePathOnHardDisk := path.Join(config.AppConfiguration.RootPath, continuousFileInTree.Path)
 	file, err := os.Open(filePathOnHardDisk)
 	defer file.Close()
 	if err != nil {

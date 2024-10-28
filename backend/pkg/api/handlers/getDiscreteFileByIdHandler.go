@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/config"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
@@ -11,7 +12,6 @@ import (
 )
 
 func GetDiscreteFileHandler(w http.ResponseWriter, r *http.Request) {
-	rootPath := os.Getenv("ROOT_PATH")
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/discrete/")
 	discreteFileInTree := utilities.GetFileByIdAndExtension(fileIdString, constants.AllowedDiscreteFileExtensions...)
 	if discreteFileInTree.Id == "" {
@@ -19,7 +19,7 @@ func GetDiscreteFileHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filePathOnHardDisk := path.Join(rootPath, discreteFileInTree.Path)
+	filePathOnHardDisk := path.Join(config.AppConfiguration.RootPath, discreteFileInTree.Path)
 	fileBytes, err := os.ReadFile(filePathOnHardDisk)
 	if err != nil {
 		fmt.Println(err.Error())
