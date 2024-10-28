@@ -1,10 +1,10 @@
 package main
 
 import (
-	"backend/lib"
-	"backend/middleware"
-	"backend/router"
-	usecases "backend/useCases"
+	"backend/internal/router"
+	"backend/internal/routes"
+	"backend/pkg/api/middlewares"
+	"backend/pkg/services/fileTreeManager"
 	"fmt"
 	"github.com/joho/godotenv"
 	"log"
@@ -30,26 +30,19 @@ func main() {
 		os.Exit(0)
 	}()
 
-	lib.InitializeFileTree()
-	addRoutesToApp()
+	fileTreeManager.InitializeFileTree()
+
+	router := router.NewRouter()
+	router.RegisterRoute(routes.GetContinuousFileRoute)
+	router.RegisterRoute(routes.GetDiscreteFileUseCaseRoute)
+	router.RegisterRoute(routes.GetFileTreeRoute)
+
+	corsHandler := middlewares.CorsHandler(http.HandlerFunc(router.ServeHTTP))
+	requestLoggerMiddleware := middlewares.RequestLoggerHandler(corsHandler)
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
-	routerWithMiddlewares := addRouterWithMiddlewares()
-	mux.Handle("/api/", routerWithMiddlewares)
+	mux.Handle("/api/", requestLoggerMiddleware)
 	http.ListenAndServe(ADDR, mux)
-}
-
-func addRoutesToApp() {
-	router.Routes.AddRoute(usecases.GetContinuousFileUseCaseRoute)
-	router.Routes.AddRoute(usecases.GetDiscreteFileUseCaseRoute)
-	router.Routes.AddRoute(usecases.GetFileTreeUseCaseRoute)
-}
-
-func addRouterWithMiddlewares() http.Handler {
-	routerHandler := http.HandlerFunc(router.Router)
-	corsHandler := middleware.CorsHandler(routerHandler)
-	requestLoggerMiddleware := middleware.RequestLoggerHandler(corsHandler)
-	return requestLoggerMiddleware
 }
