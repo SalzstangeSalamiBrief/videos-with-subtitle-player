@@ -18,6 +18,7 @@ export function PlaylistItem({ isActive, item, folderId }: IPlaylistItemProps) {
         params={{ fileId: item.id, folderId }}
         aria-label={`Play ${item.name}`}
         title={item.name}
+        aria-selected={isActive ? 'true' : 'false'}
       >
         {item.name}
       </TanStackLink>
