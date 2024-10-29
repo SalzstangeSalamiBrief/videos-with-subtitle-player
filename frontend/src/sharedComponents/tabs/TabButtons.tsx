@@ -13,7 +13,7 @@ export function TabButtons({
   onChangeTab,
 }: ITabButtonsProps) {
   return (
-    <div role="presentation" className="flex gap-2">
+    <div role="presentation" className="flex gap-1">
       {tabs.map((tab, index) => {
         const isActive = index === activeTabIndex;
         return (

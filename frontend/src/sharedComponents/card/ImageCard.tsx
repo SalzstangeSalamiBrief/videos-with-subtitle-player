@@ -5,8 +5,7 @@ interface ICardProps {
 }
 
 export function ImageCard({ title, imageUrl }: ICardProps) {
-  // TODO IMAGE IS OPTIONAL
-  // TODO USE IAMGE AND SCALE ON HOVER
+  // TODO ON HOVER rotate the card a bit on the z-axis
   return (
     <article
       className={`bg-no-repeate grid h-64 gap-4 rounded-md bg-cover ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
