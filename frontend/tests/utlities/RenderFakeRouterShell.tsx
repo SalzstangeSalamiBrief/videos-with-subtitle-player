@@ -6,10 +6,9 @@ import {
 } from '@tanstack/react-router';
 import { render } from '@testing-library/react';
 
+// reference: https://github.com/TanStack/router/blob/main/packages/react-router/tests/routeContext.test.tsx
 export function RenderFakeRouterShell(component: () => React.JSX.Element) {
-  const rootRoute = createRootRoute({
-    component,
-  });
+  const rootRoute = createRootRoute();
 
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
