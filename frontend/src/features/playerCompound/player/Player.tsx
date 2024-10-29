@@ -16,10 +16,12 @@ export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
         style={{ width: '100%' }}
         crossOrigin="anonymous"
         autoPlay
+        data-testid="video"
       >
         <source
           type="audio/mp3"
           src={`${baseUrl}/api/file/continuous/${audioId}`}
+          data-testid="source"
         />
         {fileType === FileType.AUDIO && subtitleId && (
           <track
@@ -27,6 +29,7 @@ export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
             kind="captions"
             srcLang="en"
             src={`${baseUrl}/api/file/discrete/${subtitleId}`}
+            data-testid="track"
           />
         )}
       </video>
