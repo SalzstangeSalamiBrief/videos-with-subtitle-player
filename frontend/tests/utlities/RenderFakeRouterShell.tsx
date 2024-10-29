@@ -17,6 +17,7 @@ export function RenderFakeRouterShell(component: () => React.JSX.Element) {
   });
 
   const routeTree = rootRoute.addChildren([indexRoute]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const router = createRouter({ routeTree }) as any;
 
   render(<RouterProvider router={router} />);
