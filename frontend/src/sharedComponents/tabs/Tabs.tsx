@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import { TabButtons } from './TabButtons';
-import { TabContent } from './TabContent';
+import { TabPanel } from './TabPanel';
 
 export interface ITab {
   label: string;
@@ -40,9 +40,7 @@ export function Tabs({
           activeTabIndex={activeTabIndex}
           onChangeTab={onChangeTab}
         />
-        <TabContent activeTabIndex={activeTabIndex}>
-          {activeTab.content}
-        </TabContent>
+        <TabPanel activeTabIndex={activeTabIndex}>{activeTab.content}</TabPanel>
       </div>
     </section>
   );

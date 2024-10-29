@@ -25,3 +25,6 @@ jobs:
       - name: Run Prettier check
         run: pnpm run prettier:check
         working-directory: frontend
+      - name: Run vitest
+        run: pnpm run test
+        working-directory: frontend

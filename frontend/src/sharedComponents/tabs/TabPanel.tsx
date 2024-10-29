@@ -1,11 +1,11 @@
 import { getTabId, getTabPanelId } from './tabUtilities';
 
-interface ITabContentProps {
+interface ITabPanelProps {
   children: Maybe<JSX.Element>;
   activeTabIndex: number;
 }
 
-export function TabContent({ children, activeTabIndex }: ITabContentProps) {
+export function TabPanel({ children, activeTabIndex }: ITabPanelProps) {
   return (
     <div
       className="flex-grow"
