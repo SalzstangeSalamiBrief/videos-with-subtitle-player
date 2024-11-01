@@ -1,14 +1,20 @@
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import {
+  LinkOptions,
+  Link as TanStackRouterLink,
+} from '@tanstack/react-router';
+import styles from './ImageCard.module.css';
 interface ICardProps {
   title: string;
   children?: JSX.Element;
   imageUrl?: string;
+  linkOptions: LinkOptions;
 }
 
-export function ImageCard({ title, imageUrl }: ICardProps) {
-  // TODO ON HOVER rotate the card a bit on the z-axis
+export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
   return (
     <article
-      className={`bg-no-repeate grid h-64 gap-4 rounded-md bg-cover ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
+      className={`${styles.imageCard} grid h-64 gap-4 rounded-md bg-cover bg-no-repeat ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
       style={{
         backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
       }}
@@ -22,7 +28,12 @@ export function ImageCard({ title, imageUrl }: ICardProps) {
             className="line-clamp-3 max-w-text overflow-hidden text-ellipsis whitespace-normal font-bold"
             title={title}
           >
-            {title}
+            <TanStackRouterLink
+              {...linkOptions}
+              className={`${baseLinkStyles} block h-full w-full`}
+            >
+              {title}
+            </TanStackRouterLink>
           </h1>
         </header>
       </div>
