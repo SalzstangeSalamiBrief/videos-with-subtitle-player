@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"backend/internal/config"
+	"backend/pkg/config"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"

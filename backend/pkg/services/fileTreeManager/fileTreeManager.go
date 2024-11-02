@@ -1,7 +1,7 @@
 package fileTreeManager
 
 import (
-	"backend/internal/config"
+	"backend/pkg/config"
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
