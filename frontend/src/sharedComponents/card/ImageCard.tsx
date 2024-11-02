@@ -14,28 +14,33 @@ interface ICardProps {
 export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
   return (
     <article
-      className={`${styles.imageCard} grid h-64 gap-4 rounded-md bg-cover bg-no-repeat ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
-      style={{
-        backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-      }}
+      className={`${styles.card} grid h-64 gap-4 rounded-md ${imageUrl ? undefined : 'bg-fuchsia-800'} `}
     >
       <div
         role="presentation"
-        className="flex min-w-0 items-end rounded-md bg-gradient-to-t from-slate-800 from-[5ch] to-[20ch] p-4"
+        className={`${styles.cover} bg-cover bg-no-repeat`}
+        style={{
+          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
+        }}
       >
-        <header className="h-fit overflow-hidden rounded-b-md">
-          <h1
-            className="line-clamp-3 max-w-text overflow-hidden text-ellipsis whitespace-normal font-bold"
-            title={title}
-          >
-            <TanStackRouterLink
-              {...linkOptions}
-              className={`${baseLinkStyles} block h-full w-full`}
+        <div
+          role="presentation"
+          className="flex h-full items-end bg-gradient-to-t from-slate-800 from-[5ch] to-[20ch]"
+        >
+          <header className="h-fit overflow-hidden rounded-b-md p-4">
+            <h1
+              className="line-clamp-3 max-w-text overflow-hidden text-ellipsis whitespace-normal font-bold"
+              title={title}
             >
-              {title}
-            </TanStackRouterLink>
-          </h1>
-        </header>
+              <TanStackRouterLink
+                {...linkOptions}
+                className={`${baseLinkStyles} block h-full w-full`}
+              >
+                {title}
+              </TanStackRouterLink>
+            </h1>
+          </header>
+        </div>
       </div>
     </article>
   );
