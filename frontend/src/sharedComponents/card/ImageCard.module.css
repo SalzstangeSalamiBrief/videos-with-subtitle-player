@@ -48,10 +48,10 @@
     height: 90%;
     /* todo hover shadow */
     /* background-color: theme('colors.fuchsia.500/50'); */
-    /* box-shadow: 0 6px 12px 12px theme('colors.fuchsia.500/40'); */
+    box-shadow: 0 6px 12px 12px theme('colors.fuchsia.500/40');
     will-change: opacity;
     transform-origin: top center;
-    transform: skewX(0.001deg);
+    transform: skewX(calc(0.001deg * 0.5));
     transition:
       transform 0.35s ease-in-out,
       opacity 0.5s ease-in-out;
