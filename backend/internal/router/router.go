@@ -21,7 +21,7 @@ type Router interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
-func NewRouter() *RouterBase {
+func NewRouterBuilder() *RouterBase {
 	return &RouterBase{
 		routes:      make([]Route, 0),
 		middlewares: make([]Middleware, 0),

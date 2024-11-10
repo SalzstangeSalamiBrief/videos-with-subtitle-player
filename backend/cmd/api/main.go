@@ -34,7 +34,14 @@ func main() {
 
 	fileTreeManager.InitializeFileTree()
 
-	r := router.NewRouter().RegisterRoute(routes.GetContinuousFileRoute).RegisterRoute(routes.GetDiscreteFileUseCaseRoute).RegisterRoute(routes.GetFileTreeRoute).RegisterMiddleware(middlewares.RequestLoggerMiddleware).RegisterMiddleware(middlewares.CorsMiddleware).Build()
+	r := router.
+		NewRouterBuilder().
+		RegisterRoute(routes.GetContinuousFileRoute).
+		RegisterRoute(routes.GetDiscreteFileUseCaseRoute).
+		RegisterRoute(routes.GetFileTreeRoute).
+		RegisterMiddleware(middlewares.RequestLoggerMiddleware).
+		RegisterMiddleware(middlewares.CorsMiddleware).
+		Build()
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
