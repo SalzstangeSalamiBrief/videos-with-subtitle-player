@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-func CorsHandler(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func CorsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		configuredCors := os.Getenv("ALLOWED_CORS")
 		if configuredCors == "" {
 			return
@@ -29,19 +29,6 @@ func CorsHandler(next http.Handler) http.Handler {
 			}
 		}
 
-		next.ServeHTTP(w, r)
-	})
+		next(w, r)
+	}
 }
-
-// TODO DO SOMETHING LIKE THIS TO ADD MULTIPLE MIDDLEWARES
-//func myHanlder(middlewares ...http.Handler) http.Handler {
-//	return func(next http.Handler) http.Handler {
-//
-//		for _, m := range middlewares {
-//			next = m(next)
-//		}
-//
-//		return next
-//	}
-//
-//}
