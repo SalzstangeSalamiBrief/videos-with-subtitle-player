@@ -19,7 +19,7 @@ jobs:
       - name: Display Go version
         run: go version
       - name: Install dependencies
-        run: go get .
+        run: go get ./...
         working-directory: backend
       - name: run tests
         run: go test ./...
