@@ -9,8 +9,11 @@ import (
 
 var acceptedMethods = []string{http.MethodGet, http.MethodDelete, http.MethodPatch, http.MethodPut, http.MethodPost, http.MethodOptions}
 
+type Middleware func(handlerFunc http.HandlerFunc) http.HandlerFunc
+
 type RouterBase struct {
-	routes []Route
+	routes      []Route
+	middlewares []Middleware
 }
 
 type Router interface {
@@ -18,13 +21,27 @@ type Router interface {
 	ServeHTTP(http.ResponseWriter, *http.Request)
 }
 
-func NewRouter() *RouterBase {
+func NewRouterBuilder() *RouterBase {
 	return &RouterBase{
-		routes: make([]Route, 0),
+		routes:      make([]Route, 0),
+		middlewares: make([]Middleware, 0),
 	}
 }
 
-func (routerBase *RouterBase) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (routerBase *RouterBase) Build() http.HandlerFunc {
+	if len(routerBase.middlewares) == 0 {
+		return routerBase.handleRouting
+	}
+
+	middlewareParent := routerBase.handleRouting
+	for _, middleware := range routerBase.middlewares {
+		middlewareParent = middleware(middlewareParent)
+	}
+
+	return middlewareParent
+}
+
+func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Request) {
 	if !slices.Contains(acceptedMethods, r.Method) {
 		http.NotFound(w, r)
 		return
@@ -55,10 +72,17 @@ func (routerBase *RouterBase) ServeHTTP(w http.ResponseWriter, r *http.Request) 
 	}
 
 	if !hasMatched {
-		http.NotFound(w, r) // TODO TEST THIS REFACTOR
+		http.NotFound(w, r)
 	}
 }
 
-func (routerBase *RouterBase) RegisterRoute(routeToAdd Route) {
+func (routerBase *RouterBase) RegisterRoute(routeToAdd Route) *RouterBase {
 	routerBase.routes = append(routerBase.routes, routeToAdd)
+	return routerBase
+
+}
+
+func (routerBase *RouterBase) RegisterMiddleware(middlewareToAdd Middleware) *RouterBase {
+	routerBase.middlewares = append(routerBase.middlewares, middlewareToAdd)
+	return routerBase
 }
