@@ -19,8 +19,8 @@ jobs:
       - name: Display Go version
         run: go version
       - name: Install dependencies
-        run: go get .
-        working-directory: "backend/**"
+        run: go get ./...
+        working-directory: backend
       - name: run tests
         run: go test ./...
         working-directory: backend
