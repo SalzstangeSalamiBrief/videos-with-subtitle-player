@@ -14,11 +14,11 @@ interface ICardProps {
 export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
   return (
     <article
-      className={`${styles.card} grid h-64 gap-4 rounded-md ${imageUrl ? undefined : 'bg-fuchsia-800'} `}
+      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'} `}
     >
       <div
         role="presentation"
-        className={`${styles.cover} bg-cover bg-no-repeat`}
+        className={styles.cover}
         style={{
           backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
