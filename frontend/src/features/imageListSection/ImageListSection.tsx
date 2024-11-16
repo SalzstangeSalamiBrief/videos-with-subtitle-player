@@ -1,5 +1,5 @@
 import { IFileNode } from '$models/fileTree';
-import { ImageSlider } from '$sharedComponents/imageSlider/ImageSlider';
+import { Lightbox } from '$sharedComponents/lightbox/Lightbox';
 
 interface IImageListSectionProps {
   images: IFileNode[];
@@ -11,5 +11,5 @@ export function ImageListSection({ images }: IImageListSectionProps) {
   }
 
   // TODO MAYBE ADD EVENT_LISTENER FOR KEYBOARD USAGE
-  return <ImageSlider images={images} />;
+  return <Lightbox images={images} />;
 }
