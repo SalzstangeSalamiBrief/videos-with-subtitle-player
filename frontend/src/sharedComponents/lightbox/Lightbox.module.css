@@ -1,0 +1,19 @@
+dialog {
+  width: min(100%, 1080px);
+  & .lightbox {
+    padding: theme('padding.4');
+    background-color: theme('colors.fuchsia.800');
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+
+    & figure {
+      object-fit: contain;
+    }
+  }
+  &::backdrop {
+    background: theme('colors.slate.800');
+    opacity: theme('opacity.75');
+  }
+}
