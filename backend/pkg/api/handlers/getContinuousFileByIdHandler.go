@@ -55,7 +55,7 @@ func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
 	addPartialContentHeader(w, start, end, fileSize)
 	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", continuousFileInTree.Name))
 
-	mimeType := utilities.GetContentTypeHeaderMimeType(continuousFileInTree)
+	mimeType := continuousFileInTree.GetMimeType()
 	w.Header().Add("Content-Type", mimeType)
 	w.WriteHeader(http.StatusPartialContent)
 	io.CopyN(w, file, end-start)

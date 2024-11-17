@@ -4,7 +4,6 @@ import (
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
@@ -35,17 +34,17 @@ func getFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	}
 
 	for _, file := range filesArray {
-		pathParts := utilities.GetPartsOfPath(file)
+		pathParts := file.GetPartsOfPath()
 		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}
 
 	for _, file := range filesArray {
-		pathParts := utilities.GetPartsOfPath(file)
+		pathParts := file.GetPartsOfPath()
 		getThumbnailOfTree(&rootFileHierarchy, file, pathParts)
 	}
 
 	for _, file := range filesArray {
-		pathParts := utilities.GetPartsOfPath(file)
+		pathParts := file.GetPartsOfPath()
 		addFileToTree(&rootFileHierarchy, file, pathParts)
 	}
 

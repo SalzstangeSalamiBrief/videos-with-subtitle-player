@@ -28,7 +28,7 @@ func GetDiscreteFileHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", discreteFileInTree.Name))
-	mimeType := utilities.GetContentTypeHeaderMimeType(discreteFileInTree)
+	mimeType := discreteFileInTree.GetMimeType()
 	w.Header().Add("Content-Type", mimeType)
 	w.Write(fileBytes)
 }

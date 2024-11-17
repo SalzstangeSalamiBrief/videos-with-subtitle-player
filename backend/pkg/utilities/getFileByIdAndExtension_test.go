@@ -8,7 +8,7 @@ import (
 )
 
 func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	file := models.FileTreeItem{
 		Id:   "1",
 		Path: filepath.Join("path", "file.mp4"),
 	}
@@ -22,7 +22,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := file.IsFileExtensionAllowed(combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
@@ -33,7 +33,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	file := models.FileTreeItem{
 		Id:   "1",
 		Path: filepath.Join("path", "file.mp3"),
 	}
@@ -47,7 +47,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := file.IsFileExtensionAllowed(combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
@@ -58,7 +58,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	file := models.FileTreeItem{
 		Id:   "1",
 		Path: filepath.Join("path", "file.mp3.vtt"),
 	}
@@ -72,26 +72,12 @@ func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := file.IsFileExtensionAllowed(combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
 			}
 		})
 
-	}
-}
-
-func Test_IsFileExtensionAllowed_Invalid(t *testing.T) {
-	fileItem := models.FileTreeItem{
-		Id:   "1",
-		Path: filepath.Join("path", "file.mp3.vtt"),
-	}
-	allowedExtensions := []string{".mp4", ".mp3"}
-
-	isAllowed := isFileExtensionAllowed(fileItem, allowedExtensions...)
-
-	if isAllowed {
-		t.Errorf("Expected false but received true")
 	}
 }

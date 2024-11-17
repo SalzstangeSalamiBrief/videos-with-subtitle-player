@@ -3,8 +3,6 @@ package utilities
 import (
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
-	"path/filepath"
-	"slices"
 )
 
 func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileTreeItem {
@@ -15,17 +13,11 @@ func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileT
 			continue
 		}
 
-		if isFileExtensionAllowed(fileTreeItem, allowedExtension...) {
+		if fileTreeItem.IsFileExtensionAllowed(allowedExtension...) {
 			file = fileTreeItem
 			break
 		}
 	}
 
 	return file
-}
-
-func isFileExtensionAllowed(fileTreeItem models.FileTreeItem, allowedExtension ...string) bool {
-	ext := filepath.Ext(fileTreeItem.Path)
-	doesExtensionMatch := slices.Contains(allowedExtension, ext)
-	return doesExtensionMatch
 }
