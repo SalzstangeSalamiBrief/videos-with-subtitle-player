@@ -57,7 +57,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 
 	for i := 0; i < len(remainingPathParts); i += 1 {
 		currentPathPart := remainingPathParts[i]
-		indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, currentPathPart)
+		indexOfMatchingChild := currentNode.GetIndexOfChildByName(currentPathPart)
 
 		if indexOfMatchingChild >= 0 {
 			currentNode = &currentNode.Children[indexOfMatchingChild]
@@ -113,20 +113,11 @@ func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathParts
 
 	for i := 0; i < len(pathPartsWithFileExtension); i += 1 {
 		currentPathPart = remainingPathParts[i]
-		indexOfMatchingChild := findChildIndexInChildrenOfFileTree(currentNode, currentPathPart)
+		indexOfMatchingChild := currentNode.GetIndexOfChildByName(currentPathPart)
 		if indexOfMatchingChild >= 0 {
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 		}
 	}
 
 	return currentNode
-}
-
-func findChildIndexInChildrenOfFileTree(node *models.FileTreeDto, name string) int {
-	for i, child := range node.Children {
-		if child.Name == name {
-			return i
-		}
-	}
-	return -1
 }

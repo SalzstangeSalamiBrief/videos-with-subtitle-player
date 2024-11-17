@@ -1,9 +1,5 @@
 package models
 
-import (
-	"backend/pkg/enums"
-)
-
 type FileTreeDto struct {
 	Name        string        `json:"name"`
 	Id          string        `json:"id"`
@@ -12,9 +8,12 @@ type FileTreeDto struct {
 	Children    []FileTreeDto `json:"children"`
 }
 
-type FileDto struct {
-	Id                    string         `json:"id"`
-	Name                  string         `json:"name"`
-	Type                  enums.FileType `json:"fileType"`
-	AssociatedAudioFileId string         `json:"audioFileId"`
+func (tree *FileTreeDto) GetIndexOfChildByName(name string) int {
+	for i, child := range tree.Children {
+		if child.Name == name {
+			return i
+		}
+	}
+
+	return -1
 }
