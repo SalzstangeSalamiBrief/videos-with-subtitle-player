@@ -14,20 +14,20 @@ import (
 	"strings"
 )
 
-var FileTreeItems []models.FileTreeItem
+var FileTreeNodes []models.FileTreeNode
 
 func InitializeFileTree() {
 	fullTree := getFullTree(config.AppConfiguration.RootPath)
-	FileTreeItems = fullTree
+	FileTreeNodes = fullTree
 }
 
-func getFullTree(parentPath string) []models.FileTreeItem {
+func getFullTree(parentPath string) []models.FileTreeNode {
 	content, err := os.ReadDir(parentPath)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	currentFileItems := make([]models.FileTreeItem, 0)
+	currentFileItems := make([]models.FileTreeNode, 0)
 	for _, item := range content {
 		itemName := item.Name()
 		currentItemPath := filepath.Join(parentPath, itemName)
@@ -45,7 +45,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			continue
 		}
 
-		newFileItem := models.FileTreeItem{
+		newFileItem := models.FileTreeNode{
 			Id:   uuid.New().String(),
 			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: config.AppConfiguration.RootPath}),
 			Name: utilities.GetFilenameWithoutExtension(itemName),
@@ -73,7 +73,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 				continue
 			}
 
-			subtitleFile := models.FileTreeItem{
+			subtitleFile := models.FileTreeNode{
 				Id:   uuid.New().String(),
 				Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: config.AppConfiguration.RootPath}),
 				// TODO NAME INCLUDES THE WHOLE PATH

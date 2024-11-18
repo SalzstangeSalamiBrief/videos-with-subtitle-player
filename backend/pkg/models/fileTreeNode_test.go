@@ -15,7 +15,7 @@ func Test_GetPartsOfPath(t *testing.T) {
 
 	for _, input := range inputs {
 		t.Run(input.Title, func(t *testing.T) {
-			file := FileTreeItem{
+			file := FileTreeNode{
 				Id:   "1",
 				Path: input.Input,
 			}
@@ -37,7 +37,7 @@ func Test_GetPartsOfPath(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed(t *testing.T) {
-	file := FileTreeItem{
+	file := FileTreeNode{
 		Id:   "1",
 		Path: filepath.Join("path", "file.mp3.vtt"),
 	}
@@ -62,7 +62,7 @@ func Test_GetMimeType(t *testing.T) {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// arrange
-			file := FileTreeItem{
+			file := FileTreeNode{
 				Id:   "1",
 				Path: data.Input,
 			}

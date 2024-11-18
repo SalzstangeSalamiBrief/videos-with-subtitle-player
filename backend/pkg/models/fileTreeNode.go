@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type FileTreeItem struct {
+type FileTreeNode struct {
 	Id                    string
 	Path                  string
 	Name                  string
@@ -16,7 +16,7 @@ type FileTreeItem struct {
 	AssociatedAudioFileId string
 }
 
-func (file *FileTreeItem) GetPartsOfPath() []string {
+func (file *FileTreeNode) GetPartsOfPath() []string {
 	filePath, _ := filepath.Split(file.Path)
 	allParts := strings.Split(filePath, string(filepath.Separator))
 	var parts []string
@@ -31,13 +31,13 @@ func (file *FileTreeItem) GetPartsOfPath() []string {
 	return parts
 }
 
-func (file *FileTreeItem) IsFileExtensionAllowed(allowedExtension ...string) bool {
+func (file *FileTreeNode) IsFileExtensionAllowed(allowedExtension ...string) bool {
 	ext := filepath.Ext(file.Path)
 	doesExtensionMatch := slices.Contains(allowedExtension, ext)
 	return doesExtensionMatch
 }
 
-func (file *FileTreeItem) GetMimeType() string {
+func (file *FileTreeNode) GetMimeType() string {
 	ext := filepath.Ext(file.Path)
 	mimeType := mime.TypeByExtension(ext)
 	if ext == ".vtt" {

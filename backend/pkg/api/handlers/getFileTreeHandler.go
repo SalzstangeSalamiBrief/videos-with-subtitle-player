@@ -15,7 +15,7 @@ var fileTree models.FileTreeDto
 
 func GetFileTreeHandler(w http.ResponseWriter, r *http.Request) {
 	if fileTree.Id == "" {
-		fileTree = getFileTreeDto(fileTreeManager.FileTreeItems)
+		fileTree = getFileTreeDto(fileTreeManager.FileTreeNodes)
 	}
 
 	encodedBytes, err := json.Marshal(fileTree.Children)
@@ -27,7 +27,7 @@ func GetFileTreeHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(encodedBytes)
 }
 
-func getFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
+func getFileTreeDto(filesArray []models.FileTreeNode) models.FileTreeDto {
 	rootFileHierarchy := models.FileTreeDto{
 		Id:       uuid.New().String(),
 		Children: []models.FileTreeDto{},
@@ -75,7 +75,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 	}
 }
 
-func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeNode, pathPartsWithFileExtension []string) {
 	if file.Type != enums.IMAGE {
 		return
 	}
@@ -93,7 +93,7 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	currentNode.ThumbnailId = file.Id
 }
 
-func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeNode, pathPartsWithFileExtension []string) {
 	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
 
 	fileItem := models.FileDto{

@@ -5,9 +5,9 @@ import (
 	"backend/pkg/services/fileTreeManager"
 )
 
-func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileTreeItem {
-	var file models.FileTreeItem
-	for _, fileTreeItem := range fileTreeManager.FileTreeItems {
+func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileTreeNode {
+	var file models.FileTreeNode
+	for _, fileTreeItem := range fileTreeManager.FileTreeNodes {
 		isMatch := fileTreeItem.Id == id
 		if !isMatch {
 			continue
