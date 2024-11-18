@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"backend/internal/config"
+	"backend/pkg/errors"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
@@ -18,7 +19,7 @@ func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
 	continuousFileInTree := utilities.GetFileByIdAndExtension(fileIdString, constants.AllowedContinuousFileExtensions...)
 	if continuousFileInTree.Id == "" {
-		ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
+		ErrorHandler(w, &errors.FileNotFoundError{Id: fileIdString})
 		return
 	}
 
@@ -27,28 +28,27 @@ func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	if err != nil {
 		fmt.Println(err.Error())
-		ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", fileIdString), http.StatusInternalServerError)
+		ErrorHandler(w, &errors.FileNotFoundError{Id: fileIdString})
 		return
 	}
 
 	fileSize, err := getFileSize(file)
 	if err != nil {
-		fmt.Println(err.Error())
-		ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", fileIdString), http.StatusInternalServerError)
+		ErrorHandler(w, &errors.OsError{Id: fileIdString, InnerError: err.Error()})
 		return
 	}
 
 	rangeHeaderWithPrefix := r.Header.Get("Range")
 	start, end := utilities.GetRequestedRangesFromHeaderField(utilities.GetRequestRangesInput{RangeHeaderWithPrefix: rangeHeaderWithPrefix, ChunkSize: chunkSize, FileSize: fileSize})
 	if start == 0 && end == 0 {
-		ErrorHandler(w, fmt.Sprintf("The request does not contain a range header for file '%v'", fileIdString), http.StatusBadRequest)
+		ErrorHandler(w, &errors.MissingHeaderError{Id: fileIdString, Header: "Range"})
 		return
 	}
 
 	_, err = file.Seek(start, io.SeekStart)
 	if err != nil {
 		fmt.Println(err.Error())
-		ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusInternalServerError)
+		ErrorHandler(w, &errors.OsError{Id: fileIdString, InnerError: err.Error()})
 		return
 	}
 

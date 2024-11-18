@@ -1,7 +1,16 @@
 package handlers
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
-func ErrorHandler(w http.ResponseWriter, message string, statusCode int) {
-	http.Error(w, message, statusCode)
+type ErrorHandlerInput interface {
+	Error() string
+	StatusCode() int
+}
+
+func ErrorHandler(w http.ResponseWriter, err ErrorHandlerInput) {
+	fmt.Println(err.Error())
+	http.Error(w, err.Error(), err.StatusCode())
 }
