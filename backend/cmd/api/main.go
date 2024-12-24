@@ -7,8 +7,6 @@ import (
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -18,10 +16,7 @@ import (
 const ADDR = "localhost:3000"
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+
 	config.InitializeConfiguration()
 
 	go func() {
