@@ -6,7 +6,6 @@ import (
 )
 
 func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileTreeNode {
-	var file models.FileTreeNode
 	for _, fileTreeItem := range fileTreeManager.FileTreeNodes {
 		isMatch := fileTreeItem.Id == id
 		if !isMatch {
@@ -14,10 +13,9 @@ func GetFileByIdAndExtension(id string, allowedExtension ...string) models.FileT
 		}
 
 		if fileTreeItem.IsFileExtensionAllowed(allowedExtension...) {
-			file = fileTreeItem
-			break
+			return fileTreeItem
 		}
 	}
 
-	return file
+	return models.FileTreeNode{}
 }

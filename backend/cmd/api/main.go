@@ -1,10 +1,10 @@
 package main
 
 import (
-	"backend/internal/config"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/middlewares"
+	"backend/pkg/services/config"
 	"backend/pkg/services/fileTreeManager"
 	"fmt"
 	"github.com/joho/godotenv"
@@ -44,6 +44,7 @@ func main() {
 		Build()
 
 	mux := http.NewServeMux()
+	// TODO ADD ERRORLOG: LOGGER to http.server?
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)

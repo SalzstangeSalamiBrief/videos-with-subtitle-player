@@ -1,9 +1,9 @@
 package fileTreeManager
 
 import (
-	"backend/internal/config"
 	"backend/pkg/enums"
 	"backend/pkg/models"
+	"backend/pkg/services/config"
 	"backend/pkg/services/fileTreeManager/utilities"
 	"fmt"
 	"github.com/google/uuid"

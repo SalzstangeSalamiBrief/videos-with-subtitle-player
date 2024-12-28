@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"backend/internal/config"
 	"backend/pkg/errors"
+	"backend/pkg/services/config"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
