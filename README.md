@@ -101,13 +101,13 @@ events.forEach((a) =>
 docker build . --target videos-with-subtitle-player_backend --tag videos-with-subtitle-player_backend:latest --build-arg VITE_BASE_URL=localhost:3000
 
 # While running in docker HOST_ADDRESS has to be 0.0.0.0 to enable the server to listen to incoming requests
-docker run -v C:/Temp:/Temp -p 3000:3000 -e ALLOWED_CORS=4200 -e ROOT_PATH=/Temp -e HOST_ADDRESS=0.0.0.0 -e HOST_PORT=3000 videos-with-subtitle-player_backend
+docker run -v C:/Temp:/Temp -p 3000:3000 -e ALLOWED_CORS=http://localhost:4200 -e ROOT_PATH=/Temp -e HOST_ADDRESS=0.0.0.0 -e HOST_PORT=3000 videos-with-subtitle-player_backend
 ```
 
 ### Frontend
 
 ```bash
-docker build . --target videos-with-subtitle-player_frontend --tag videos-with-subtitle-player_frontend:latest --build-arg VITE_BASE_URL=localhost:3000
+docker build . --target videos-with-subtitle-player_frontend --tag videos-with-subtitle-player_frontend:latest --build-arg VITE_BASE_URL=http://localhost:3000
 
 # to use nginx the port inside the container has to be 80
 docker run -p 4200:80 videos-with-subtitle-player_frontend
