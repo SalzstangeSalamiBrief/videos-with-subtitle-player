@@ -97,6 +97,6 @@ events.forEach((a) =>
 
 ## How to test
 
-docker build . --target videos-with-subtitle-player --tag videos-with-subtitle-player:latest --build-arg VITE_BASE_URL=/ --build-arg ROOT_PATH=C:\Temp --build-arg ALLOWED_CORS=localhost:3000 --build-arg FRONTEND_PORT=3000
+docker build . --target videos-with-subtitle-player_backend --tag videos-with-subtitle-player_backend:latest --build-arg VITE_BASE_URL=localhost:3000
 
-docker run
+docker run -p 3000:3000 -e ALLOWED_CORS=4200 -e ROOT_PATH=/Temp videos-with-subtitle-player_backend
