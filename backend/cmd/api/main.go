@@ -6,24 +6,22 @@ import (
 	"backend/internal/routes"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
-	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-const ADDR = "localhost:3000"
-
 func main() {
-
 	config.InitializeConfiguration()
+	log.Default().Printf("Start server on '%v'", config.AppConfiguration.ServerAddress)
 
 	go func() {
 		exit := make(chan os.Signal, 1)
 		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
 		<-exit
-		fmt.Printf("Shutting down server at %v\n", ADDR)
+		log.Default().Printf("Shutting down server at %v\n", config.AppConfiguration.ServerAddress)
 		os.Exit(0)
 	}()
 
@@ -42,5 +40,5 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(ADDR, mux)
+	http.ListenAndServe(config.AppConfiguration.ServerAddress, mux)
 }
