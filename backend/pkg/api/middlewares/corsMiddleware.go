@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"backend/internal/config"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,7 +11,7 @@ import (
 func CorsMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		configuredCors := os.Getenv("ALLOWED_CORS")
-		if configuredCors == "" {
+		if config.AppConfiguration.AllowedCors == "" {
 			return
 		}
 

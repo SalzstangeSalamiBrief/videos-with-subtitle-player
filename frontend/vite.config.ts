@@ -10,7 +10,6 @@ export default defineConfig({
     port: 4200,
   },
   build: {
-    outDir: '../backend/public',
     minify: true,
     cssMinify: true,
   },
