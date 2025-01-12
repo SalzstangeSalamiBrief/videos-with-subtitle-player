@@ -3,6 +3,7 @@ package main
 import (
 	"backend/cmd/logger/models"
 	"backend/cmd/logger/utilities"
+	"bytes"
 	"context"
 	"encoding/json"
 	"io"
@@ -80,29 +81,38 @@ func NewCustomHandler(
 }
 
 func (h *CustomHandler) Handle(ctx context.Context, r slog.Record) error {
-	level := getOutputLevel(r.Level.String()).Level()
-	fields := make(map[string]interface{}, r.NumAttrs())
-	r.Attrs(func(a slog.Attr) bool {
-		fields[a.Key] = a.Value.Any()
-
-		return true
-	})
-
-	marshalResult, err := json.MarshalIndent(fields, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	marshalString := string(marshalResult)
+	level := models.TransformLevelStringToLeveler(r.Level.String()).Level()
+	marshalString := transformMessageToJsonString(*h, r)
 	colorizedMessage := utilities.ColorizeMessageByLevel(level, level.String(), r.Message, marshalString)
 	h.l.Println(colorizedMessage...)
 	return nil
 }
 
+func transformMessageToJsonString(h CustomHandler, r slog.Record) string {
+	fields := make(map[string]interface{}, r.NumAttrs())
+	r.Attrs(func(a slog.Attr) bool {
+		fields[a.Key] = a.Value.Any()
+		return true
+	})
+
+	marshalResult, err := json.MarshalIndent(fields, "", "  ")
+	if err != nil {
+		h.l.Fatalln("Could not create a marshal JSON", err.Error())
+	}
+
+	compactJsonDestination := bytes.Buffer{}
+	err = json.Compact(&compactJsonDestination, marshalResult)
+	if err != nil {
+		h.l.Fatalln("Could not create a compact JSON string", err.Error())
+	}
+
+	return compactJsonDestination.String()
+}
+
 // TODO UTILITIES
 // TODO https://betterstack.com/community/guides/logging/logging-in-go/
 func getHandler(handlerType string, minLevel string) slog.Handler {
-	options := slog.HandlerOptions{AddSource: true, Level: getOutputLevel(minLevel)}
+	options := slog.HandlerOptions{AddSource: true, Level: models.TransformLevelStringToLeveler(minLevel)}
 	if handlerType == "" && os.Getenv("env") == strings.ToLower("prod") {
 		handlerType = "json"
 	}
@@ -112,22 +122,5 @@ func getHandler(handlerType string, minLevel string) slog.Handler {
 		return slog.NewJSONHandler(os.Stdout, &options)
 	default:
 		return slog.NewTextHandler(os.Stdout, &options)
-	}
-}
-
-func getOutputLevel(input string) slog.Leveler {
-	switch strings.ToLower(input) {
-	case "debug":
-		return slog.LevelDebug
-	case "warn":
-		return slog.LevelWarn
-	case "error":
-		return slog.LevelError
-	case "trace":
-		return models.LevelTrace
-	case "fatal":
-		return models.LevelFatal
-	default:
-		return slog.LevelInfo
 	}
 }
