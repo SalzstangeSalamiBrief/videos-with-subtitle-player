@@ -1,7 +1,7 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router';
-import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
-import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
 import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
+import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
+import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { DefaultPendingComponent } from '../App';
 
 export const Route = createRootRoute({

@@ -93,6 +93,45 @@ events.forEach((a) =>
 );
 ```
 
-## How to build
+## Docker
 
-## How to test
+The app can be run by using docker.
+The frontend and the backend run in separate containers.
+
+### Backend
+
+While running the container these environment variables have to be set:
+
+| Variable     | Usage                                                                                                                                                                                    | Example               |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| ALLOWED_CORS | The cors (separated by comma) that are allowed while serving content. Using a wildcard allows all origins to access the resource                                                         | http://localhost:4200 |
+| ROOT_PATH    | The path to the folder that contains the content that should be served bz the server. Beware, that the folder has to be accessible by the container using the -v (volume flag) of docker | /Temp                 |
+| HOST_ADDRESS | Address that should be used to host the server. Use 0.0.0.0 while running the server in docker                                                                                           | 0.0.0.0               |
+| HOST_PORT    | The port that should be used to host the server                                                                                                                                          | 3000                  |
+
+Example:
+
+```bash
+docker build . --target videos-with-subtitle-player_backend --tag videos-with-subtitle-player_backend:latest
+
+# While running in docker HOST_ADDRESS has to be 0.0.0.0 to enable the server to listen to incoming requests
+# Mapping the volume of the host to the container is required -v <host>:<container> - ROOT_PATH=<container>
+docker run -v C:/Temp:/Temp -p 3000:3000 -e ALLOWED_CORS=http://localhost:4200 -e ROOT_PATH=/Temp -e HOST_ADDRESS=0.0.0.0 -e HOST_PORT=3000 videos-with-subtitle-player_backend
+```
+
+### Frontend
+
+While building the frontend these environment variables have to be set:
+
+| Variable      | Usage                  | Example               |
+| ------------- | ---------------------- | --------------------- |
+| VITE_BASE_URL | The url of the backend | http://localhost:3000 |
+
+Example:
+
+```bash
+docker build . --target videos-with-subtitle-player_frontend --tag videos-with-subtitle-player_frontend:latest --build-arg VITE_BASE_URL=http://localhost:3000
+
+# to use nginx the port inside the container has to be 80
+docker run -p 4200:80 videos-with-subtitle-player_frontend
+```
