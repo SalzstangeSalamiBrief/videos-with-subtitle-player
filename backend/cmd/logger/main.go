@@ -1,8 +1,10 @@
 package main
 
 import (
+	"backend/cmd/logger/models"
+	"backend/cmd/logger/utilities"
 	"context"
-	"github.com/fatih/color"
+	"encoding/json"
 	"io"
 	"log"
 	"log/slog"
@@ -11,21 +13,11 @@ import (
 	"strings"
 )
 
-const (
-	LevelTrace = slog.Level(-8)
-	LevelFatal = slog.Level(12)
-)
-
-var LevelNames = map[slog.Leveler]string{
-	LevelTrace: "TRACE",
-	LevelFatal: "FATAL",
-}
-
-type ColorHandlerOptions struct {
+type CustomHandlerOptions struct {
 	SlogOpts slog.HandlerOptions
 }
 
-type ColorHandler struct {
+type CustomHandler struct {
 	slog.Handler
 	l *log.Logger
 }
@@ -34,18 +26,26 @@ var logger *slog.Logger
 
 // TODO
 // TODO ATTRIBUTES: ADD SOURCE, JSON, MIN LEVEL?
-func main() {
+func main( /* TODO MIN LEVEL AS PARAM */ ) {
 	//logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: LevelTrace, ReplaceAttr: replaceAttr}))
-	logger = slog.New(NewCustomColorHandler(os.Stdout, ColorHandlerOptions{SlogOpts: slog.HandlerOptions{AddSource: true, Level: LevelTrace, ReplaceAttr: replaceAttr}}))
+	minLevel := models.LevelTrace // slog.LevelWarn
+	shouldAddSource := true       // TODO PARAM
+	options := CustomHandlerOptions{SlogOpts: slog.HandlerOptions{AddSource: shouldAddSource, Level: minLevel, ReplaceAttr: replaceAttr}}
+	handler := NewCustomHandler(os.Stdout, options)
+	logger = slog.New(handler)
 
 	//slog.SetDefault(logger)
 	//logger.Info("Hello world", "user", 134, "baka", []string{"a", "b"})
 	//slog.Info("IAM THJE DEFAULT BAKA")
 	buildInfo, _ := debug.ReadBuildInfo()
-	childLogger := logger.With(slog.Group("Program_properties", slog.Int("pid", os.Getpid()), slog.String("go_version", buildInfo.GoVersion)))
+	logger.Warn("Warn", slog.String("go_version", buildInfo.GoVersion))
+	logger.Error("Error")
+	logger.Info("Info")
+	logger.Debug("Debug")
+	//childLogger := logger.With(slog.Group("Program_properties", slog.Int("pid", os.Getpid()), slog.String("go_version", buildInfo.GoVersion)))
 	//logger.LogAttrs(nil, slog.LevelInfo, "hello, world",
 	//	slog.Group("Program properties", slog.Int("pid", os.Getpid()), slog.String("go_version", buildInfo.GoVersion)))
-	childLogger.LogAttrs(nil, slog.LevelError, "Hello from the child", slog.Int("Attrs", 1))
+	//childLogger.LogAttrs(nil, slog.LevelError, "Hello from the child", slog.Int("Attrs", 1))
 	// src: https://go.dev/blog/slog
 	// TODO USE BUILDER PATTERN
 	// TODO INJECT INTO ROUTER OR EXPORT REFERENCE?
@@ -54,7 +54,7 @@ func main() {
 func replaceAttr(groups []string, attributes slog.Attr) slog.Attr {
 	if attributes.Key == slog.LevelKey {
 		level := attributes.Value.Any().(slog.Level)
-		label, exists := LevelNames[level]
+		label, exists := models.LevelNames[level]
 		if !exists {
 			label = level.String()
 		}
@@ -65,6 +65,41 @@ func replaceAttr(groups []string, attributes slog.Attr) slog.Attr {
 	return attributes
 }
 
+// TODO CUSTOM HANDLER
+
+func NewCustomHandler(
+	out io.Writer,
+	opts CustomHandlerOptions,
+) *CustomHandler {
+	h := &CustomHandler{
+		Handler: slog.NewJSONHandler(out, &opts.SlogOpts),
+		l:       log.New(out, "", 0),
+	}
+
+	return h
+}
+
+func (h *CustomHandler) Handle(ctx context.Context, r slog.Record) error {
+	level := getOutputLevel(r.Level.String()).Level()
+	fields := make(map[string]interface{}, r.NumAttrs())
+	r.Attrs(func(a slog.Attr) bool {
+		fields[a.Key] = a.Value.Any()
+
+		return true
+	})
+
+	marshalResult, err := json.MarshalIndent(fields, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	marshalString := string(marshalResult)
+	colorizedMessage := utilities.ColorizeMessageByLevel(level, level.String(), r.Message, marshalString)
+	h.l.Println(colorizedMessage...)
+	return nil
+}
+
+// TODO UTILITIES
 // TODO https://betterstack.com/community/guides/logging/logging-in-go/
 func getHandler(handlerType string, minLevel string) slog.Handler {
 	options := slog.HandlerOptions{AddSource: true, Level: getOutputLevel(minLevel)}
@@ -89,46 +124,10 @@ func getOutputLevel(input string) slog.Leveler {
 	case "error":
 		return slog.LevelError
 	case "trace":
-		return LevelTrace
+		return models.LevelTrace
 	case "fatal":
-		return LevelFatal
+		return models.LevelFatal
 	default:
 		return slog.LevelInfo
 	}
-}
-
-func NewCustomColorHandler(
-	out io.Writer,
-	opts ColorHandlerOptions,
-) *ColorHandler {
-	h := &ColorHandler{
-		Handler: slog.NewJSONHandler(out, &opts.SlogOpts),
-		l:       log.New(out, "", 0),
-	}
-
-	return h
-}
-
-func (h *ColorHandler) Handle(ctx context.Context, record slog.Record) error {
-	logLevel := record.Level
-	message := record.Message
-	switch logLevel {
-	case slog.LevelWarn:
-		message = color.YellowString(message)
-		break
-	case slog.LevelError:
-		message = color.RedString(message)
-		break
-	case LevelTrace:
-		message = color.BlueString(message)
-		break
-	case LevelFatal:
-		message = color.MagentaString(message)
-		break
-	default:
-		message = color.WhiteString(message)
-		break
-	}
-
-	return nil
 }
