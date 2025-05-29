@@ -26,7 +26,7 @@ export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
       >
         <div
           role="presentation"
-          className="flex h-full items-end bg-linear-to-t from-slate-800 from-[5ch] to-[20ch]"
+          className="bg-linear-to-t flex h-full items-end from-slate-800 from-[5ch] to-[20ch]"
         >
           <header className="h-fit overflow-hidden rounded-b-md p-4">
             <h1
