@@ -1,8 +1,8 @@
 dialog {
   width: min(100%, 1080px);
   & .lightbox {
-    padding: theme('padding.4');
-    background-color: theme('colors.fuchsia.800');
+    padding: calc(var(--spacing) * 4);
+    background-color: var(--colors-fuchsia-800);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,7 +13,7 @@ dialog {
     }
   }
   &::backdrop {
-    background: theme('colors.slate.800');
-    opacity: theme('opacity.75');
+    background: var(--colors-slate-800);
+    opacity: var(--opacity-75);
   }
 }

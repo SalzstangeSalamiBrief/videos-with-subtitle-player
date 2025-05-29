@@ -9,7 +9,7 @@ interface ITabPanelProps {
 export function TabPanel({ children, activeTabIndex }: ITabPanelProps) {
   return (
     <div
-      className="flex-grow"
+      className="grow"
       id={getTabPanelId(activeTabIndex)}
       role="tabpanel"
       tabIndex={0}

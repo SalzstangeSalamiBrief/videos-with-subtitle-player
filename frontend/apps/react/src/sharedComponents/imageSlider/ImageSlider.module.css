@@ -1,7 +1,6 @@
 .slideContainer {
   /*  TODO SIZING OF THE IMAGES: CURRENTLY SCALING ISSUES FOR DIFFERENT IMAGE SIZES */
   --slide-width: calc(100%);
-  /* --slide-height: calc(100% - theme(padding.8)); */
   --corner-radius: 16px;
 
   margin-inline: auto;
@@ -13,7 +12,6 @@
 @media screen and (min-width: 1080px) {
   .slideContainer {
     --slide-width: 512px;
-    /* --slide-height: 1024px; */
   }
 }
 
@@ -31,8 +29,6 @@
 
   border-radius: var(--corner-radius);
   width: var(--slide-width);
-  /* height: var(--slide-height); */
-
   /* centering the content removes the vertical scrollbar */
   display: flex;
   align-items: center;
