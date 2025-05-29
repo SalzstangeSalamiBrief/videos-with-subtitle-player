@@ -1,11 +1,12 @@
 // @ts-check
-import withNuxt from './.nuxt/eslint.config.mjs'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import withNuxt from './.nuxt/eslint.config.mjs';
 
-
-export default withNuxt(
-    {
-        rules:{
-            'no-console': ['error', { allow: ['warn', 'error'] }],
-        }
-    }
-)
+export default withNuxt([
+  eslintPluginPrettierRecommended,
+  {
+    rules: {
+      'no-console': ['error', { allow: ['warn', 'error'] }],
+    },
+  },
+]);
