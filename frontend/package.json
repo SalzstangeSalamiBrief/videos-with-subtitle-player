@@ -14,7 +14,6 @@
     "preview": "vite preview",
     "prettier:write": "pnpm exec prettier . --write",
     "prettier:check": "pnpm exec prettier . --check",
-    "json-server": "npx json-server --watch dev/json-server/database.json --routes dev/json-server/routes.json",
     "test": "vitest"
   },
   "dependencies": {
@@ -39,7 +38,6 @@
     "eslint": "^8.57.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "jsdom": "^25.0.1",
-    "json-server": "0.17.4",
     "postcss": "^8.4.47",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.8",
