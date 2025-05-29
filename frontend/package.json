@@ -1,52 +1,22 @@
 {
-  "name": "video-with-subtitle-player",
-  "author": {
-    "name": "SalzstangeSalamiBrief"
-  },
-  "description": "A GUI that is able to display and stream a hierarchy of images, video files, and audio files with subtitles.",
-  "private": true,
-  "version": "0.5.0",
-  "type": "module",
+  "name": "video-with-subtitle-player-monorepo",
+  "version": "1.0.0",
+  "description": "A monorepo that contains the same app build in multiple frameworks",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview",
-    "prettier:write": "pnpm exec prettier . --write",
-    "prettier:check": "pnpm exec prettier . --check",
-    "json-server": "npx json-server --watch dev/json-server/database.json --routes dev/json-server/routes.json",
-    "test": "vitest"
+    "react:dev": "pnpm run --filter=@videos-with-subtitle-player/react dev",
+    "react:build": "pnpm run --filter=@videos-with-subtitle-player/react build",
+    "react:lint": "pnpm run --filter=@videos-with-subtitle-player/react lint",
+    "react:prettier:check": "pnpm run --filter=@videos-with-subtitle-player/react prettier:check",
+    "react:prettier:write": "pnpm run --filter=@videos-with-subtitle-player/react prettier:write",
+    "react:test": "pnpm run --filter=@videos-with-subtitle-player/react test"
   },
-  "dependencies": {
-    "@heroicons/react": "^2.1.5",
-    "@tanstack/react-query": "^5.56.2",
-    "@tanstack/react-router": "^1.58.15",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+  "keywords": [],
+  "author": "SalzstangeSalamiBrief",
+  "engines": {
+    "node": ">=22.11.0"
   },
-  "devDependencies": {
-    "@tanstack/router-vite-plugin": "^1.58.12",
-    "@testing-library/dom": "^10.4.0",
-    "@testing-library/jest-dom": "^6.6.2",
-    "@testing-library/react": "^16.0.1",
-    "@types/node": "^20.16.10",
-    "@types/react": "^18.3.10",
-    "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
-    "@vitejs/plugin-react": "^4.3.2",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.1",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "jsdom": "^25.0.1",
-    "json-server": "0.17.4",
-    "postcss": "^8.4.47",
-    "prettier": "^3.3.3",
-    "prettier-plugin-tailwindcss": "^0.6.8",
-    "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2",
-    "vite": "^5.4.8",
-    "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^2.1.4"
+  "volta": {
+    "node": "24.0.0",
+    "pnpm": "10.11"
   }
 }

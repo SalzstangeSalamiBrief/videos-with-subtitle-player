@@ -1,0 +1,48 @@
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import {
+  Link as TanStackRouterLink,
+  type LinkOptions,
+} from '@tanstack/react-router';
+import type { JSX } from 'react';
+import styles from './ImageCard.module.css';
+interface ICardProps {
+  title: string;
+  children?: JSX.Element;
+  imageUrl?: string;
+  linkOptions: LinkOptions;
+}
+
+export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
+  return (
+    <article
+      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'} `}
+    >
+      <div
+        role="presentation"
+        className={styles.cover}
+        style={{
+          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
+        }}
+      >
+        <div
+          role="presentation"
+          className="bg-linear-to-t flex h-full items-end from-slate-800 from-[5ch] to-[20ch]"
+        >
+          <header className="h-fit overflow-hidden rounded-b-md p-4">
+            <h1
+              className="max-w-text line-clamp-3 overflow-hidden text-ellipsis whitespace-normal font-bold"
+              title={title}
+            >
+              <TanStackRouterLink
+                {...linkOptions}
+                className={`${baseLinkStyles} block h-full w-full`}
+              >
+                {title}
+              </TanStackRouterLink>
+            </h1>
+          </header>
+        </div>
+      </div>
+    </article>
+  );
+}
