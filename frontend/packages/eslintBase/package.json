@@ -1,0 +1,14 @@
+{
+  "name": "@videos-with-subtitle-player/eslint-base",
+  "private": true,
+  "version": "0.0.13",
+  "type": "module",
+  "main": "index.js",
+  "devDependencies": {
+    "@eslint/js": "^9.27.0",
+    "eslint-plugin-react-hooks": "5.1.0-rc-fb9a90fa48-20240614",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "typescript-eslint": "^8.33.0"
+  }
+}

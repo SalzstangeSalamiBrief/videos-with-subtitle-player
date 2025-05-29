@@ -1,0 +1,49 @@
+{
+  "name": "@videos-with-subtitle-player/react",
+  "author": {
+    "name": "SalzstangeSalamiBrief"
+  },
+  "description": "A GUI that is able to display and stream a hierarchy of images, video files, and audio files with subtitles.",
+  "private": true,
+  "version": "0.5.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "prettier:write": "pnpm exec prettier . --write",
+    "prettier:check": "pnpm exec prettier . --check",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@tanstack/react-query": "^5.79.0",
+    "@tanstack/react-router": "^1.120.11",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@tanstack/router-vite-plugin": "^1.120.11",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.15.24",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
+    "@vitejs/plugin-react": "^4.5.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.27.0",
+    "jsdom": "^26.1.0",
+    "postcss": "^8.4.47",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.4",
+    "typescript-eslint": "^8.33.0",
+    "@videos-with-subtitle-player/eslint-base": "workspace:*"
+  }
+}

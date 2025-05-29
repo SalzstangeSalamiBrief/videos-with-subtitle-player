@@ -9,14 +9,14 @@ ARG VITE_BASE_URL
 # Set environment variables during the build process
 ENV VITE_BASE_URL=$VITE_BASE_URL
 
-FROM node_base AS frontend_build
-COPY ./frontend temp/frontend
-WORKDIR /temp/frontend
+FROM node_base AS frontend_react_build
+COPY ./frontend/react temp/frontend/react
+WORKDIR /temp/frontend/react
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
 FROM nginx:alpine-slim AS videos-with-subtitle-player_frontend
-COPY --from=frontend_build /temp/frontend/dist /usr/share/nginx/html
+COPY --from=frontend_react_build /temp/frontend/react/dist /usr/share/nginx/html
 CMD ["nginx", "-g", "daemon off;"]
 
 FROM golang:1.23.4-bookworm AS backend_build
@@ -25,7 +25,7 @@ COPY /backend .
 RUN go mod download
 RUN go mod verify
 WORKDIR /temp/backend/cmd/api
-COPY --from=frontend_build /temp/frontend/dist /temp/backend/cmd/api/public
+COPY --from=frontend_react_build /temp/frontend/react/dist /temp/backend/cmd/api/public
 RUN CGO_ENABLED=0 GOOS=linux go build -v -o /backend-output
 
 
