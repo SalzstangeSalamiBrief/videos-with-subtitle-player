@@ -10,7 +10,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
     // Reset the query error boundary
     queryErrorResetBoundary.reset();
     reset();
-  }, [queryErrorResetBoundary]);
+  }, [queryErrorResetBoundary, reset]);
 
   return (
     <div>

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const queryClient = new QueryClient();
 const router = createRouter({
   routeTree,
