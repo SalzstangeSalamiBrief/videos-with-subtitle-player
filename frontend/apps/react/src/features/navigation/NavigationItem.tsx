@@ -47,7 +47,7 @@ function ItemStateIndicator({
   return (
     <ChevronDownIcon
       width={20}
-      className={`shrink-0 transition-rotate duration-200 ease-linear ${isActive ? 'rotate-180' : 'rotate-0'}`}
+      className={`transition-rotate shrink-0 duration-200 ease-linear ${isActive ? 'rotate-180' : 'rotate-0'}`}
       aria-label={`Close ${itemName}`}
     />
   );

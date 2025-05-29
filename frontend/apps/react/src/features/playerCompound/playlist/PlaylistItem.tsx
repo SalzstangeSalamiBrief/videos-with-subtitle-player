@@ -10,7 +10,7 @@ interface IPlaylistItemProps {
 export function PlaylistItem({ isActive, item, folderId }: IPlaylistItemProps) {
   return (
     <li
-      className={`h-16 w-text shrink-0 rounded-md px-4 py-2 ${isActive ? 'bg-fuchsia-800 hover:bg-fuchsia-700' : 'bg-slate-800 hover:bg-slate-700'}`}
+      className={`w-text h-16 shrink-0 rounded-md px-4 py-2 ${isActive ? 'bg-fuchsia-800 hover:bg-fuchsia-700' : 'bg-slate-800 hover:bg-slate-700'}`}
     >
       <TanStackLink
         className="clamp-container clamp-2"

@@ -30,7 +30,7 @@ export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
         >
           <header className="h-fit overflow-hidden rounded-b-md p-4">
             <h1
-              className="line-clamp-3 max-w-text overflow-hidden text-ellipsis whitespace-normal font-bold"
+              className="max-w-text line-clamp-3 overflow-hidden text-ellipsis whitespace-normal font-bold"
               title={title}
             >
               <TanStackRouterLink
