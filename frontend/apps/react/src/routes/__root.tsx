@@ -1,13 +1,16 @@
-import { getFileTreeQuery } from '$queries/getFileTree/getFileTreeQueryQuery';
-import { getFileTreeSelect } from '$queries/getFileTree/getFileTreeSelect';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
+import {
+  getFileTreeQuery,
+  getFileTreeSelect,
+} from '@videos-with-subtitle-player/core';
 import { DefaultPendingComponent } from '../App';
 
+const baseUrl = import.meta.env.VITE_BASE_URL || '';
 export const Route = createRootRoute({
   component: Root,
   loader: async () => {
-    const responseData = await getFileTreeQuery();
+    const responseData = await getFileTreeQuery(baseUrl);
     const result = getFileTreeSelect(responseData);
     return result;
   },

@@ -3,10 +3,13 @@ import {
   isImageFile,
   isSubtitleFile,
   isVideoFile,
-} from '$lib/type-predicates/file-type-predicates';
-import type { IFileDto, ISubtitleFileDto } from '$models/dtos/fileDtos';
-import type { IFileTreeDto } from '$models/dtos/fileTreeDto';
-import type { IFileNode, IFileTree } from '$models/fileTree';
+} from '../../lib/type-predicates/file-type-predicates';
+import type {
+  IFileDto,
+  ISubtitleFileDto,
+} from '../../models/fileTree/dtos/fileDtos';
+import type { IFileTreeDto } from '../../models/fileTree/dtos/fileTreeDto';
+import type { IFileNode, IFileTree } from '../../models/fileTree/fileTree';
 
 export interface IGetFileTreeSelectReturn {
   fileTrees: IFileTree[];

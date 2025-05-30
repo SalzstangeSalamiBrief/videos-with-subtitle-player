@@ -1,4 +1,4 @@
-import type { IFileNode } from '$models/fileTree';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 import { useId } from 'react';
 import { Route } from '../../../routes/folders/_folderLayout/$folderId/files/$fileId';
 import { PlaylistItem } from './PlaylistItem';

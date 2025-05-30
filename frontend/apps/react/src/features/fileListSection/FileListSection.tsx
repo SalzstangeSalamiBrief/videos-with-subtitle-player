@@ -1,6 +1,6 @@
-import type { IFileNode } from '$models/fileTree';
 import { ImageCard } from '$sharedComponents/card/ImageCard';
 import type { LinkOptions } from '@tanstack/react-router';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 
 interface IFileListSectionProps {
   folderId: string;

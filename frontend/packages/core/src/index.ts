@@ -1,3 +1,6 @@
+// css
+import './index.css';
+
 // <---- enums ---->
 export { FileType } from './enums/FileType';
 
@@ -27,5 +30,5 @@ export { type IFileNode, type IFileTree } from './models/fileTree/fileTree';
 export {
   getFileTreeSelect,
   type IGetFileTreeSelectReturn,
-} from './lib/utilities/getFileTreeSelect';
-export { getFileTreeQuery } from './queries/getFileTree/getFileTreeQueryQuery';
+} from './queries/getFileTree/getFileTree.select';
+export { getFileTreeQuery } from './queries/getFileTree/getFileTreeQuery.query';

@@ -1,3 +1,4 @@
+import type { Maybe } from '@videos-with-subtitle-player/core';
 import { useId, type JSX } from 'react';
 import { TabButtons } from './TabButtons';
 import { TabPanel } from './TabPanel';

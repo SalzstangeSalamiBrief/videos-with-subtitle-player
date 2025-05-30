@@ -1,4 +1,4 @@
-import type { IFileNode } from '$models/fileTree';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 import { Player } from './player/Player';
 import { Playlist } from './playlist/Playlist';
 

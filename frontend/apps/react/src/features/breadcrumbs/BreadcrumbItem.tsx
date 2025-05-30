@@ -1,7 +1,9 @@
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
-import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
-import type { IFileTree } from '$models/fileTree';
 import { Link as TanStackRouterLink, useParams } from '@tanstack/react-router';
+import {
+  getFoldersInActiveTree,
+  type IFileTree,
+} from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../routes/__root';
 
 interface IBreadcrumbItemProps {

@@ -62,6 +62,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.120.11
         version: 1.120.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@videos-with-subtitle-player/core':
+        specifier: workspace:*
+        version: link:../../packages/core
       react:
         specifier: ^19.1.0
         version: 19.1.0

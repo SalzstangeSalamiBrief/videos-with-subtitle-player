@@ -1,11 +1,15 @@
-import { getImageUrlForId } from '$lib/utilities/getImageUrl';
-import type { IFileTree } from '$models/fileTree';
 import { ImageCard } from '$sharedComponents/card/ImageCard';
 import type { LinkOptions } from '@tanstack/react-router';
+import {
+  getImageUrlForId,
+  type IFileTree,
+} from '@videos-with-subtitle-player/core';
 
 interface IFolderListSectionProps {
   folders: IFileTree[];
 }
+// TOODO MOVE THESE FILES EITHER INTO CONTEXT OR CONSTANT FILES?
+const baseUrl = import.meta.env.VITE_BASE_URL;
 
 export function FolderList({ folders }: IFolderListSectionProps) {
   return (
@@ -20,7 +24,7 @@ export function FolderList({ folders }: IFolderListSectionProps) {
             <ImageCard
               linkOptions={linkOption}
               title={child.name}
-              imageUrl={getImageUrlForId(child.thumbnailId)}
+              imageUrl={getImageUrlForId(baseUrl, child.thumbnailId)}
             />
           </li>
         );

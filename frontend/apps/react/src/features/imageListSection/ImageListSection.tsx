@@ -1,5 +1,5 @@
-import type { IFileNode } from '$models/fileTree';
 import { Lightbox } from '$sharedComponents/lightbox/Lightbox';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 
 interface IImageListSectionProps {
   images: IFileNode[];

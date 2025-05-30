@@ -1,9 +1,8 @@
-import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
-import { useParams } from '@tanstack/react-router';
-import { BreadcrumbItem } from './BreadcrumbItem';
-import { Link as TanStackRouterLink } from '@tanstack/react-router';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import { Link as TanStackRouterLink, useParams } from '@tanstack/react-router';
+import { getFoldersInActiveTree } from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../routes/__root';
+import { BreadcrumbItem } from './BreadcrumbItem';
 
 export function Breadcrumbs() {
   const { folderId, fileId } = useParams({ strict: false });
