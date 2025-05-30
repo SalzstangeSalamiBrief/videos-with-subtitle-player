@@ -10,15 +10,9 @@ importers:
 
   apps/nuxt:
     dependencies:
-      '@nuxt/eslint':
-        specifier: 1.4.1
-        version: 1.4.1(@vue/compiler-sfc@3.5.16)(eslint@9.27.0(jiti@2.4.2))(magicast@0.3.5)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.24)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
       '@nuxt/icon':
         specifier: 1.13.0
         version: 1.13.0(magicast@0.3.5)(vite@6.3.5(@types/node@22.15.24)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(vue@3.5.16(typescript@5.8.3))
-      '@nuxt/test-utils':
-        specifier: 3.19.1
-        version: 3.19.1(@types/node@22.15.24)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(magicast@0.3.5)(terser@5.40.0)(tsx@4.19.4)(typescript@5.8.3)(vitest@3.1.4(@types/node@22.15.24)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(yaml@2.8.0)
       nuxt:
         specifier: ^3.17.4
         version: 3.17.4(@parcel/watcher@2.5.1)(@types/node@22.15.24)(db0@0.3.2)(eslint@9.27.0(jiti@2.4.2))(ioredis@5.6.1)(lightningcss@1.30.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.41.1)(terser@5.40.0)(tsx@4.19.4)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.24)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(yaml@2.8.0)
@@ -29,6 +23,18 @@ importers:
         specifier: ^4.5.1
         version: 4.5.1(vue@3.5.16(typescript@5.8.3))
     devDependencies:
+      '@nuxt/eslint':
+        specifier: 1.4.1
+        version: 1.4.1(@vue/compiler-sfc@3.5.16)(eslint@9.27.0(jiti@2.4.2))(magicast@0.3.5)(typescript@5.8.3)(vite@6.3.5(@types/node@22.15.24)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))
+      '@nuxt/test-utils':
+        specifier: 3.19.1
+        version: 3.19.1(@types/node@22.15.24)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(magicast@0.3.5)(terser@5.40.0)(tsx@4.19.4)(typescript@5.8.3)(vitest@3.1.4(@types/node@22.15.24)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4)(yaml@2.8.0))(yaml@2.8.0)
+      '@videos-with-subtitle-player/eslint-base':
+        specifier: workspace:*
+        version: link:../../packages/eslintBase
+      '@videos-with-subtitle-player/prettier-base':
+        specifier: workspace:*
+        version: link:../../packages/prettierBase
       eslint:
         specifier: ^9.27.0
         version: 9.27.0(jiti@2.4.2)

@@ -5,7 +5,6 @@ import tseslint from 'typescript-eslint';
 export default [
   { ignores: ['dist', 'api.ts'] },
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx,js,vue,svelte}'],
     languageOptions: {
       ecmaVersion: 2020,
@@ -16,4 +15,6 @@ export default [
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
 ];

@@ -16,6 +16,7 @@ const router = createRouter({
 });
 
 export function App() {
+  console.log('agf');
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
