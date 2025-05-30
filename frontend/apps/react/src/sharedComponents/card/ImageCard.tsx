@@ -18,7 +18,12 @@ export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
       className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'} relative`}
     >
       {imageUrl && (
-        <img loading="lazy" src={imageUrl} className={styles['card-image']} />
+        <img
+          loading="lazy"
+          src={imageUrl}
+          className={styles['card-image']}
+          alt={`Cover image of the item ${title}`}
+        />
       )}
       <div role="presentation">
         <div
