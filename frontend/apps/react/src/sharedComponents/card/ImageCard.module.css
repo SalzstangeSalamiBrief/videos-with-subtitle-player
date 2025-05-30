@@ -3,7 +3,6 @@
   gap: calc(var(--spacing) * 4);
   height: calc(var(--spacing) * 64);
   border-radius: var(--radius-md);
-
   transition: rotateX 150ms ease-in;
 }
 .card:hover {
@@ -11,7 +10,10 @@
   box-shadow: 0px 10px 10px -5px var(--color-fuchsia-300);
 }
 
-.cover {
-  background-size: cover;
-  background-repeat: no-repeat;
+.card-image {
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 }
