@@ -34,7 +34,7 @@ export function Lightbox({ images }: ILightboxContainerProps) {
             </figure>
           )}
           <button
-            className="absolute right-0 top-0 w-10 bg-fuchsia-800 p-2 text-fuchsia-100 hover:bg-fuchsia-700"
+            className="absolute top-0 right-0 w-10 bg-fuchsia-800 p-2 text-fuchsia-100 hover:bg-fuchsia-700"
             onClick={() => dialogRef.current?.close()}
             aria-label="Close the light box"
           >

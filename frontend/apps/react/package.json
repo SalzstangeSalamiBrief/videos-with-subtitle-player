@@ -12,8 +12,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "prettier:check": "prettier --check --ignore-path ../../.prettierignore ../.",
-    "prettier:write": "prettier -write --ignore-path ../../.prettierignore ../.",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier --write .",
     "test": "vitest"
   },
   "dependencies": {
@@ -37,7 +37,6 @@
     "jsdom": "^26.1.0",
     "postcss": "^8.4.47",
     "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
@@ -47,6 +46,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
-    "typescript-eslint": "^8.33.0"
+    "typescript-eslint": "^8.33.0",
+    "@videos-with-subtitle-player/prettier-base": "workspace:*",
+    "prettier-plugin-tailwindcss": "^0.6.11"
   }
 }

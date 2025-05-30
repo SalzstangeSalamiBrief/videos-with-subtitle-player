@@ -26,11 +26,11 @@ export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
       >
         <div
           role="presentation"
-          className="bg-linear-to-t flex h-full items-end from-slate-800 from-[5ch] to-[20ch]"
+          className="flex h-full items-end bg-linear-to-t from-slate-800 from-[5ch] to-[20ch]"
         >
           <header className="h-fit overflow-hidden rounded-b-md p-4">
             <h1
-              className="max-w-text line-clamp-3 overflow-hidden text-ellipsis whitespace-normal font-bold"
+              className="max-w-text line-clamp-3 overflow-hidden font-bold text-ellipsis whitespace-normal"
               title={title}
             >
               <TanStackRouterLink
