@@ -90,6 +90,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.1.5
         version: 19.1.5(@types/react@19.1.6)
+      '@videos-with-subtitle-player/eslint-base':
+        specifier: workspace:*
+        version: link:../../packages/eslintBase
       '@videos-with-subtitle-player/prettier-base':
         specifier: workspace:*
         version: link:../../packages/prettierBase
@@ -144,6 +147,9 @@ importers:
       '@eslint/js':
         specifier: ^9.27.0
         version: 9.27.0
+      '@videos-with-subtitle-player/eslint-base':
+        specifier: workspace:*
+        version: link:../eslintBase
       '@videos-with-subtitle-player/prettier-base':
         specifier: workspace:*
         version: link:../prettierBase

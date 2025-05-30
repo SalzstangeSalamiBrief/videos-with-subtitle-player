@@ -25,6 +25,7 @@
     "typescript-eslint": "^8.33.0",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.4",
-    "@videos-with-subtitle-player/prettier-base": "workspace:*"
+    "@videos-with-subtitle-player/prettier-base": "workspace:*",
+    "@videos-with-subtitle-player/eslint-base": "workspace:*"
   }
 }

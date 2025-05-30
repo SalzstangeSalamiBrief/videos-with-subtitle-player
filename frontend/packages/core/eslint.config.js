@@ -1,18 +1,4 @@
-import js from '@eslint/js';
-import { defineConfig } from 'eslint/config';
-import globals from 'globals';
+import eslintBase from '@videos-with-subtitle-player/eslint-base';
 import tseslint from 'typescript-eslint';
 
-export default defineConfig([
-  { ignores: ['dist'] },
-  {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
-    plugins: { js },
-    extends: ['js/recommended'],
-  },
-  {
-    files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
-  },
-  tseslint.configs.recommended,
-]);
+export default tseslint.config(eslintBase);
