@@ -1,14 +1,12 @@
-import {
-  type IFileNode,
-  getImageUrlForId,
-} from '@videos-with-subtitle-player/core';
+import { imageHandler } from '$lib/styles/imageHandler';
+import { type IFileNode } from '@videos-with-subtitle-player/core';
 import styles from './ImageSlider.module.css';
 
 interface IFolderListSectionProps {
   images: IFileNode[];
   onImageClick?: (image: IFileNode) => void;
 }
-const baseUrl = import.meta.env.VITE_BASE_URL;
+
 export function ImageSlider({ images, onImageClick }: IFolderListSectionProps) {
   return (
     <div className={styles.slideContainer}>
@@ -19,7 +17,10 @@ export function ImageSlider({ images, onImageClick }: IFolderListSectionProps) {
             key={image.id}
             onClick={() => onImageClick?.(image)}
           >
-            <img src={getImageUrlForId(baseUrl, image.id)} alt={image.name} />
+            <img
+              src={imageHandler.getImageUrlForId(image.id)}
+              alt={image.name}
+            />
           </figure>
         ))}
       </div>

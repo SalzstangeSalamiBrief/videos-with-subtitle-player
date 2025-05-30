@@ -73,6 +73,7 @@ function AudioFilePage() {
     });
   }
 
+  document.title = selectedFolder.name;
   return (
     <Tabs
       tabs={tabs}

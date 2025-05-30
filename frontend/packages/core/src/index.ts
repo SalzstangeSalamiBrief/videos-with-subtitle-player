@@ -15,7 +15,7 @@ export {
   isVideoFile,
 } from './lib/type-predicates/file-type-predicates';
 export { getFoldersInActiveTree } from './lib/utilities/getFoldersInActiveTree';
-export { getImageUrlForId } from './lib/utilities/getImageUrl';
+export { ImageGetter, type IImageGetter } from './lib/utilities/imageGetter';
 export {
   type IFileDto,
   type ISubtitleFileDto,
