@@ -26,7 +26,7 @@ export function Lightbox({ images }: ILightboxContainerProps) {
           dialogRef.current?.showModal();
         }}
       />
-      <dialog ref={dialogRef}>
+      <dialog ref={dialogRef} className="m-auto">
         <div className={styles.lightbox}>
           {!activeImage && <p>Please select an image</p>}
           {activeImage && (
