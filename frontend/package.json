@@ -8,7 +8,12 @@
     "react:lint": "pnpm run --filter=@videos-with-subtitle-player/react lint",
     "react:prettier:check": "pnpm run --filter=@videos-with-subtitle-player/react prettier:check",
     "react:prettier:write": "pnpm run --filter=@videos-with-subtitle-player/react prettier:write",
-    "react:test": "pnpm run --filter=@videos-with-subtitle-player/react test"
+    "react:test": "pnpm run --filter=@videos-with-subtitle-player/react test",
+    "core:dev": "pnpm run --filter=@videos-with-subtitle-player/core dev",
+    "core:build": "pnpm run --filter=@videos-with-subtitle-player/core build",
+    "core:lint": "pnpm run --filter=@videos-with-subtitle-player/core lint",
+    "core:prettier:check": "pnpm run --filter=@videos-with-subtitle-player/core prettier:check",
+    "core:prettier:write": "pnpm run --filter=@videos-with-subtitle-player/core prettier:write"
   },
   "keywords": [],
   "author": "SalzstangeSalamiBrief",
