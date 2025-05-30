@@ -1,6 +1,6 @@
-import { FileType } from '$enums/FileType';
 import { Player } from '$features/playerCompound/player/Player';
 import { render, screen, within } from '@testing-library/react';
+import { FileType } from '@videos-with-subtitle-player/core';
 import { describe, expect, test } from 'vitest';
 
 describe('Player', () => {
