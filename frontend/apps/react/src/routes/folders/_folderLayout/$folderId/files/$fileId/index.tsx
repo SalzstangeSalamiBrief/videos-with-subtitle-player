@@ -1,7 +1,7 @@
 import { PlayerCompound } from '$features/playerCompound/PlayerCompound';
-import type { IFileNode } from '$models/fileTree';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { createFileRoute } from '@tanstack/react-router';
+import type { IFileNode, Maybe } from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../../../../__root';
 export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',

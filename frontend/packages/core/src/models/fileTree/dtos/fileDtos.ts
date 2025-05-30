@@ -1,4 +1,4 @@
-import { FileType } from '$enums/FileType';
+import type { FileType } from '../../../enums/FileType';
 
 export interface IFileDto {
   id: string;

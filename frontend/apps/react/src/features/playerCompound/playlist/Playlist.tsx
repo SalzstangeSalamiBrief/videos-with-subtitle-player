@@ -1,4 +1,4 @@
-import type { IFileNode } from '$models/fileTree';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 import { useId } from 'react';
 import { Route } from '../../../routes/folders/_folderLayout/$folderId/files/$fileId';
 import { PlaylistItem } from './PlaylistItem';
@@ -16,7 +16,7 @@ export function Playlist({ siblings }: IPlaylistProps) {
       <h2 id={labelId} className="mb-2 text-base font-bold">
         Playlist
       </h2>
-      <ul className="flex h-80 flex-col gap-1 overflow-y-auto overflow-x-hidden">
+      <ul className="flex h-80 flex-col gap-1 overflow-x-hidden overflow-y-auto">
         {siblings.map((item) => (
           <PlaylistItem
             key={item.id}

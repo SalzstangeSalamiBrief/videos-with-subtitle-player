@@ -1,7 +1,6 @@
 import { FileListSection } from '$features/fileListSection/FileListSection';
 import { FolderListSection } from '$features/folderListSection/FolderListSection';
 import { ImageListSection } from '$features/imageListSection/ImageListSection';
-import type { IFileTree } from '$models/fileTree';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { Tabs, type ITab } from '$sharedComponents/tabs/Tabs';
 import {
@@ -10,6 +9,7 @@ import {
   useParams,
   useSearch,
 } from '@tanstack/react-router';
+import type { IFileTree, Maybe } from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../../__root';
 import type { IFolderLayoutSearchParams } from '../../_folderLayout';
 

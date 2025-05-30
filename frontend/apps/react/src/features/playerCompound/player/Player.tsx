@@ -1,4 +1,4 @@
-import { FileType } from '$enums/FileType';
+import { FileType } from '@videos-with-subtitle-player/core';
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
 

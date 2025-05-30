@@ -1,3 +1,4 @@
+import type { Maybe } from '@videos-with-subtitle-player/core';
 import type { JSX, Key } from 'react';
 
 export interface IMenuItemBase<T> {

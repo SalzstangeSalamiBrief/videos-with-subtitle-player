@@ -1,4 +1,5 @@
-import type { IFileTree } from '$models/fileTree';
+import type { IFileTree } from '../../models/fileTree/fileTree';
+import type { Maybe } from '../../models/maybe';
 
 export function getFoldersInActiveTree(
   nodes: Maybe<IFileTree[]>,

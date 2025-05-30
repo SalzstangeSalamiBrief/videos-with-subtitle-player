@@ -1,5 +1,5 @@
-import type { IFileTree } from '$models/fileTree';
 import { FolderList } from '$sharedComponents/folderList/FolderList';
+import type { IFileTree } from '@videos-with-subtitle-player/core';
 
 interface IFolderListSectionProps {
   folders: IFileTree[];

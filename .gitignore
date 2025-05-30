@@ -9,6 +9,13 @@ dist
 tmp
 out-tsc
 bazel-out
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+
 
 # Node
 node_modules
@@ -48,3 +55,7 @@ backend.exe
 _debug_bin*.exe
 .vite
 .exe
+
+# Logs
+logs
+*.log

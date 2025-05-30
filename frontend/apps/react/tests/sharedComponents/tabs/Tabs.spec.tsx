@@ -1,4 +1,4 @@
-import { ITab, Tabs } from '$sharedComponents/tabs/Tabs';
+import { type ITab, Tabs } from '$sharedComponents/tabs/Tabs';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
 describe('Tabs', () => {

@@ -4,11 +4,15 @@
   "version": "0.0.13",
   "type": "module",
   "main": "index.js",
+  "scripts": {
+    "prettier:check": "prettier . --check",
+    "prettier:write": "prettier . --write"
+  },
   "devDependencies": {
     "@eslint/js": "^9.27.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
-    "typescript-eslint": "^8.33.0"
+    "prettier": "^3.5.3",
+    "typescript-eslint": "^8.33.0",
+    "@videos-with-subtitle-player/prettier-base": "workspace:*"
   }
 }

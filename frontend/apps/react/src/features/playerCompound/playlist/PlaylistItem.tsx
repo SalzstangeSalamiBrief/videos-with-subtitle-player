@@ -1,5 +1,5 @@
-import type { IFileNode } from '$models/fileTree';
 import { Link as TanStackLink } from '@tanstack/react-router';
+import type { IFileNode } from '@videos-with-subtitle-player/core';
 
 interface IPlaylistItemProps {
   item: IFileNode;
