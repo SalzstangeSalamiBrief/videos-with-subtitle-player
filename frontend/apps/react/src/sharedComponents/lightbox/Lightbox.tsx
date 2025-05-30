@@ -1,18 +1,13 @@
+import { imageHandler } from '$lib/styles/imageHandler';
 import { ImageSlider } from '$sharedComponents/imageSlider/ImageSlider';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import {
-  getImageUrlForId,
-  type IFileNode,
-  type Maybe,
-} from '@videos-with-subtitle-player/core';
+import { type IFileNode, type Maybe } from '@videos-with-subtitle-player/core';
 import { useRef, useState } from 'react';
 import styles from './Lightbox.module.css';
 
 interface ILightboxContainerProps {
   images: IFileNode[];
 }
-const baseUrl = import.meta.env.VITE_BASE_URL;
-
 export function Lightbox({ images }: ILightboxContainerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [activeImage, setActiveImage] = useState<Maybe<IFileNode>>(undefined);
@@ -32,7 +27,7 @@ export function Lightbox({ images }: ILightboxContainerProps) {
           {activeImage && (
             <figure>
               <img
-                src={getImageUrlForId(baseUrl, activeImage.id)}
+                src={imageHandler.getImageUrlForId(activeImage.id)}
                 alt={activeImage.name}
               />
             </figure>

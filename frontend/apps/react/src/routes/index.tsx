@@ -7,6 +7,7 @@ export const Route = createFileRoute('/')({
 });
 
 function LandingPage() {
+  document.title = import.meta.env.VITE_APP_TITLE;
   const { fileTrees } = RootLayoutRoute.useLoaderData();
 
   // TODO HJANDLE NO ITEMS FOUND
