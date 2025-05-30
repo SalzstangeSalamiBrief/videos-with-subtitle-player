@@ -15,7 +15,7 @@ interface ICardProps {
 export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
   return (
     <article
-      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'} relative`}
+      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
     >
       {imageUrl && (
         <img
