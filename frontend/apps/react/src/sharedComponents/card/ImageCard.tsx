@@ -15,15 +15,17 @@ interface ICardProps {
 export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
   return (
     <article
-      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'} `}
+      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
     >
-      <div
-        role="presentation"
-        className={styles.cover}
-        style={{
-          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-        }}
-      >
+      {imageUrl && (
+        <img
+          loading="lazy"
+          src={imageUrl}
+          className={styles['card-image']}
+          alt={`Cover image of the item ${title}`}
+        />
+      )}
+      <div role="presentation">
         <div
           role="presentation"
           className="flex h-full items-end bg-linear-to-t from-slate-800 from-[5ch] to-[20ch]"
