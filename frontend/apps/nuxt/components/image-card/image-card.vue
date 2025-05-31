@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { IFileTree } from '@videos-with-subtitle-player/core';
 
-interface Props {
+interface IProps {
   folder: IFileTree;
 }
 
-const { folder } = defineProps<Props>();
+const { folder } = defineProps<IProps>();
 </script>
-#
 <style lang="css" scoped>
 .imageCard:hover {
   transform: rotateX(25deg);

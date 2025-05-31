@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { IFileTree } from '@videos-with-subtitle-player/core';
 
-interface Props {
+interface IProps {
   folders: IFileTree[];
 }
 
-const { folders } = defineProps<Props>();
+const { folders } = defineProps<IProps>();
 </script>
 
 <template>
