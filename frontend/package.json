@@ -13,7 +13,11 @@
     "core:build": "pnpm run --filter=@videos-with-subtitle-player/core build",
     "core:lint": "pnpm run --filter=@videos-with-subtitle-player/core lint",
     "core:prettier:check": "pnpm run --filter=@videos-with-subtitle-player/core prettier:check",
-    "core:prettier:write": "pnpm run --filter=@videos-with-subtitle-player/core prettier:write"
+    "core:prettir:write": "pnpm run --filter=@videos-with-subtitle-player/core prettier:write",
+    "nuxt:dev": "pnpm run --filter=@videos-with-subtitle-player/nuxt dev",
+    "nuxt:build": "pnpm run --filter=@videos-with-subtitle-player/nuxt build",
+    "nuxt:lint": "pnpm run --filter=@videos-with-subtitle-player/nuxt lint",
+    "nuxt:prettier:check": "pnpm run --filter=@videos-with-subtitle-player/nuxt prettier:check"
   },
   "keywords": [],
   "author": "SalzstangeSalamiBrief",

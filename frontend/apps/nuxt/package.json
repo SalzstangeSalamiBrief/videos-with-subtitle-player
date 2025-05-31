@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "@videos-with-subtitle-player/nuxt",
   "private": true,
   "type": "module",
   "scripts": {

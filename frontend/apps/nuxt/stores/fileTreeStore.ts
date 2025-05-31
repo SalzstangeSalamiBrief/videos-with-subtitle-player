@@ -1,15 +1,19 @@
 import {
   getFileTreeQuery,
   getFileTreeSelect,
+  getFolderFromFileTree,
   type IGetFileTreeSelectReturn,
 } from '@videos-with-subtitle-player/core';
 
 const fileTreeStoreKey = 'file-tree-store';
 
+type FileTreeStoreData = IGetFileTreeSelectReturn & { isInitialized: boolean };
+
 export const useFileTreeStore = defineStore(fileTreeStoreKey, {
-  state: (): IGetFileTreeSelectReturn => ({
+  state: (): FileTreeStoreData => ({
     fileGroups: [],
     fileTrees: [],
+    isInitialized: false,
   }),
   actions: {
     async init() {
@@ -23,6 +27,13 @@ export const useFileTreeStore = defineStore(fileTreeStoreKey, {
 
       this.fileGroups = selectResult.fileGroups;
       this.fileTrees = selectResult.fileTrees;
+      this.isInitialized = true;
+    },
+  },
+  getters: {
+    getFolderFromFileTree: (state: FileTreeStoreData) => {
+      return (folderId: string) =>
+        getFolderFromFileTree(state.fileTrees, folderId);
     },
   },
 });

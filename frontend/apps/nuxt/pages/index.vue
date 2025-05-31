@@ -2,7 +2,6 @@
 import { useFileTreeStore } from '~/stores/fileTreeStore';
 
 const fileTreeStore = useFileTreeStore();
-await callOnce(fileTreeStore.init);
 </script>
 <template>
   <p v-if="!fileTreeStore.fileTrees.length">

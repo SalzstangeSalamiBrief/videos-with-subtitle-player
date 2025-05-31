@@ -5,17 +5,6 @@ import './index.css';
 export { FileType } from './enums/FileType';
 
 // <---- models---->
-export type { Maybe } from './models/maybe';
-
-// <---- lib ---->
-export {
-  isAudioFile,
-  isImageFile,
-  isSubtitleFile,
-  isVideoFile,
-} from './lib/type-predicates/file-type-predicates';
-export { getFoldersInActiveTree } from './lib/utilities/getFoldersInActiveTree';
-export { ImageGetter, type IImageGetter } from './lib/utilities/imageGetter';
 export {
   type IFileDto,
   type ISubtitleFileDto,
@@ -25,6 +14,18 @@ export {
   type PossibleFilesDto,
 } from './models/fileTree/dtos/fileTreeDto';
 export { type IFileNode, type IFileTree } from './models/fileTree/fileTree';
+export type { Maybe } from './models/maybe';
+
+// <---- lib ---->
+export {
+  isAudioFile,
+  isImageFile,
+  isSubtitleFile,
+  isVideoFile,
+} from './lib/type-predicates/file-type-predicates';
+export { getFolderFromFileTree } from './lib/utilities/getFoldersFromFileTree';
+export { getFoldersInActiveTree } from './lib/utilities/getFoldersInActiveTree';
+export { ImageGetter, type IImageGetter } from './lib/utilities/imageGetter';
 
 // <---- queries ---->
 export {

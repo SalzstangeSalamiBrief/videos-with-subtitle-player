@@ -14,7 +14,7 @@ export function ErrorMessage({
   return (
     <section className="h-fit rounded-md bg-red-50 p-4 text-red-900">
       <h1 className="text-lg font-bold">{message}</h1>
-      <p>{description}</p>
+      {description && <p>{description}</p>}
     </section>
   );
 }

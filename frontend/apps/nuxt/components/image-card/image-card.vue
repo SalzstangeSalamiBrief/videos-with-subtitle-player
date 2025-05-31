@@ -8,13 +8,14 @@ interface IProps {
 const { folder } = defineProps<IProps>();
 </script>
 <style lang="css" scoped>
-.imageCard:hover {
+.card:hover {
   transform: rotateX(25deg);
   box-shadow: 0px 10px 10px -5px var(--color-fuchsia-300);
 }
 </style>
 <template>
-  <article class="card card-border imageCard bg-slate-800">
+  <!-- TODO DOES NOT WORK WITH FILETREE AND FILENODE TOGETHER => FIX -->
+  <article class="card card-border bg-slate-800">
     <figure class="h-56" :class="{ 'bg-fuchsia-800': !folder.thumbnailId }">
       <img
         v-if="folder.thumbnailId"
@@ -23,7 +24,7 @@ const { folder } = defineProps<IProps>();
         :alt="`Cover image of the item ${folder.name}`"
       />
     </figure>
-    <div class="card-body h-20">
+    <div class="card-body h-28">
       <!-- TODO hover styles -->
       <NuxtLink
         class="hover:text-fuchsia-400"
