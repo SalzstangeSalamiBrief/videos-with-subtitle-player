@@ -25,7 +25,8 @@ const activeTab = ref(0);
     />
     <div class="tab-content bg-base-100 border-base-300 p-6">
       <!-- TODO DOES NOT WORK WITH ROUTING? -->
-      <file-list :folder="folder" />
+      FOLDER VIEW
+      <!-- <folder-list :folder="folder.children" /> -->
     </div>
 
     <input
@@ -37,7 +38,7 @@ const activeTab = ref(0);
       @input="() => (activeTab = 1)"
     />
     <div class="tab-content bg-base-100 border-base-300 p-6">
-      <file-list :folder="folder.videos" />
+      <file-list :folderId="folder.id" :files="folder.videos" />
     </div>
 
     <input
@@ -48,7 +49,9 @@ const activeTab = ref(0);
       :checked="activeTab === 2"
       @input="() => (activeTab = 2)"
     />
-    <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 3</div>
+    <div class="tab-content bg-base-100 border-base-300 p-6">
+      <file-list :folderId="folder.id" :files="folder.audios" />
+    </div>
 
     <input
       type="radio"

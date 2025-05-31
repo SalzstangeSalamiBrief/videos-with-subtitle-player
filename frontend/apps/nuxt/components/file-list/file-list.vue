@@ -16,7 +16,15 @@ const { folderId, files } = defineProps<IProps>();
     className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
   >
     <li v-for="child in files" :key="child.id">
-      <image-card :folder="child" />
+      <image-card
+        :linkProps="{
+          to: {
+            name: 'folders-folderId-files-fileId',
+            params: { folderId: folderId, fileId: child.id },
+          },
+        }"
+        :title="child.name"
+      />
     </li>
   </ul>
 </template>

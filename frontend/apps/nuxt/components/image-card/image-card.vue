@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { IFileTree } from '@videos-with-subtitle-player/core';
+import { RouterLinkProps } from 'vue-router';
 
 interface IProps {
-  folder: IFileTree;
+  linkProps: RouterLinkProps;
+  title: string;
+  imageUrl?: string;
 }
 
-const { folder } = defineProps<IProps>();
+const { imageUrl, linkProps, title } = defineProps<IProps>();
 </script>
 <style lang="css" scoped>
 .card:hover {
@@ -16,25 +18,22 @@ const { folder } = defineProps<IProps>();
 <template>
   <!-- TODO DOES NOT WORK WITH FILETREE AND FILENODE TOGETHER => FIX -->
   <article class="card card-border bg-slate-800">
-    <figure class="h-56" :class="{ 'bg-fuchsia-800': !folder.thumbnailId }">
+    <figure class="h-56" :class="{ 'bg-fuchsia-800': !imageUrl }">
       <img
-        v-if="folder.thumbnailId"
+        v-if="imageUrl"
         loading="lazy"
-        :src="imageHandler.getImageUrlForId(folder.thumbnailId)"
-        :alt="`Cover image of the item ${folder.name}`"
+        :src="imageHandler.getImageUrlForId(imageUrl)"
+        :alt="`Cover image of the item ${title}`"
       />
     </figure>
     <div class="card-body h-28">
       <!-- TODO hover styles -->
-      <NuxtLink
-        class="hover:text-fuchsia-400"
-        :to="{ name: 'folders-folderId', params: { folderId: folder.id } }"
-      >
+      <NuxtLink class="hover:text-fuchsia-400" :to="linkProps.to">
         <h2
           class="line-clamp-3 overflow-hidden font-bold text-ellipsis"
           card-title
         >
-          {{ folder.name }}
+          {{ title }}
         </h2>
       </NuxtLink>
     </div>
