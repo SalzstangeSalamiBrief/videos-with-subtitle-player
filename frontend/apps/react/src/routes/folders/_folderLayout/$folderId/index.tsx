@@ -9,7 +9,7 @@ import {
   useParams,
   useSearch,
 } from '@tanstack/react-router';
-import type { IFileTree, Maybe } from '@videos-with-subtitle-player/core';
+import { getFolderFromFileTree } from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../../__root';
 import type { IFolderLayoutSearchParams } from '../../_folderLayout';
 
@@ -86,30 +86,6 @@ function AudioFilePage() {
       }
     />
   );
-}
-
-function getFolderFromFileTree(
-  fileTrees: IFileTree[],
-  folderId: string | undefined,
-): Maybe<IFileTree> {
-  for (let i = 0; i < fileTrees.length; i += 1) {
-    const currentTree = fileTrees[i];
-    if (currentTree.id === folderId) {
-      return currentTree;
-    }
-
-    if (!currentTree.children.length) {
-      continue;
-    }
-
-    const matchingFolderFromChild = getFolderFromFileTree(
-      currentTree.children,
-      folderId,
-    );
-    if (matchingFolderFromChild) {
-      return matchingFolderFromChild;
-    }
-  }
 }
 
 function getActiveTabIndex(

@@ -1,7 +1,7 @@
 import { PlayerCompound } from '$features/playerCompound/PlayerCompound';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
 import { createFileRoute } from '@tanstack/react-router';
-import type { IFileNode, Maybe } from '@videos-with-subtitle-player/core';
+import { getCurrentNodeWithSiblings } from '@videos-with-subtitle-player/core';
 import { Route as RootLayoutRoute } from '../../../../../__root';
 export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',
@@ -33,23 +33,4 @@ function FilePage() {
       <PlayerCompound currentFile={currentFile} siblings={siblings} />
     </div>
   );
-}
-
-function getCurrentNodeWithSiblings(
-  fileGroups: IFileNode[][],
-  fileId: string,
-): [siblings: IFileNode[], currentFile: Maybe<IFileNode>] {
-  const siblings = fileGroups.find((group) =>
-    group.some((file) => file.id === fileId),
-  );
-  if (!siblings) {
-    return [[], undefined];
-  }
-
-  const currentNode = siblings.find((file) => file.id === fileId);
-  if (!currentNode) {
-    return [[], undefined];
-  }
-
-  return [siblings, currentNode];
 }
