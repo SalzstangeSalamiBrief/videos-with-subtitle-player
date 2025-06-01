@@ -1,12 +1,49 @@
 <script setup lang="ts">
 import { IFileTree } from '@videos-with-subtitle-player/core';
+import FileList from '../file-list/file-list.vue';
+import FolderList from '../folder-list/folder-list.vue';
 
 interface IProps {
   folder: IFileTree;
 }
-
 const { folder } = defineProps<IProps>();
+
 const activeTab = ref(0);
+
+interface ITab {
+  title: string;
+  component: Component;
+  props: any;
+}
+const tabs: ITab[] = [
+  {
+    title: 'Folder tab',
+    component: FolderList,
+    props: { folders: folder.children },
+  },
+  {
+    title: 'Audio files',
+    component: FileList,
+    props: {
+      folderId: folder.id,
+      files: folder.audios,
+    },
+  },
+  {
+    title: 'Video files',
+    component: FileList,
+    props: {
+      folderId: folder.id,
+      files: folder.videos,
+    },
+  },
+  // TODO IMPLEMENT
+  // {
+  //   title: "Image tab",
+  //   component:
+  //   props:{}
+  // }
+];
 </script>
 <style lang="css" scoped>
 .tabs {
@@ -15,52 +52,18 @@ const activeTab = ref(0);
 </style>
 <template>
   <div class="tabs tabs-box">
-    <input
-      type="radio"
-      name="folder-tab"
-      class="tab"
-      aria-label="Folder tab"
-      :checked="activeTab === 0"
-      @input="() => (activeTab = 0)"
-    />
-    <div class="tab-content bg-base-100 border-base-300 p-6">
-      <!-- TODO DOES NOT WORK WITH ROUTING? -->
-      FOLDER VIEW
-      <!-- <folder-list :folder="folder.children" /> -->
-    </div>
-
-    <input
-      type="radio"
-      name="video-file-tab"
-      class="tab"
-      aria-label="Video file tab"
-      :checked="activeTab === 1"
-      @input="() => (activeTab = 1)"
-    />
-    <div class="tab-content bg-base-100 border-base-300 p-6">
-      <file-list :folderId="folder.id" :files="folder.videos" />
-    </div>
-
-    <input
-      type="radio"
-      name="audio-file-tab"
-      class="tab"
-      aria-label="Audio file tab"
-      :checked="activeTab === 2"
-      @input="() => (activeTab = 2)"
-    />
-    <div class="tab-content bg-base-100 border-base-300 p-6">
-      <file-list :folderId="folder.id" :files="folder.audios" />
-    </div>
-
-    <input
-      type="radio"
-      name="image-tab"
-      class="tab"
-      aria-label="Image tab"
-      :checked="activeTab === 3"
-      @input="() => (activeTab = 3)"
-    />
-    <div class="tab-content bg-base-100 border-base-300 p-6">Tab content 3</div>
+    <template v-for="(tab, index) in tabs" :key="tab.title">
+      <input
+        type="radio"
+        :name="tab.title"
+        class="tab"
+        :aria-label="tab.title"
+        :checked="activeTab === index"
+        @input="() => (activeTab = index)"
+      />
+      <div class="tab-content bg-base-100 border-base-300 p-6">
+        <component :is="tab.component" v-bind="tab.props" />
+      </div>
+    </template>
   </div>
 </template>

@@ -11,20 +11,17 @@ const { folderId, files } = defineProps<IProps>();
 
 <template>
   <p v-if="!files.length">No sub folders</p>
-  <ul
-    v-else
-    className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-  >
-    <li v-for="child in files" :key="child.id">
-      <image-card
-        :linkProps="{
-          to: {
-            name: 'folders-folderId-files-fileId',
-            params: { folderId: folderId, fileId: child.id },
-          },
+  <ul v-else className="list">
+    <li v-for="child in files" :key="child.id" class="list-row">
+      <NuxtLink
+        :to="{
+          name: 'folders-folderId-files-fileId',
+          params: { folderId: folderId, fileId: child.id },
         }"
-        :title="child.name"
-      />
+        class="hover:text-fuchsia-400"
+      >
+        {{ child.name }}
+      </NuxtLink>
     </li>
   </ul>
 </template>

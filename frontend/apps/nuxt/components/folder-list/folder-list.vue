@@ -9,7 +9,9 @@ const { folders } = defineProps<IProps>();
 </script>
 
 <template>
+  <p v-if="!folders.length">no sub folders</p>
   <ul
+    v-else
     className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
   >
     <li v-for="folder in folders">
