@@ -7,7 +7,7 @@ on:
       - "frontend/packages/core/**"
       - "frontend/packages/eslintBase/**"
       - "frontend/packages/prettierBase/**"
-      - ".github/workflows/frontend.yaml"
+      - ".github/workflows/frontend-react.yaml"
 
 jobs:
   code_analysis:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 10
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
       - name: Install dependencies
