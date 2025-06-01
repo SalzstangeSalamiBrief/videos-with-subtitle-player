@@ -1,6 +1,6 @@
+<script setup lang="ts"></script>
+
 <template>
-  <div>
-    <span>BREADCRUMBS</span>
-    <slot />
-  </div>
+  <breadcrumbs />
+  <slot />
 </template>

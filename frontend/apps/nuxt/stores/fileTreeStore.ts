@@ -2,6 +2,7 @@ import {
   getFileTreeQuery,
   getFileTreeSelect,
   getFolderFromFileTree,
+  getFoldersInActiveTree,
   type IGetFileTreeSelectReturn,
 } from '@videos-with-subtitle-player/core';
 
@@ -34,6 +35,10 @@ export const useFileTreeStore = defineStore(fileTreeStoreKey, {
     getFolderFromFileTree: (state: FileTreeStoreData) => {
       return (folderId: string) =>
         getFolderFromFileTree(state.fileTrees, folderId);
+    },
+    getActiveFolderPathFromTree: (state: FileTreeStoreData) => {
+      return (folderId: string) =>
+        getFoldersInActiveTree(state.fileTrees, folderId);
     },
   },
 });
