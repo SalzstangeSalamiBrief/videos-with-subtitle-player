@@ -11,7 +11,7 @@ const { folderId, files } = defineProps<IProps>();
 
 <template>
   <p v-if="!files.length">No sub folders</p>
-  <ul v-else className="list">
+  <ol v-else className="list">
     <li v-for="child in files" :key="child.id" class="list-row">
       <NuxtLink
         :to="{
@@ -23,5 +23,5 @@ const { folderId, files } = defineProps<IProps>();
         {{ child.name }}
       </NuxtLink>
     </li>
-  </ul>
+  </ol>
 </template>
