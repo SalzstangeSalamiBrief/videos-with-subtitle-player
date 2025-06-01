@@ -23,6 +23,7 @@ export {
   isSubtitleFile,
   isVideoFile,
 } from './lib/type-predicates/file-type-predicates';
+export { getCurrentNodeWithSiblings } from './lib/utilities/getCurrentFileNodeWithSibling';
 export { getFolderFromFileTree } from './lib/utilities/getFoldersFromFileTree';
 export { getFoldersInActiveTree } from './lib/utilities/getFoldersInActiveTree';
 export { ImageGetter, type IImageGetter } from './lib/utilities/imageGetter';

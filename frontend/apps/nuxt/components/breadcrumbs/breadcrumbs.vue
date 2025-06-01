@@ -7,7 +7,6 @@ const activeFolderPathInTree = fileTreeStore.getActiveFolderPathFromTree(
   (folderId as string) ?? '',
 );
 const isFileSelected = Boolean(fileId);
-console.log(activeFolderPathInTree.length);
 </script>
 <template>
   <nav className="breadcrumbs text-sm max-w-full">

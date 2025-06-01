@@ -1,8 +1,10 @@
 import {
+  getCurrentNodeWithSiblings,
   getFileTreeQuery,
   getFileTreeSelect,
   getFolderFromFileTree,
   getFoldersInActiveTree,
+  Maybe,
   type IGetFileTreeSelectReturn,
 } from '@videos-with-subtitle-player/core';
 
@@ -39,6 +41,18 @@ export const useFileTreeStore = defineStore(fileTreeStoreKey, {
     getActiveFolderPathFromTree: (state: FileTreeStoreData) => {
       return (folderId: string) =>
         getFoldersInActiveTree(state.fileTrees, folderId);
+    },
+
+    getCurrentNodeWithSiblings: (state: FileTreeStoreData) => {
+      return (
+        fileId: Maybe<string>,
+      ): ReturnType<typeof getCurrentNodeWithSiblings> => {
+        if (!fileId) {
+          return [[], undefined];
+        }
+
+        return getCurrentNodeWithSiblings(state.fileGroups, fileId);
+      };
     },
   },
 });
