@@ -1,4 +1,4 @@
-import prettierBase from "@videos-with-subtitle-player/prettier-base";
+import prettierBase from '@videos-with-subtitle-player/prettier-base';
 
 /**
  * @type {import("prettier").Config}
