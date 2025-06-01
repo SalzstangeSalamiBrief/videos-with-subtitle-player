@@ -15,6 +15,7 @@ const [siblings, currentFile] = fileTreeStore.getCurrentNodeWithSiblings(
     <!-- TODO CREATE ERROR MESSAGE COMPONENT -->
     <p v-if="!currentFile">Could not find file.</p>
     <div v-else class="grid">
+      <!-- TODO STYLING ON RELOAD IS MISSING SOMETIMES -->
       <h1 className="m-0 text-lg font-bold">{{ currentFile.name }}</h1>
       <player-compound
         :currentFile="currentFile"
