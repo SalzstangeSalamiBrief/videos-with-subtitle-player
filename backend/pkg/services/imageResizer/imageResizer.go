@@ -33,6 +33,10 @@ func getFilenameAndExtensionParts(filePath string) (name string, extension strin
 }
 
 func getResizeImageName(name string, extension string) string {
+	if name == "" || extension == "" {
+		return ""
+	}
+
 	return fmt.Sprintf("%s%s%s", name, resizeFileSuffix, extension)
 }
 
