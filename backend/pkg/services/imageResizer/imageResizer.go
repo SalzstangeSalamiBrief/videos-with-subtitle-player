@@ -41,7 +41,11 @@ func getResizeImageName(name string, extension string) string {
 }
 
 func addPathToResizeImage(inputFilePath string, resizeImageFileName string) string {
-	return fmt.Sprintf("%v/%v", filepath.Dir(inputFilePath), resizeImageFileName)
+	if inputFilePath == "" || resizeImageFileName == "" {
+		return ""
+	}
+
+	return filepath.Join(filepath.Dir(inputFilePath), resizeImageFileName)
 }
 
 func executeResize(inputFilePath string, resizeFilePath string) error {

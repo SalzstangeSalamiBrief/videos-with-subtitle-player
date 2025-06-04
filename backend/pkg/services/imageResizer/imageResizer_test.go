@@ -1,11 +1,10 @@
 package imageResizer
 
 import (
-	models2 "backend/pkg/models"
+	"backend/pkg/models"
+	"path/filepath"
 	"testing"
 )
-
-//TODO
 
 func Test_getResizeImageName(t *testing.T) {
 	type GetResizeImageNameInput struct {
@@ -13,7 +12,7 @@ func Test_getResizeImageName(t *testing.T) {
 		extension string
 	}
 
-	testData := []models2.TestData[GetResizeImageNameInput, string]{
+	testData := []models.TestData[GetResizeImageNameInput, string]{
 		{Title: "Should return empty string on empty inputs", Input: GetResizeImageNameInput{name: "", extension: ""}, Expected: ""},
 		{Title: "Should return empty string on empty name", Input: GetResizeImageNameInput{name: "", extension: ".jpg"}, Expected: ""},
 		{Title: "Should return empty string on empty extension", Input: GetResizeImageNameInput{name: "file", extension: ""}, Expected: ""},
@@ -24,11 +23,38 @@ func Test_getResizeImageName(t *testing.T) {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			mimeType := getResizeImageName(data.Input.name, data.Input.extension)
+			result := getResizeImageName(data.Input.name, data.Input.extension)
 
 			// assert
-			if mimeType != data.Expected {
-				t.Errorf("Expected '%v' but received '%v'", data.Expected, mimeType)
+			if result != data.Expected {
+				t.Errorf("Expected '%v' but received '%v'", data.Expected, result)
+			}
+		})
+	}
+}
+
+func Test_addPathToResizeImage(t *testing.T) {
+	type AddPathToResizeImageInput struct {
+		inputFilePath       string
+		resizeImageFileName string
+	}
+
+	testData := []models.TestData[AddPathToResizeImageInput, any]{
+		{Title: "Should return empty string on empty inputs", Input: AddPathToResizeImageInput{inputFilePath: "", resizeImageFileName: ""}, Expected: ""},
+		{Title: "Should return empty string on empty path", Input: AddPathToResizeImageInput{inputFilePath: "", resizeImageFileName: ".jpg"}, Expected: ""},
+		{Title: "Should return empty string on empty name", Input: AddPathToResizeImageInput{inputFilePath: filepath.Join("a", "b", "c"), resizeImageFileName: ""}, Expected: ""},
+		{Title: "Should return filename with resize tag", Input: AddPathToResizeImageInput{inputFilePath: filepath.Join("a", "b", "myfile.jgp"), resizeImageFileName: "file.jpg"}, Expected: filepath.Join("a", "b", "file.jpg")},
+	}
+
+	for _, data := range testData {
+
+		t.Run(data.Title, func(t *testing.T) {
+			// act
+			result := addPathToResizeImage(data.Input.inputFilePath, data.Input.resizeImageFileName)
+
+			// assert
+			if result != data.Expected {
+				t.Errorf("Expected '%v' but received '%v'", data.Expected, result)
 			}
 		})
 	}
