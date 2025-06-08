@@ -64,6 +64,10 @@ func addPathToResizeImage(inputFilePath string, resizeImageFileName string) stri
 }
 
 func executeResize(inputFilePath string, resizeFilePath string) error {
-	command := exec.Command("magick", inputFilePath, "-resize", resizeImageWidth, resizeFilePath)
+	if _, err := exec.LookPath("magick"); err != nil {
+		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
+	}
+
+	command := exec.Command("magick", filepath.Clean(inputFilePath), "-resize", resizeImageWidth, filepath.Clean(resizeFilePath))
 	return command.Run()
 }

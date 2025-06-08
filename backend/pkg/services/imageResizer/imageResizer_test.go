@@ -7,14 +7,14 @@ import (
 )
 
 func Test_IsResizeFileName(t *testing.T) {
-	testData := []models.TestData[string, bool]{
-		{Title: "Should return empty string on empty inputs", Input: "", Expected: false},
-		{Title: "Should return empty string on empty name", Input: "img", Expected: false},
-		{Title: "Should return empty string on empty extension", Input: "C:\\myPath", Expected: false},
-		{Title: "Should return empty string on empty extension", Input: "C:\\myPath\\image.png", Expected: false},
-		{Title: "Should return empty string on empty extension", Input: "C:\\image_resize.png", Expected: true},
-		{Title: "Should return empty string on empty extension", Input: "C:\\myPath\\image_resize.png", Expected: true},
-	}
+testData := []models.TestData[string, bool]{
+		{Title: "Should return false for empty input", Input: "", Expected: false},
+		{Title: "Should return false for filename without resize suffix", Input: "img", Expected: false},
+		{Title: "Should return false for path without filename", Input: "C:\\myPath", Expected: false},
+		{Title: "Should return false for normal image filename", Input: "C:\\myPath\\image.png", Expected: false},
+		{Title: "Should return true for resized image filename", Input: "C:\\image_resize.png", Expected: true},
+		{Title: "Should return true for resized image with path", Input: "C:\\myPath\\image_resize.png", Expected: true},
+ 	}
 
 	for _, data := range testData {
 
@@ -85,13 +85,13 @@ func Test_addPathToResizeImage(t *testing.T) {
 }
 
 func Test_getFilenameAndExtensionParts(t *testing.T) {
-	testData := []models.TestData[string, [2]string]{
-		{Title: "Should return empty name and extension for empty path", Input: "", Expected: [2]string{"", ""}},
-		{Title: "Should return name and empty extension for path without extension", Input: "C:\\myPath\\image", Expected: [2]string{"image", ""}},
-		{Title: "Should return name and extension for normal file path", Input: "C:\\myPath\\image.png", Expected: [2]string{"image", ".png"}},
-		{Title: "Should handle path with multiple dots", Input: "C:\\myPath\\my.image.png", Expected: [2]string{"my.image", ".png"}},
-		{Title: "Should return correct name and extension with nested folders", Input: "C:\\folder\\subfolder\\file.ext", Expected: [2]string{"file", ".ext"}},
-	}
+testData := []models.TestData[string, [2]string]{
+ 		{Title: "Should return empty name and extension for empty path", Input: "", Expected: [2]string{"", ""}},
+		{Title: "Should return name and empty extension for path without extension", Input: filepath.Join("myPath", "image"), Expected: [2]string{"image", ""}},
+		{Title: "Should return name and extension for normal file path", Input: filepath.Join("myPath", "image.png"), Expected: [2]string{"image", ".png"}},
+		{Title: "Should handle path with multiple dots", Input: filepath.Join("myPath", "my.image.png"), Expected: [2]string{"my.image", ".png"}},
+		{Title: "Should return correct name and extension with nested folders", Input: filepath.Join("folder", "subfolder", "file.ext"), Expected: [2]string{"file", ".ext"}},
+ 	}
 
 	for _, data := range testData {
 		t.Run(data.Title, func(t *testing.T) {
@@ -108,23 +108,23 @@ func Test_getFilenameAndExtensionParts(t *testing.T) {
 }
 
 func Test_getResizeImagePath(t *testing.T) {
-	testData := []models.TestData[string, string]{
-		{
-			Title:    "Should return resized path with '_resize' suffix",
-			Input:    "C:\\images\\image.png",
-			Expected: "C:\\images\\image_resize.png",
-		},
-		{
-			Title:    "Should handle files with multiple dots",
-			Input:    "C:\\images\\my.image.png",
-			Expected: "C:\\images\\my.image_resize.png",
-		},
-		{
-			Title:    "Should handle file without extension",
-			Input:    "C:\\images\\image",
-			Expected: "",
-		},
-	}
+testData := []models.TestData[string, string]{
+ 		{
+ 			Title:    "Should return resized path with '_resize' suffix",
+			Input:    filepath.Join("images", "image.png"),
+			Expected: filepath.Join("images", "image_resize.png"),
+ 		},
+ 		{
+ 			Title:    "Should handle files with multiple dots",
+			Input:    filepath.Join("images", "my.image.png"),
+			Expected: filepath.Join("images", "my.image_resize.png"),
+ 		},
+ 		{
+ 			Title:    "Should handle file without extension",
+			Input:    filepath.Join("images", "image"),
+ 			Expected: "",
+ 		},
+ 	}
 
 	for _, data := range testData {
 		t.Run(data.Title, func(t *testing.T) {
