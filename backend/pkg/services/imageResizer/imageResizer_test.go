@@ -6,6 +6,30 @@ import (
 	"testing"
 )
 
+func Test_IsResizeFileName(t *testing.T) {
+	testData := []models.TestData[string, bool]{
+		{Title: "Should return empty string on empty inputs", Input: "", Expected: false},
+		{Title: "Should return empty string on empty name", Input: "img", Expected: false},
+		{Title: "Should return empty string on empty extension", Input: "C:\\myPath", Expected: false},
+		{Title: "Should return empty string on empty extension", Input: "C:\\myPath\\image.png", Expected: false},
+		{Title: "Should return empty string on empty extension", Input: "C:\\image_resize.png", Expected: true},
+		{Title: "Should return empty string on empty extension", Input: "C:\\myPath\\image_resize.png", Expected: true},
+	}
+
+	for _, data := range testData {
+
+		t.Run(data.Title, func(t *testing.T) {
+			// act
+			result := IsResizeFileName(data.Input)
+
+			// assert
+			if result != data.Expected {
+				t.Errorf("Expected '%v' but received '%v'", data.Expected, result)
+			}
+		})
+	}
+}
+
 func Test_getResizeImageName(t *testing.T) {
 	type GetResizeImageNameInput struct {
 		name      string
@@ -61,4 +85,4 @@ func Test_addPathToResizeImage(t *testing.T) {
 }
 
 // TODO Test_GetFilenameAndExtensionParts
-// TODO Test_IsResizeFileName
+// TODO Test_GetResizeImagePath
