@@ -1,9 +1,10 @@
 package imageResizer
 
 import (
+	"backend/pkg/utilities"
 	"fmt"
+	"log"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"strings"
 )
@@ -11,24 +12,38 @@ import (
 const resizeImageWidth = "640x"
 const resizeFileSuffix = "_resize"
 
-func Resize(inputFilePath string) error {
-	inputFileName, inputFileExtension := getFilenameAndExtensionParts(inputFilePath)
-	resizeImageFileName := getResizeImageName(inputFileName, inputFileExtension)
-	resizeImageFilePath := addPathToResizeImage(inputFilePath, resizeImageFileName)
-	return executeResize(inputFileName, resizeImageFilePath)
+func Resize(sourceImagePath string) (resizeImagePath string, err error) {
+	resizeImagePath = getResizeImagePath(sourceImagePath)
+	doesResizeFilePathExist := utilities.DoesFileExist(resizeImagePath)
+	if doesResizeFilePathExist {
+		log.Default().Printf("File %s already has a resized version", sourceImagePath)
+		return resizeImagePath, nil
+	}
+
+	err = executeResize(sourceImagePath, resizeImagePath)
+	return resizeImagePath, err
 }
 
-func getFilenameAndExtensionParts(filePath string) (name string, extension string) {
+func IsResizeFileName(sourceImagePath string) bool {
+	return strings.Contains(filepath.Base(sourceImagePath), resizeFileSuffix)
+}
+
+func getResizeImagePath(sourceImagePath string) string {
+	inputFileName, inputFileExtension := getFilenameAndExtensionParts(sourceImagePath)
+	resizeImageFileName := getResizeImageName(inputFileName, inputFileExtension)
+	return addPathToResizeImage(sourceImagePath, resizeImageFileName)
+}
+
+func getFilenameAndExtensionParts(sourcePath string) (name string, extension string) {
 	name = ""
 	extension = ""
 
-	if len(filePath) == 0 {
+	if len(sourcePath) == 0 {
 		return name, extension
 	}
 
-	var base = path.Base(filePath)
-	extension = path.Ext(base)
-	name = strings.TrimSuffix(base, extension)
+	extension = filepath.Ext(sourcePath)
+	name = strings.TrimSuffix(filepath.Base(sourcePath), extension)
 	return name, extension
 }
 

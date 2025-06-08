@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"backend/internal/config"
+	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
@@ -16,7 +17,7 @@ const chunkSize = 1 * 1024 * 1024 // 3mb
 
 func GetContinuousFileByIdHandler(w http.ResponseWriter, r *http.Request) {
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
-	continuousFileInTree := utilities.GetFileByIdAndExtension(fileIdString, constants.AllowedContinuousFileExtensions...)
+	continuousFileInTree := utilities.GetFileByIdAndExtension(fileTreeManager.FileTreeItems, fileIdString, constants.AllowedContinuousFileExtensions...)
 	if continuousFileInTree.Id == "" {
 		ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return

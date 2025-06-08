@@ -59,3 +59,6 @@ func Test_addPathToResizeImage(t *testing.T) {
 		})
 	}
 }
+
+// TODO Test_GetFilenameAndExtensionParts
+// TODO Test_IsResizeFileName
