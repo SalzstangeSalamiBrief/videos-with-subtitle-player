@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"backend/internal/config"
+	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
@@ -13,7 +14,7 @@ import (
 
 func GetDiscreteFileHandler(w http.ResponseWriter, r *http.Request) {
 	fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/discrete/")
-	discreteFileInTree := utilities.GetFileByIdAndExtension(fileIdString, constants.AllowedDiscreteFileExtensions...)
+	discreteFileInTree := utilities.GetFileByIdAndExtension(fileTreeManager.FileTreeItems, fileIdString, constants.AllowedDiscreteFileExtensions...)
 	if discreteFileInTree.Id == "" {
 		ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 		return

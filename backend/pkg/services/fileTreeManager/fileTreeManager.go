@@ -5,6 +5,7 @@ import (
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
+	"backend/pkg/services/imageResizer"
 	"fmt"
 	"github.com/google/uuid"
 	"log"
@@ -19,6 +20,7 @@ var FileTreeItems []models.FileTreeItem
 func InitializeFileTree() {
 	fullTree := getFullTree(config.AppConfiguration.RootPath)
 	FileTreeItems = fullTree
+	log.Default().Println("Finish file tree initialization")
 }
 
 func getFullTree(parentPath string) []models.FileTreeItem {
@@ -52,7 +54,34 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 			Type: fileType,
 		}
 
-		if fileType == enums.VIDEO || fileType == enums.IMAGE {
+		if fileType == enums.IMAGE {
+			isResizedImage := imageResizer.IsResizeFileName(currentItemPath)
+			if isResizedImage {
+				log.Default().Printf("'%v' is already a resized image\n", itemName)
+				currentFileItems = append(currentFileItems, newFileItem)
+				continue
+			}
+
+			resizeImagePath, err := imageResizer.Resize(currentItemPath)
+			if err != nil {
+				log.Default().Printf("Error resizing file '%v': %v\n", newFileItem.Path, err.Error())
+				continue
+			}
+
+			resizeImageFileItem := models.FileTreeItem{
+				Id:   uuid.New().String(),
+				Path: resizeImagePath,
+				Name: utilities.GetFilenameWithoutExtension(resizeImagePath),
+				Type: fileType,
+			}
+
+			newFileItem.ResizedImageId = resizeImageFileItem.Id
+			currentFileItems = append(currentFileItems, newFileItem)
+			currentFileItems = append(currentFileItems, resizeImageFileItem)
+			continue
+		}
+
+		if fileType == enums.VIDEO {
 			currentFileItems = append(currentFileItems, newFileItem)
 			continue
 		}
