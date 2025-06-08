@@ -84,5 +84,57 @@ func Test_addPathToResizeImage(t *testing.T) {
 	}
 }
 
-// TODO Test_GetFilenameAndExtensionParts
-// TODO Test_GetResizeImagePath
+func Test_getFilenameAndExtensionParts(t *testing.T) {
+	testData := []models.TestData[string, [2]string]{
+		{Title: "Should return empty name and extension for empty path", Input: "", Expected: [2]string{"", ""}},
+		{Title: "Should return name and empty extension for path without extension", Input: "C:\\myPath\\image", Expected: [2]string{"image", ""}},
+		{Title: "Should return name and extension for normal file path", Input: "C:\\myPath\\image.png", Expected: [2]string{"image", ".png"}},
+		{Title: "Should handle path with multiple dots", Input: "C:\\myPath\\my.image.png", Expected: [2]string{"my.image", ".png"}},
+		{Title: "Should return correct name and extension with nested folders", Input: "C:\\folder\\subfolder\\file.ext", Expected: [2]string{"file", ".ext"}},
+	}
+
+	for _, data := range testData {
+		t.Run(data.Title, func(t *testing.T) {
+			// act
+			name, ext := getFilenameAndExtensionParts(data.Input)
+
+			// assert
+			if name != data.Expected[0] || ext != data.Expected[1] {
+				t.Errorf("Expected name='%v' and ext='%v', but got name='%v' and ext='%v'",
+					data.Expected[0], data.Expected[1], name, ext)
+			}
+		})
+	}
+}
+
+func Test_getResizeImagePath(t *testing.T) {
+	testData := []models.TestData[string, string]{
+		{
+			Title:    "Should return resized path with '_resize' suffix",
+			Input:    "C:\\images\\image.png",
+			Expected: "C:\\images\\image_resize.png",
+		},
+		{
+			Title:    "Should handle files with multiple dots",
+			Input:    "C:\\images\\my.image.png",
+			Expected: "C:\\images\\my.image_resize.png",
+		},
+		{
+			Title:    "Should handle file without extension",
+			Input:    "C:\\images\\image",
+			Expected: "",
+		},
+	}
+
+	for _, data := range testData {
+		t.Run(data.Title, func(t *testing.T) {
+			// Act
+			result := getResizeImagePath(data.Input)
+
+			// Assert
+			if result != data.Expected {
+				t.Errorf("Expected '%v', got '%v'", data.Expected, result)
+			}
+		})
+	}
+}
