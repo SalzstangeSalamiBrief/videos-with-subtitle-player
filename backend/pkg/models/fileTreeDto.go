@@ -17,4 +17,5 @@ type FileDto struct {
 	Name                  string         `json:"name"`
 	Type                  enums.FileType `json:"fileType"`
 	AssociatedAudioFileId string         `json:"audioFileId"`
+	LowQualityImageId     string         `json:"lowQualityImageId"`
 }

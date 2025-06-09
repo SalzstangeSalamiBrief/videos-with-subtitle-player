@@ -10,5 +10,5 @@ type FileTreeItem struct {
 	Name                  string
 	Type                  enums.FileType
 	AssociatedAudioFileId string
-	ResizedImageId        string
+	LowQualityImageId     string
 }

@@ -59,3 +59,8 @@ _debug_bin*.exe
 # Logs
 logs
 *.log
+
+**/lossy/
+!**/lossy/readme.md
+**/lossless/
+!**/lossless/readme.md

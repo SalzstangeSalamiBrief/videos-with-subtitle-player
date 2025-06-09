@@ -22,7 +22,8 @@ export function FileListSection({ files, folderId }: IFileListSectionProps) {
               <li key={file.id}>
                 <ImageCard
                   title={file.name}
-                  imageUrl="/example.avif"
+                  // TODO fix
+                  imageUrl={undefined}
                   linkOptions={linkOption}
                 />
               </li>

@@ -5,7 +5,13 @@
   height: calc(var(--spacing) * 64);
   border-radius: var(--radius-md);
   transition: rotateX 150ms ease-in;
+
+  img {
+    /* hide alt text in case the image cannot be loaded */
+    font-size: 0;
+  }
 }
+
 .card:hover {
   transform: rotateX(25deg);
   box-shadow: 0px 10px 10px -5px var(--color-fuchsia-300);

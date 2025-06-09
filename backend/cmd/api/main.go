@@ -5,6 +5,7 @@ import (
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/middlewares"
+	"backend/pkg/services/ImageQualityReducer"
 	"backend/pkg/services/fileTreeManager"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 
 func main() {
 	config.InitializeConfiguration()
+	ImageQualityReducer.InitializeMagickArgs()
 	log.Default().Printf("Start server on '%v'", config.AppConfiguration.ServerAddress)
 
 	go func() {
