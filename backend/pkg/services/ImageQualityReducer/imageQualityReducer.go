@@ -18,10 +18,16 @@ const lowQualityFileSuffix = "_lowQuality"
 
 var magickArgs []string
 
+func InitializeMagickArgs() {
+	log.Default().Println("Start initializing Magick Args...")
+	imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
+	magickArgs = convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands)
+	log.Default().Println("Finish initializing Magick Args...")
+}
+
 func ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
 	if magickArgs == nil || len(magickArgs) == 0 {
-		imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
-		magickArgs = convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands)
+		log.Panic("imageQualityReducer is not properly initialized. Please use the InitializeMagickArgs function before using it")
 	}
 
 	lowQualityImagePath = getLowQualityImagePath(sourceImagePath)
