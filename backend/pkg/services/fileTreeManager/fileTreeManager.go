@@ -4,8 +4,8 @@ import (
 	"backend/internal/config"
 	"backend/pkg/enums"
 	"backend/pkg/models"
+	"backend/pkg/services/ImageQualityReducer"
 	"backend/pkg/services/fileTreeManager/utilities"
-	"backend/pkg/services/imageResizer"
 	"fmt"
 	"github.com/google/uuid"
 	"log"
@@ -55,14 +55,14 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		if fileType == enums.IMAGE {
-			isResizedImage := imageResizer.IsResizeFileName(currentItemPath)
+			isResizedImage := ImageQualityReducer.IsResizeFileName(currentItemPath)
 			if isResizedImage {
 				log.Default().Printf("'%v' is already a resized image\n", itemName)
 				currentFileItems = append(currentFileItems, newFileItem)
 				continue
 			}
 
-			resizeImagePath, err := imageResizer.Resize(currentItemPath)
+			resizeImagePath, err := ImageQualityReducer.ReduceImageQuality(currentItemPath)
 			if err != nil {
 				log.Default().Printf("Error resizing file '%v': %v\n", newFileItem.Path, err.Error())
 				continue

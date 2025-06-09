@@ -1,4 +1,4 @@
-package imageResizer
+package ImageQualityReducer
 
 import (
 	"backend/pkg/utilities"
@@ -9,10 +9,21 @@ import (
 	"strings"
 )
 
-const resizeImageWidth = "640x"
-const resizeFileSuffix = "_resize"
+type ImageMagickCommand struct {
+	command string
+	arg     string
+}
 
-func Resize(sourceImagePath string) (resizeImagePath string, err error) {
+const resizeFileSuffix = "_lowQuality"
+
+var magickArgs []string
+
+func ReduceImageQuality(sourceImagePath string) (resizeImagePath string, err error) {
+	if magickArgs == nil || len(magickArgs) == 0 {
+		imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
+		magickArgs = convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands)
+	}
+
 	resizeImagePath = getResizeImagePath(sourceImagePath)
 	doesResizeFilePathExist := utilities.DoesFileExist(resizeImagePath)
 	if doesResizeFilePathExist {
@@ -20,7 +31,7 @@ func Resize(sourceImagePath string) (resizeImagePath string, err error) {
 		return resizeImagePath, nil
 	}
 
-	err = executeResize(sourceImagePath, resizeImagePath)
+	err = executeReduceImageQuality(sourceImagePath, resizeImagePath, magickArgs)
 	return resizeImagePath, err
 }
 
@@ -63,11 +74,30 @@ func addPathToResizeImage(inputFilePath string, resizeImageFileName string) stri
 	return filepath.Join(filepath.Dir(inputFilePath), resizeImageFileName)
 }
 
-func executeResize(inputFilePath string, resizeFilePath string) error {
+func executeReduceImageQuality(inputFilePath string, resizeFilePath string, arguments []string) error {
 	if _, err := exec.LookPath("magick"); err != nil {
 		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
 	}
 
-	command := exec.Command("magick", filepath.Clean(inputFilePath), "-resize", resizeImageWidth, filepath.Clean(resizeFilePath))
+	command := exec.Command("magick", filepath.Clean(inputFilePath))
+	command.Args = append(command.Args, arguments...)
+	command.Args = append(command.Args, filepath.Clean(resizeFilePath))
 	return command.Run()
+}
+
+func convertImageMagickCommandsArrayToArgumentsArray(commands []ImageMagickCommand) []string {
+	result := []string{}
+	for _, command := range commands {
+		if command.command != "" {
+			result = append(result, command.command)
+
+		}
+
+		if command.arg != "" {
+			result = append(result, command.arg)
+
+		}
+	}
+
+	return result
 }
