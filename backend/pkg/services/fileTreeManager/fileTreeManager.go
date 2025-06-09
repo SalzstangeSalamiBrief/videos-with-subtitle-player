@@ -37,9 +37,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
 		if isDirectory {
-			log.Default().Printf("'%v' is a directory\n", itemName)
-			newDirectoryItems := getFullTree(currentItemPath)
-			currentFileItems = append(currentFileItems, newDirectoryItems...)
+			currentFileItems.HandleDirectory(currentItemPath, itemName)
 			continue
 		}
 
@@ -71,6 +69,12 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 	}
 
 	return currentFileItems
+}
+
+func (input *SubFileTree) HandleDirectory(directoryPath string, directoryName string) {
+	log.Default().Printf("'%v' is a directory\n", directoryName)
+	newDirectoryItems := getFullTree(directoryPath)
+	*input = append(*input, newDirectoryItems...)
 }
 
 func (input *SubFileTree) HandleVideoFile(videoFile models.FileTreeItem) {
