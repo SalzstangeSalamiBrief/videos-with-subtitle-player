@@ -109,18 +109,18 @@ func Test_getFilenameAndExtensionParts(t *testing.T) {
 	}
 }
 
-func Test_getResizeImagePath(t *testing.T) {
-	testData := []models.TestData[string, string]{
-		{
-			Title:    "Should return resized path with '_resize' suffix",
-			Input:    filepath.Join("images", "image.png"),
-			Expected: filepath.Join("images", "image_resize.png"),
-		},
-		{
+func Test_getLowQualityImagePath(t *testing.T) {
+ 	testData := []models.TestData[string, string]{
+ 		{
+			Title:    "Should return low quality path with '_lowQuality' suffix",
+ 			Input:    filepath.Join("images", "image.png"),
+			Expected: filepath.Join("images", "image_lowQuality.png"),
+ 		},
+ 		{
 			Title:    "Should handle files with multiple dots",
-			Input:    filepath.Join("images", "my.image.png"),
-			Expected: filepath.Join("images", "my.image_resize.png"),
-		},
+ 			Input:    filepath.Join("images", "my.image.png"),
+			Expected: filepath.Join("images", "my.image_lowQuality.png"),
+ 		},
 		{
 			Title:    "Should handle file without extension",
 			Input:    filepath.Join("images", "image"),
