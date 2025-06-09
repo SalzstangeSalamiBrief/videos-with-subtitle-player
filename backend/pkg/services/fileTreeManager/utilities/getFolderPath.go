@@ -1,6 +1,7 @@
 package utilities
 
 import (
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -12,9 +13,8 @@ type GetFolderPathInput struct {
 }
 
 func GetFolderPath(input GetFolderPathInput) string {
-	// TODO REFACTOR use filepath.base, filepath.join...
 	pathWithoutRoot := strings.Replace(input.Path, input.RootPath, "", 1)
 	regexpToAddMatchingSeparators := regexp.MustCompile(`\\+`)
-	pathWithSeparators := regexpToAddMatchingSeparators.ReplaceAllString(pathWithoutRoot, "/")
+	pathWithSeparators := regexpToAddMatchingSeparators.ReplaceAllString(pathWithoutRoot, string(os.PathSeparator))
 	return filepath.Join(pathWithSeparators)
 }
