@@ -6,6 +6,7 @@ export interface IFileTreeDto {
   name: string;
   id: string;
   thumbnailId: string;
+  lowQualityThumbnailId: string;
   files: PossibleFilesDto[];
   children: IFileTreeDto[];
 }

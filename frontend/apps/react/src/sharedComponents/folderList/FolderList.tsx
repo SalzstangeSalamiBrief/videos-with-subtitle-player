@@ -20,7 +20,14 @@ export function FolderList({ folders }: IFolderListSectionProps) {
             <ImageCard
               linkOptions={linkOption}
               title={child.name}
-              imageUrl={imageHandler.getImageUrlForId(child.thumbnailId)}
+              imageUrls={{
+                highQualityImageUrl: imageHandler.getImageUrlForId(
+                  child.thumbnailId,
+                ),
+                lowQualityImageUrl: imageHandler.getImageUrlForId(
+                  child.lowQualityThumbnailId,
+                ),
+              }}
             />
           </li>
         );

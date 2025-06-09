@@ -4,24 +4,24 @@ import {
   type LinkOptions,
 } from '@tanstack/react-router';
 import type { JSX } from 'react';
+import {
+  ProgressiveImage,
+  type IProgressiveImageProps,
+} from '../progressiveImage/ProgressiveImage';
 import styles from './ImageCard.module.css';
 interface ICardProps {
   title: string;
   children?: JSX.Element;
-  imageUrl?: string;
+  imageUrls?: Omit<IProgressiveImageProps, 'alt'>;
   linkOptions: LinkOptions;
 }
 
-export function ImageCard({ title, imageUrl, linkOptions }: ICardProps) {
+export function ImageCard({ title, imageUrls, linkOptions }: ICardProps) {
   return (
-    <article
-      className={`${styles.card} ${imageUrl ? undefined : 'bg-fuchsia-800'}`}
-    >
-      {imageUrl && (
-        <img
-          loading="lazy"
-          src={imageUrl}
-          className={styles['card-image']}
+    <article className={`${styles.card} ${imageUrls ? '' : 'bg-fuchsia-800'}`}>
+      {imageUrls && (
+        <ProgressiveImage
+          {...imageUrls}
           alt={`Cover image of the item ${title}`}
         />
       )}

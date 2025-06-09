@@ -1,0 +1,32 @@
+.progressive-image-container {
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.progressive-image {
+  position: absolute;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+
+  transition:
+    opacity 0.6s ease-in-out,
+    visibility 0.6s ease-in-out;
+
+  &.low-quality {
+    filter: blur(10px);
+  }
+
+  &.high-quality {
+    filter: none;
+  }
+
+  &.hidden {
+    visibility: hidden;
+    opacity: 0;
+  }
+}
