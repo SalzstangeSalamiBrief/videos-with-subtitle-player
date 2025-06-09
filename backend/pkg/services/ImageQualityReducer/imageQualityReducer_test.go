@@ -14,15 +14,15 @@ func Test_IsResizeFileName(t *testing.T) {
 		{Title: "Should return false for filename without resize suffix", Input: "img", Expected: false},
 		{Title: "Should return false for path without filename", Input: filepath.Join("C:", "myPath"), Expected: false},
 		{Title: "Should return false for normal image filename", Input: filepath.Join("C:", "myPath", "image.png"), Expected: false},
-		{Title: "Should return true for resized image filename", Input: filepath.Join("C:", fmt.Sprintf("image%v.png", resizeFileSuffix)), Expected: true},
-		{Title: "Should return true for resized image with path", Input: filepath.Join("C:", "myPath", fmt.Sprintf("image%v.png", resizeFileSuffix)), Expected: true},
+		{Title: "Should return true for resized image filename", Input: filepath.Join("C:", fmt.Sprintf("image%v.png", lowQualityFileSuffix)), Expected: true},
+		{Title: "Should return true for resized image with path", Input: filepath.Join("C:", "myPath", fmt.Sprintf("image%v.png", lowQualityFileSuffix)), Expected: true},
 	}
 
 	for _, data := range testData {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			result := IsResizeFileName(data.Input)
+			result := IsLowQualityFileName(data.Input)
 
 			// assert
 			if result != data.Expected {
@@ -42,14 +42,14 @@ func Test_getResizeImageName(t *testing.T) {
 		{Title: "Should return empty string on empty inputs", Input: GetResizeImageNameInput{name: "", extension: ""}, Expected: ""},
 		{Title: "Should return empty string on empty name", Input: GetResizeImageNameInput{name: "", extension: ".jpg"}, Expected: ""},
 		{Title: "Should return empty string on empty extension", Input: GetResizeImageNameInput{name: "file", extension: ""}, Expected: ""},
-		{Title: "Should return filename with resize tag", Input: GetResizeImageNameInput{name: "file", extension: ".jpg"}, Expected: fmt.Sprintf("file%v.jpg", resizeFileSuffix)},
+		{Title: "Should return filename with resize tag", Input: GetResizeImageNameInput{name: "file", extension: ".jpg"}, Expected: fmt.Sprintf("file%v.jpg", lowQualityFileSuffix)},
 	}
 
 	for _, data := range testData {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			result := getResizeImageName(data.Input.name, data.Input.extension)
+			result := getLowQualityImageName(data.Input.name, data.Input.extension)
 
 			// assert
 			if result != data.Expected {
@@ -76,7 +76,7 @@ func Test_addPathToResizeImage(t *testing.T) {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			result := addPathToResizeImage(data.Input.inputFilePath, data.Input.resizeImageFileName)
+			result := addPathToLowQualityImage(data.Input.inputFilePath, data.Input.resizeImageFileName)
 
 			// assert
 			if result != data.Expected {
@@ -131,7 +131,7 @@ func Test_getResizeImagePath(t *testing.T) {
 	for _, data := range testData {
 		t.Run(data.Title, func(t *testing.T) {
 			// Act
-			result := getResizeImagePath(data.Input)
+			result := getLowQualityImagePath(data.Input)
 
 			// Assert
 			if result != data.Expected {

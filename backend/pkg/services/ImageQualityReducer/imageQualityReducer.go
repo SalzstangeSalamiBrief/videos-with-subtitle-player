@@ -14,35 +14,35 @@ type ImageMagickCommand struct {
 	arg     string
 }
 
-const resizeFileSuffix = "_lowQuality"
+const lowQualityFileSuffix = "_lowQuality"
 
 var magickArgs []string
 
-func ReduceImageQuality(sourceImagePath string) (resizeImagePath string, err error) {
+func ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
 	if magickArgs == nil || len(magickArgs) == 0 {
 		imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
 		magickArgs = convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands)
 	}
 
-	resizeImagePath = getResizeImagePath(sourceImagePath)
-	doesResizeFilePathExist := utilities.DoesFileExist(resizeImagePath)
-	if doesResizeFilePathExist {
-		log.Default().Printf("File %s already has a resized version", sourceImagePath)
-		return resizeImagePath, nil
+	lowQualityImagePath = getLowQualityImagePath(sourceImagePath)
+	doesLowQualityFilePathExist := utilities.DoesFileExist(lowQualityImagePath)
+	if doesLowQualityFilePathExist {
+		log.Default().Printf("File %s already has a low quality version", sourceImagePath)
+		return lowQualityImagePath, nil
 	}
 
-	err = executeReduceImageQuality(sourceImagePath, resizeImagePath, magickArgs)
-	return resizeImagePath, err
+	err = executeReduceImageQuality(sourceImagePath, lowQualityImagePath, magickArgs)
+	return lowQualityImagePath, err
 }
 
-func IsResizeFileName(sourceImagePath string) bool {
-	return strings.Contains(filepath.Base(sourceImagePath), resizeFileSuffix)
+func IsLowQualityFileName(sourceImagePath string) bool {
+	return strings.Contains(filepath.Base(sourceImagePath), lowQualityFileSuffix)
 }
 
-func getResizeImagePath(sourceImagePath string) string {
+func getLowQualityImagePath(sourceImagePath string) string {
 	inputFileName, inputFileExtension := getFilenameAndExtensionParts(sourceImagePath)
-	resizeImageFileName := getResizeImageName(inputFileName, inputFileExtension)
-	return addPathToResizeImage(sourceImagePath, resizeImageFileName)
+	lowQualityImageFileName := getLowQualityImageName(inputFileName, inputFileExtension)
+	return addPathToLowQualityImage(sourceImagePath, lowQualityImageFileName)
 }
 
 func getFilenameAndExtensionParts(sourcePath string) (name string, extension string) {
@@ -58,30 +58,30 @@ func getFilenameAndExtensionParts(sourcePath string) (name string, extension str
 	return name, extension
 }
 
-func getResizeImageName(name string, extension string) string {
+func getLowQualityImageName(name string, extension string) string {
 	if name == "" || extension == "" {
 		return ""
 	}
 
-	return fmt.Sprintf("%s%s%s", name, resizeFileSuffix, extension)
+	return fmt.Sprintf("%s%s%s", name, lowQualityFileSuffix, extension)
 }
 
-func addPathToResizeImage(inputFilePath string, resizeImageFileName string) string {
-	if inputFilePath == "" || resizeImageFileName == "" {
+func addPathToLowQualityImage(inputFilePath string, lowQualityImageFileName string) string {
+	if inputFilePath == "" || lowQualityImageFileName == "" {
 		return ""
 	}
 
-	return filepath.Join(filepath.Dir(inputFilePath), resizeImageFileName)
+	return filepath.Join(filepath.Dir(inputFilePath), lowQualityImageFileName)
 }
 
-func executeReduceImageQuality(inputFilePath string, resizeFilePath string, arguments []string) error {
+func executeReduceImageQuality(inputFilePath string, lowQualityFilePath string, arguments []string) error {
 	if _, err := exec.LookPath("magick"); err != nil {
 		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
 	}
 
 	command := exec.Command("magick", filepath.Clean(inputFilePath))
 	command.Args = append(command.Args, arguments...)
-	command.Args = append(command.Args, filepath.Clean(resizeFilePath))
+	command.Args = append(command.Args, filepath.Clean(lowQualityFilePath))
 	return command.Run()
 }
 

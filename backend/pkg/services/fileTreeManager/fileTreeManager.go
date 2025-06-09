@@ -55,23 +55,23 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		if fileType == enums.IMAGE {
-			isResizedImage := ImageQualityReducer.IsResizeFileName(currentItemPath)
-			if isResizedImage {
-				log.Default().Printf("'%v' is already a resized image\n", itemName)
+			isLowQualityImage := ImageQualityReducer.IsLowQualityFileName(currentItemPath)
+			if isLowQualityImage {
+				log.Default().Printf("'%v' is already a low quality image\n", itemName)
 				currentFileItems = append(currentFileItems, newFileItem)
 				continue
 			}
 
-			resizeImagePath, err := ImageQualityReducer.ReduceImageQuality(currentItemPath)
+			lowQualityImagePath, err := ImageQualityReducer.ReduceImageQuality(currentItemPath)
 			if err != nil {
-				log.Default().Printf("Error resizing file '%v': %v\n", newFileItem.Path, err.Error())
+				log.Default().Printf("Error reducing the quality of the image '%v': %v\n", newFileItem.Path, err.Error())
 				continue
 			}
 
 			resizeImageFileItem := models.FileTreeItem{
 				Id:   uuid.New().String(),
-				Path: resizeImagePath,
-				Name: utilities.GetFilenameWithoutExtension(resizeImagePath),
+				Path: lowQualityImagePath,
+				Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
 				Type: fileType,
 			}
 
