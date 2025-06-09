@@ -75,7 +75,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 				Type: fileType,
 			}
 
-			newFileItem.ResizedImageId = resizeImageFileItem.Id
+			newFileItem.LowQualityImageId = resizeImageFileItem.Id
 			currentFileItems = append(currentFileItems, newFileItem)
 			currentFileItems = append(currentFileItems, resizeImageFileItem)
 			continue
