@@ -102,6 +102,7 @@ func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, p
 		Name:                  file.Name,
 		Type:                  file.Type,
 		AssociatedAudioFileId: file.AssociatedAudioFileId,
+		LowQualityImageId:     file.LowQualityImageId,
 	}
 
 	currentNode.Files = append(currentNode.Files, fileItem)

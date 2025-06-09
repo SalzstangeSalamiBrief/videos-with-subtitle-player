@@ -72,20 +72,21 @@ func getLowQualityImageName(name string, extension string) string {
 	return fmt.Sprintf("%s%s%s", name, lowQualityFileSuffix, extension)
 }
 
-func addPathToLowQualityImage(inputFilePath string, lowQualityImageFileName string) string {
-	if inputFilePath == "" || lowQualityImageFileName == "" {
+func addPathToLowQualityImage(sourceFilePath string, lowQualityImageFileName string) string {
+	if sourceFilePath == "" || lowQualityImageFileName == "" {
 		return ""
 	}
 
-	return filepath.Join(filepath.Dir(inputFilePath), lowQualityImageFileName)
+	return filepath.Join(filepath.Dir(sourceFilePath), lowQualityImageFileName)
 }
 
-func executeReduceImageQuality(inputFilePath string, lowQualityFilePath string, arguments []string) error {
+func executeReduceImageQuality(sourceFilePath string, lowQualityFilePath string, arguments []string) error {
 	if _, err := exec.LookPath("magick"); err != nil {
 		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
 	}
 
-	command := exec.Command("magick", filepath.Clean(inputFilePath))
+	log.Default().Printf("Start quality reducing process for source '%v'\n", sourceFilePath)
+	command := exec.Command("magick", filepath.Clean(sourceFilePath))
 	command.Args = append(command.Args, arguments...)
 	command.Args = append(command.Args, filepath.Clean(lowQualityFilePath))
 	return command.Run()
