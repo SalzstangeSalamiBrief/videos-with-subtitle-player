@@ -36,7 +36,6 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		itemName := item.Name()
 		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
-		// TODO REFACTOR INTO SWITCH WITH FUNCTION CALLS
 		if isDirectory {
 			log.Default().Printf("'%v' is a directory\n", itemName)
 			newDirectoryItems := getFullTree(currentItemPath)
