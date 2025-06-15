@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@nuxt/icon": "1.13.0",
+    "@nuxt/image": "^1.10.0",
     "@pinia/nuxt": "0.11.0",
     "@tailwindcss/vite": "^4.1.8",
     "@videos-with-subtitle-player/core": "workspace:*",

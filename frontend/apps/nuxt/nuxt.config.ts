@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/test-utils',
     '@pinia/nuxt',
+    '@nuxt/image',
   ],
   devServer: {
     port: 4200,
