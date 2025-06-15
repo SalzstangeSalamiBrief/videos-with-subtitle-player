@@ -13,6 +13,7 @@ export function ProgressiveImage({
   lowQualityImageUrl,
   alt,
 }: IProgressiveImageProps) {
+  // TODO INTERSECTION OBSERVER for performance => one observer for all
   const [isHighQualityImageLoaded, setIsHighQualityImageLoaded] =
     useState<boolean>(false);
 
@@ -24,7 +25,7 @@ export function ProgressiveImage({
     <div className={styles['progressive-image-container']}>
       {lowQualityImageUrl && (
         <img
-          loading="lazy"
+          loading="eager"
           src={lowQualityImageUrl}
           className={`${styles['progressive-image']} ${styles['low-quality']} ${isHighQualityImageLoaded ? styles['hidden'] : ''}`}
           alt={alt}
