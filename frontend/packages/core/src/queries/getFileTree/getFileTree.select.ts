@@ -75,6 +75,7 @@ function transformDtoTreeToFileTree(
       id: fileTree.id,
       name: fileTree.name,
       thumbnailId: fileTree.thumbnailId || undefined,
+      lowQualityThumbnailId: fileTree.lowQualityThumbnailId || undefined,
       images,
       children,
       audios,

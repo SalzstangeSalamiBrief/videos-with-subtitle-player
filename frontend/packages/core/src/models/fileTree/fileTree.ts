@@ -1,9 +1,11 @@
+import type { Maybe } from '../maybe';
 import type { IFileDto } from './dtos/fileDtos';
 
 export interface IFileTree {
   name: string;
   id: string;
-  thumbnailId: string | undefined;
+  thumbnailId: Maybe<string>;
+  lowQualityThumbnailId: Maybe<string>;
   children: IFileTree[];
   images: IFileNode[];
   audios: IFileNode[];
