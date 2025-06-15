@@ -16,7 +16,10 @@ const { folders } = defineProps<IProps>();
   >
     <li v-for="folder in folders">
       <image-card
-        :imageUrl="folder.thumbnailId"
+        :imageUrls="{
+          highQualityImageUrl: folder.thumbnailId,
+          lowQualityImageUrl: folder.lowQualityThumbnailId,
+        }"
         :title="folder.name"
         :linkProps="{
           to: { name: 'folders-folderId', params: { folderId: folder.id } },

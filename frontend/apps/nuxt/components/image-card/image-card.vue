@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { RouterLinkProps } from 'vue-router';
+import { IProgressiveImageProps } from '../progressive-image/progressive-image-props';
 
 interface IProps {
   linkProps: RouterLinkProps;
   title: string;
-  imageUrl?: string;
+  imageUrls?: Omit<IProgressiveImageProps, 'alt'>;
 }
 
-const { imageUrl, linkProps, title } = defineProps<IProps>();
+const { imageUrls, linkProps, title } = defineProps<IProps>();
+const alt = `Cover image of the item ${title}`;
 </script>
 <style lang="css" scoped>
 .card:hover {
@@ -18,14 +20,18 @@ const { imageUrl, linkProps, title } = defineProps<IProps>();
 <template>
   <!-- TODO DOES NOT WORK WITH FILETREE AND FILENODE TOGETHER => FIX -->
   <article class="card card-border bg-slate-800">
-    <figure class="h-56" :class="{ 'bg-fuchsia-800': !imageUrl }">
-      <img
-        v-if="imageUrl"
-        loading="lazy"
-        :src="imageHandler.getImageUrlForId(imageUrl)"
-        :alt="`Cover image of the item ${title}`"
+    <div class="relative h-56" :class="{ 'bg-fuchsia-800': !imageUrls }">
+      <ProgressiveImage
+        v-if="imageUrls"
+        :alt="alt"
+        :highQualityImageUrl="
+          imageHandler.getImageUrlForId(imageUrls?.highQualityImageUrl)
+        "
+        :lowQualityImageUrl="
+          imageHandler.getImageUrlForId(imageUrls?.lowQualityImageUrl)
+        "
       />
-    </figure>
+    </div>
     <div class="card-body h-28">
       <!-- TODO hover styles -->
       <NuxtLink class="hover:text-fuchsia-400" :to="linkProps.to">
