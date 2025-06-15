@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { IProgressiveImageProps } from './progressive-image-props';
 
 const { alt, highQualityImageUrl, lowQualityImageUrl } =
