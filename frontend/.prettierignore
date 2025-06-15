@@ -3,3 +3,10 @@ node_module
 env
 pnpm-lock.yaml
 routeTree.gen.ts
+
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
