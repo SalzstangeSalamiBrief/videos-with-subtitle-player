@@ -7,6 +7,7 @@ import {
   Maybe,
   type IGetFileTreeSelectReturn,
 } from '@videos-with-subtitle-player/core';
+import { defineStore } from 'pinia';
 
 const fileTreeStoreKey = 'file-tree-store';
 

@@ -8,217 +8,159 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router'
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as FoldersFolderLayoutRouteImport } from './routes/folders/_folderLayout'
+import { Route as FoldersFolderLayoutFolderIdIndexRouteImport } from './routes/folders/_folderLayout/$folderId/index'
+import { Route as FoldersFolderLayoutFolderIdFilesFileIdIndexRouteImport } from './routes/folders/_folderLayout/$folderId/files/$fileId/index'
 
-import { Route as rootRoute } from './routes/__root';
-import { Route as IndexImport } from './routes/index';
-import { Route as FoldersFolderLayoutImport } from './routes/folders/_folderLayout';
-import { Route as FoldersFolderLayoutFolderIdIndexImport } from './routes/folders/_folderLayout/$folderId/index';
-import { Route as FoldersFolderLayoutFolderIdFilesFileIdIndexImport } from './routes/folders/_folderLayout/$folderId/files/$fileId/index';
+const FoldersRouteImport = createFileRoute('/folders')()
 
-// Create Virtual Routes
-
-const FoldersImport = createFileRoute('/folders')();
-
-// Create/Update Routes
-
-const FoldersRoute = FoldersImport.update({
+const FoldersRoute = FoldersRouteImport.update({
   id: '/folders',
   path: '/folders',
-  getParentRoute: () => rootRoute,
-} as any);
-
-const IndexRoute = IndexImport.update({
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
-} as any);
-
-const FoldersFolderLayoutRoute = FoldersFolderLayoutImport.update({
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FoldersFolderLayoutRoute = FoldersFolderLayoutRouteImport.update({
   id: '/_folderLayout',
   getParentRoute: () => FoldersRoute,
-} as any);
-
+} as any)
 const FoldersFolderLayoutFolderIdIndexRoute =
-  FoldersFolderLayoutFolderIdIndexImport.update({
+  FoldersFolderLayoutFolderIdIndexRouteImport.update({
     id: '/$folderId/',
     path: '/$folderId/',
     getParentRoute: () => FoldersFolderLayoutRoute,
-  } as any);
-
+  } as any)
 const FoldersFolderLayoutFolderIdFilesFileIdIndexRoute =
-  FoldersFolderLayoutFolderIdFilesFileIdIndexImport.update({
+  FoldersFolderLayoutFolderIdFilesFileIdIndexRouteImport.update({
     id: '/$folderId/files/$fileId/',
     path: '/$folderId/files/$fileId/',
     getParentRoute: () => FoldersFolderLayoutRoute,
-  } as any);
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/';
-      path: '/';
-      fullPath: '/';
-      preLoaderRoute: typeof IndexImport;
-      parentRoute: typeof rootRoute;
-    };
-    '/folders': {
-      id: '/folders';
-      path: '/folders';
-      fullPath: '/folders';
-      preLoaderRoute: typeof FoldersImport;
-      parentRoute: typeof rootRoute;
-    };
-    '/folders/_folderLayout': {
-      id: '/folders/_folderLayout';
-      path: '/folders';
-      fullPath: '/folders';
-      preLoaderRoute: typeof FoldersFolderLayoutImport;
-      parentRoute: typeof FoldersRoute;
-    };
-    '/folders/_folderLayout/$folderId/': {
-      id: '/folders/_folderLayout/$folderId/';
-      path: '/$folderId';
-      fullPath: '/folders/$folderId';
-      preLoaderRoute: typeof FoldersFolderLayoutFolderIdIndexImport;
-      parentRoute: typeof FoldersFolderLayoutImport;
-    };
-    '/folders/_folderLayout/$folderId/files/$fileId/': {
-      id: '/folders/_folderLayout/$folderId/files/$fileId/';
-      path: '/$folderId/files/$fileId';
-      fullPath: '/folders/$folderId/files/$fileId';
-      preLoaderRoute: typeof FoldersFolderLayoutFolderIdFilesFileIdIndexImport;
-      parentRoute: typeof FoldersFolderLayoutImport;
-    };
-  }
-}
-
-// Create and export the route tree
-
-interface FoldersFolderLayoutRouteChildren {
-  FoldersFolderLayoutFolderIdIndexRoute: typeof FoldersFolderLayoutFolderIdIndexRoute;
-  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute: typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute;
-}
-
-const FoldersFolderLayoutRouteChildren: FoldersFolderLayoutRouteChildren = {
-  FoldersFolderLayoutFolderIdIndexRoute: FoldersFolderLayoutFolderIdIndexRoute,
-  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute:
-    FoldersFolderLayoutFolderIdFilesFileIdIndexRoute,
-};
-
-const FoldersFolderLayoutRouteWithChildren =
-  FoldersFolderLayoutRoute._addFileChildren(FoldersFolderLayoutRouteChildren);
-
-interface FoldersRouteChildren {
-  FoldersFolderLayoutRoute: typeof FoldersFolderLayoutRouteWithChildren;
-}
-
-const FoldersRouteChildren: FoldersRouteChildren = {
-  FoldersFolderLayoutRoute: FoldersFolderLayoutRouteWithChildren,
-};
-
-const FoldersRouteWithChildren =
-  FoldersRoute._addFileChildren(FoldersRouteChildren);
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute;
-  '/folders': typeof FoldersFolderLayoutRouteWithChildren;
-  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute;
-  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute;
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
 }
-
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute;
-  '/folders': typeof FoldersFolderLayoutRouteWithChildren;
-  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute;
-  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute;
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/$folderId': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/$folderId/files/$fileId': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute;
-  '/': typeof IndexRoute;
-  '/folders': typeof FoldersRouteWithChildren;
-  '/folders/_folderLayout': typeof FoldersFolderLayoutRouteWithChildren;
-  '/folders/_folderLayout/$folderId/': typeof FoldersFolderLayoutFolderIdIndexRoute;
-  '/folders/_folderLayout/$folderId/files/$fileId/': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/folders': typeof FoldersRouteWithChildren
+  '/folders/_folderLayout': typeof FoldersFolderLayoutRouteWithChildren
+  '/folders/_folderLayout/$folderId/': typeof FoldersFolderLayoutFolderIdIndexRoute
+  '/folders/_folderLayout/$folderId/files/$fileId/': typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
 }
-
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/folders'
     | '/folders/$folderId'
-    | '/folders/$folderId/files/$fileId';
-  fileRoutesByTo: FileRoutesByTo;
+    | '/folders/$folderId/files/$fileId'
+  fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/folders'
     | '/folders/$folderId'
-    | '/folders/$folderId/files/$fileId';
+    | '/folders/$folderId/files/$fileId'
   id:
     | '__root__'
     | '/'
     | '/folders'
     | '/folders/_folderLayout'
     | '/folders/_folderLayout/$folderId/'
-    | '/folders/_folderLayout/$folderId/files/$fileId/';
-  fileRoutesById: FileRoutesById;
+    | '/folders/_folderLayout/$folderId/files/$fileId/'
+  fileRoutesById: FileRoutesById
+}
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  FoldersRoute: typeof FoldersRouteWithChildren
 }
 
-export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  FoldersRoute: typeof FoldersRouteWithChildren;
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/folders': {
+      id: '/folders'
+      path: '/folders'
+      fullPath: '/folders'
+      preLoaderRoute: typeof FoldersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/folders/_folderLayout': {
+      id: '/folders/_folderLayout'
+      path: '/folders'
+      fullPath: '/folders'
+      preLoaderRoute: typeof FoldersFolderLayoutRouteImport
+      parentRoute: typeof FoldersRoute
+    }
+    '/folders/_folderLayout/$folderId/': {
+      id: '/folders/_folderLayout/$folderId/'
+      path: '/$folderId'
+      fullPath: '/folders/$folderId'
+      preLoaderRoute: typeof FoldersFolderLayoutFolderIdIndexRouteImport
+      parentRoute: typeof FoldersFolderLayoutRoute
+    }
+    '/folders/_folderLayout/$folderId/files/$fileId/': {
+      id: '/folders/_folderLayout/$folderId/files/$fileId/'
+      path: '/$folderId/files/$fileId'
+      fullPath: '/folders/$folderId/files/$fileId'
+      preLoaderRoute: typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRouteImport
+      parentRoute: typeof FoldersFolderLayoutRoute
+    }
+  }
 }
+
+interface FoldersFolderLayoutRouteChildren {
+  FoldersFolderLayoutFolderIdIndexRoute: typeof FoldersFolderLayoutFolderIdIndexRoute
+  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute: typeof FoldersFolderLayoutFolderIdFilesFileIdIndexRoute
+}
+
+const FoldersFolderLayoutRouteChildren: FoldersFolderLayoutRouteChildren = {
+  FoldersFolderLayoutFolderIdIndexRoute: FoldersFolderLayoutFolderIdIndexRoute,
+  FoldersFolderLayoutFolderIdFilesFileIdIndexRoute:
+    FoldersFolderLayoutFolderIdFilesFileIdIndexRoute,
+}
+
+const FoldersFolderLayoutRouteWithChildren =
+  FoldersFolderLayoutRoute._addFileChildren(FoldersFolderLayoutRouteChildren)
+
+interface FoldersRouteChildren {
+  FoldersFolderLayoutRoute: typeof FoldersFolderLayoutRouteWithChildren
+}
+
+const FoldersRouteChildren: FoldersRouteChildren = {
+  FoldersFolderLayoutRoute: FoldersFolderLayoutRouteWithChildren,
+}
+
+const FoldersRouteWithChildren =
+  FoldersRoute._addFileChildren(FoldersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FoldersRoute: FoldersRouteWithChildren,
-};
-
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/folders"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/folders": {
-      "filePath": "folders",
-      "children": [
-        "/folders/_folderLayout"
-      ]
-    },
-    "/folders/_folderLayout": {
-      "filePath": "folders/_folderLayout.tsx",
-      "parent": "/folders",
-      "children": [
-        "/folders/_folderLayout/$folderId/",
-        "/folders/_folderLayout/$folderId/files/$fileId/"
-      ]
-    },
-    "/folders/_folderLayout/$folderId/": {
-      "filePath": "folders/_folderLayout/$folderId/index.tsx",
-      "parent": "/folders/_folderLayout"
-    },
-    "/folders/_folderLayout/$folderId/files/$fileId/": {
-      "filePath": "folders/_folderLayout/$folderId/files/$fileId/index.tsx",
-      "parent": "/folders/_folderLayout"
-    }
-  }
 }
-ROUTE_MANIFEST_END */
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
