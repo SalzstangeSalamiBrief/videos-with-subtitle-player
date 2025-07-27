@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	config.InitializeConfiguration()
+	appConfiguration := config.InitializeConfiguration()
 	ImageQualityReducer.InitializeMagickArgs()
 	log.Default().Printf("Start server on '%v'", config.AppConfiguration.ServerAddress)
 
@@ -29,13 +29,16 @@ func main() {
 
 	fileTreeManager.InitializeFileTree()
 
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: appConfiguration.AllowedCors}).Build()
+	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
+
 	r := router.
 		NewRouterBuilder().
 		RegisterRoute(routes.GetContinuousFileRoute).
 		RegisterRoute(routes.GetDiscreteFileUseCaseRoute).
 		RegisterRoute(routes.GetFileTreeRoute).
-		RegisterMiddleware(middlewares.RequestLoggerMiddleware).
-		RegisterMiddleware(middlewares.CorsMiddleware).
+		RegisterMiddleware(requestLoggerMiddleware).
+		RegisterMiddleware(corsMiddleware).
 		Build()
 
 	mux := http.NewServeMux()
