@@ -4,6 +4,7 @@ import (
 	"backend/internal/config"
 	"backend/internal/router"
 	"backend/internal/routes"
+	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/ImageQualityReducer"
 	"backend/pkg/services/fileTreeManager"
@@ -32,10 +33,14 @@ func main() {
 	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: appConfiguration.AllowedCors}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
 
+	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
+		RootPath: appConfiguration.RootPath,
+	})
+
 	r := router.
 		NewRouterBuilder().
 		RegisterRoute(routes.GetContinuousFileRoute).
-		RegisterRoute(routes.GetDiscreteFileUseCaseRoute).
+		RegisterRoute(handleDiscreteFileRoute).
 		RegisterRoute(routes.GetFileTreeRoute).
 		RegisterMiddleware(requestLoggerMiddleware).
 		RegisterMiddleware(corsMiddleware).
