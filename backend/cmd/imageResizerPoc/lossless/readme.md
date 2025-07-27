@@ -1,1 +1,0 @@
-Should contain images that use lossless compression techniques (e. g. png)
