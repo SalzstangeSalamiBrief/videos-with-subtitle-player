@@ -37,7 +37,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
 		if isDirectory {
-			currentFileItems.HandleDirectory(currentItemPath, itemName)
+			currentFileItems.handleDirectory(currentItemPath, itemName)
 			continue
 		}
 
@@ -54,34 +54,34 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		}
 
 		if fileType == enums.IMAGE {
-			currentFileItems.HandleImageFile(newFileItem, currentItemPath)
+			currentFileItems.handleImageFile(newFileItem, currentItemPath)
 			continue
 		}
 
 		if fileType == enums.VIDEO {
-			currentFileItems.HandleVideoFile(newFileItem)
+			currentFileItems.handleVideoFile(newFileItem)
 			continue
 		}
 
 		if fileType == enums.AUDIO {
-			currentFileItems.HandleAudioFile(newFileItem, currentItemPath, itemName)
+			currentFileItems.handleAudioFile(newFileItem, currentItemPath, itemName)
 		}
 	}
 
 	return currentFileItems
 }
 
-func (input *SubFileTree) HandleDirectory(directoryPath string, directoryName string) {
+func (input *SubFileTree) handleDirectory(directoryPath string, directoryName string) {
 	log.Default().Printf("'%v' is a directory\n", directoryName)
 	newDirectoryItems := getFullTree(directoryPath)
 	*input = append(*input, newDirectoryItems...)
 }
 
-func (input *SubFileTree) HandleVideoFile(videoFile models.FileTreeItem) {
+func (input *SubFileTree) handleVideoFile(videoFile models.FileTreeItem) {
 	*input = append(*input, videoFile)
 }
 
-func (input *SubFileTree) HandleAudioFile(audioFile models.FileTreeItem, currentItemPath string, itemName string) {
+func (input *SubFileTree) handleAudioFile(audioFile models.FileTreeItem, currentItemPath string, itemName string) {
 	*input = append(*input, audioFile)
 
 	possibleSubtitleFileName := strings.Replace(currentItemPath, path.Ext(itemName), fmt.Sprintf("%v.vtt", path.Ext(itemName)), 1)
@@ -109,7 +109,7 @@ func (input *SubFileTree) HandleAudioFile(audioFile models.FileTreeItem, current
 	*input = append(*input, subtitleFile)
 }
 
-func (input *SubFileTree) HandleImageFile(imageFile models.FileTreeItem, currentItemPath string) {
+func (input *SubFileTree) handleImageFile(imageFile models.FileTreeItem, currentItemPath string) {
 	isLowQualityImage := ImageQualityReducer.IsLowQualityFileName(currentItemPath)
 	if isLowQualityImage {
 		log.Default().Printf("'%v' is already a low quality image\n", imageFile.Name)
