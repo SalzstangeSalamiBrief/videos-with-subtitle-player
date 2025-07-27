@@ -18,7 +18,7 @@ type AppConfig struct {
 
 var AppConfiguration AppConfig
 
-func InitializeConfiguration() {
+func InitializeConfiguration() AppConfig {
 	err := godotenv.Load()
 	if err != nil {
 		log.Default().Print("Could not load .env file; Use os arguments instead")
@@ -27,6 +27,7 @@ func InitializeConfiguration() {
 	loadServerAddress()
 	loadRootPath()
 	loadAllowedCors()
+	return AppConfiguration
 }
 
 func loadRootPath() {
