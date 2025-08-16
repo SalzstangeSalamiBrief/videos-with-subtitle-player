@@ -1,35 +1,60 @@
 package middlewares
 
 import (
-	"backend/internal/config"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
-func CorsMiddleware(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		configuredCors := os.Getenv("ALLOWED_CORS")
-		if config.AppConfiguration.AllowedCors == "" {
-			return
-		}
+type CorsMiddleWareConfiguration struct {
+	AllowedCors string
+}
 
-		allowAllOrigins := configuredCors == "*"
-		if allowAllOrigins {
-			w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
-		}
+type CorsMiddleWareBuilder struct {
+	configuration *CorsMiddleWareConfiguration
+}
 
-		allowedCors := strings.Split(configuredCors, ",")
-		for _, allowedOrigin := range allowedCors {
+func NewCorsMiddleWare() *CorsMiddleWareBuilder {
+	return &CorsMiddleWareBuilder{
+		configuration: &CorsMiddleWareConfiguration{},
+	}
+}
+
+func (builder *CorsMiddleWareBuilder) AddConfiguration(configuration CorsMiddleWareConfiguration) *CorsMiddleWareBuilder {
+	builder.configuration = &configuration
+	return builder
+}
+
+func (builder *CorsMiddleWareBuilder) Build() func(next http.HandlerFunc) http.HandlerFunc {
+	builder.configuration.validateConfiguration()
+
+	return func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+
+			allowAllOrigins := builder.configuration.AllowedCors == "*"
+			if allowAllOrigins {
+				w.Header().Set("Access-Control-Allow-Origin", r.Header.Get("Origin"))
+			}
+
 			origin := r.Header.Get("Origin")
 			fmt.Printf("Origin: %s\n", origin)
-			if origin == allowedOrigin {
-				w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
-				break
-			}
-		}
 
-		next(w, r)
+			allowedCors := strings.Split(builder.configuration.AllowedCors, ",")
+			for _, allowedOrigin := range allowedCors {
+				if origin == allowedOrigin {
+					w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+					break
+				}
+			}
+
+			next(w, r)
+		}
+	}
+}
+
+func (configuration CorsMiddleWareConfiguration) validateConfiguration() {
+	if configuration.AllowedCors == "" {
+		log.Fatal("CorsMiddleware requires the field allowedCors to be set")
 	}
 }

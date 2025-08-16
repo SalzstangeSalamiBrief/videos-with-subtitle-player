@@ -10,15 +10,16 @@ import (
 const DEFAULT_HOST_ADDRESS = "localhost"
 const DEFAULT_HOST_PORT = "3000"
 
-type AppConfig struct {
+// TODO FIX: ONLY ONE SOURCE OF VARIABLES
+type configuration struct {
 	RootPath      string
 	AllowedCors   string
 	ServerAddress string
 }
 
-var AppConfiguration AppConfig
+var appConfiguration configuration
 
-func InitializeConfiguration() {
+func InitializeConfiguration() configuration {
 	err := godotenv.Load()
 	if err != nil {
 		log.Default().Print("Could not load .env file; Use os arguments instead")
@@ -27,6 +28,7 @@ func InitializeConfiguration() {
 	loadServerAddress()
 	loadRootPath()
 	loadAllowedCors()
+	return appConfiguration
 }
 
 func loadRootPath() {
@@ -35,11 +37,11 @@ func loadRootPath() {
 		log.Fatal("Could not load environment variable ROOT_PATH")
 	}
 
-	AppConfiguration.RootPath = rp
+	appConfiguration.RootPath = rp
 }
 
 func loadAllowedCors() {
-	AppConfiguration.AllowedCors = os.Getenv("ALLOWED_CORS")
+	appConfiguration.AllowedCors = os.Getenv("ALLOWED_CORS")
 }
 
 func loadServerAddress() {
@@ -54,5 +56,5 @@ func loadServerAddress() {
 		log.Default().Printf("Could not load environment variable HOST_PORT. Use default value '%v'", DEFAULT_HOST_PORT)
 		p = DEFAULT_HOST_PORT
 	}
-	AppConfiguration.ServerAddress = fmt.Sprintf("%v:%v", a, p)
+	appConfiguration.ServerAddress = fmt.Sprintf("%v:%v", a, p)
 }

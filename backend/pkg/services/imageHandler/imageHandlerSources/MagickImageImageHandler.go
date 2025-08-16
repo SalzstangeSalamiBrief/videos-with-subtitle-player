@@ -1,4 +1,4 @@
-package ImageQualityReducer
+package imageHandlerSources
 
 import (
 	"backend/pkg/utilities"
@@ -14,40 +14,58 @@ type ImageMagickCommand struct {
 	arg     string
 }
 
-const lowQualityFileSuffix = "_lowQuality"
-
-var magickArgs []string
-
-func InitializeMagickArgs() {
-	log.Default().Println("Start initializing Magick Args...")
-	imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
-	magickArgs = convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands)
-	log.Default().Println("Finish initializing Magick Args...")
+type MagickImageHandler struct {
+	lowQualityFileSuffix     string
+	lowQualityConversionArgs []string
 }
 
-func ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
-	if magickArgs == nil || len(magickArgs) == 0 {
-		log.Panic("imageQualityReducer is not properly initialized. Please use the InitializeMagickArgs function before using it")
+func NewMagickImageHandler(lowQualityFileSuffix string) *MagickImageHandler {
+	err := checkIfMagickImageHandlerIsInstalled()
+	if err != nil {
+		log.Panic(err.Error())
+	}
+	imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
+	return &MagickImageHandler{
+		lowQualityFileSuffix:     lowQualityFileSuffix,
+		lowQualityConversionArgs: convertImageMagickCommandsArrayToArgumentsArray(imageMagickCommands),
+	}
+}
+
+func checkIfMagickImageHandlerIsInstalled() error {
+	if _, err := exec.LookPath("magick"); err != nil {
+		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
 	}
 
-	lowQualityImagePath = getLowQualityImagePath(sourceImagePath)
+	return nil
+}
+
+func (imageHandler MagickImageHandler) ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
+	if imageHandler.lowQualityConversionArgs == nil || len(imageHandler.lowQualityConversionArgs) == 0 {
+		return "", fmt.Errorf("magick image handler is not initialized; construct it via NewMagickImageHandler")
+	}
+
+	lowQualityImagePath = getLowQualityImagePath(sourceImagePath, imageHandler.lowQualityFileSuffix)
 	doesLowQualityFilePathExist := utilities.DoesFileExist(lowQualityImagePath)
 	if doesLowQualityFilePathExist {
 		log.Default().Printf("File %s already has a low quality version", sourceImagePath)
 		return lowQualityImagePath, nil
 	}
 
-	err = executeReduceImageQuality(sourceImagePath, lowQualityImagePath, magickArgs)
+	err = executeReduceImageQuality(sourceImagePath, lowQualityImagePath, imageHandler.lowQualityConversionArgs)
 	return lowQualityImagePath, err
 }
 
-func IsLowQualityFileName(sourceImagePath string) bool {
-	return strings.Contains(filepath.Base(sourceImagePath), lowQualityFileSuffix)
+func (imageHandler MagickImageHandler) IsLowQualityFile(sourcePath string) bool {
+	if imageHandler.lowQualityFileSuffix == "" {
+		return false
+	}
+
+	return strings.Contains(filepath.Base(sourcePath), imageHandler.lowQualityFileSuffix)
 }
 
-func getLowQualityImagePath(sourceImagePath string) string {
+func getLowQualityImagePath(sourceImagePath string, lowQualityFileSuffix string) string {
 	inputFileName, inputFileExtension := getFilenameAndExtensionParts(sourceImagePath)
-	lowQualityImageFileName := getLowQualityImageName(inputFileName, inputFileExtension)
+	lowQualityImageFileName := getLowQualityImageName(inputFileName, inputFileExtension, lowQualityFileSuffix)
 	return addPathToLowQualityImage(sourceImagePath, lowQualityImageFileName)
 }
 
@@ -64,7 +82,7 @@ func getFilenameAndExtensionParts(sourcePath string) (name string, extension str
 	return name, extension
 }
 
-func getLowQualityImageName(name string, extension string) string {
+func getLowQualityImageName(name string, extension string, lowQualityFileSuffix string) string {
 	if name == "" || extension == "" {
 		return ""
 	}
@@ -81,9 +99,6 @@ func addPathToLowQualityImage(sourceFilePath string, lowQualityImageFileName str
 }
 
 func executeReduceImageQuality(sourceFilePath string, lowQualityFilePath string, arguments []string) error {
-	if _, err := exec.LookPath("magick"); err != nil {
-		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
-	}
 
 	log.Default().Printf("Start quality reducing process for source '%v'\n", sourceFilePath)
 	command := exec.Command("magick", filepath.Clean(sourceFilePath))

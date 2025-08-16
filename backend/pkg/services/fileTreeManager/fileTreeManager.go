@@ -1,11 +1,10 @@
 package fileTreeManager
 
 import (
-	"backend/internal/config"
 	"backend/pkg/enums"
 	"backend/pkg/models"
-	"backend/pkg/services/ImageQualityReducer"
 	"backend/pkg/services/fileTreeManager/utilities"
+	"backend/pkg/services/imageHandler"
 	"fmt"
 	"github.com/google/uuid"
 	"log"
@@ -17,15 +16,33 @@ import (
 
 type SubFileTree []models.FileTreeItem
 
-var FileTreeItems []models.FileTreeItem
-
-func InitializeFileTree() {
-	fullTree := getFullTree(config.AppConfiguration.RootPath)
-	FileTreeItems = fullTree
-	log.Default().Println("Finish file tree initialization")
+type FileTreeManager struct {
+	fileTreeItems []models.FileTreeItem
+	imageHandler  imageHandler.ImageHandler
+	rootPath      string
 }
 
-func getFullTree(parentPath string) []models.FileTreeItem {
+func NewFileTreeManager(imageHandler imageHandler.ImageHandler, rootPath string) *FileTreeManager {
+	return &FileTreeManager{
+		imageHandler:  imageHandler,
+		rootPath:      rootPath,
+		fileTreeItems: []models.FileTreeItem{},
+	}
+}
+
+func (fileTreeManager *FileTreeManager) GetTree() []models.FileTreeItem {
+	return fileTreeManager.fileTreeItems
+}
+
+func (fileTreeManager *FileTreeManager) InitializeTree() *FileTreeManager {
+	log.Default().Println("Start file tree initialization")
+	fullTree := fileTreeManager.getSubTree(fileTreeManager.rootPath)
+	fileTreeManager.fileTreeItems = fullTree
+	log.Default().Println("Finish file tree initialization")
+	return fileTreeManager
+}
+
+func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.FileTreeItem {
 	content, err := os.ReadDir(parentPath)
 	if err != nil {
 		log.Fatal(err)
@@ -37,7 +54,7 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 		currentItemPath := filepath.Join(parentPath, itemName)
 		isDirectory := item.IsDir()
 		if isDirectory {
-			currentFileItems.HandleDirectory(currentItemPath, itemName)
+			currentFileItems.handleDirectory(*fileTreeManager, currentItemPath, itemName)
 			continue
 		}
 
@@ -48,41 +65,41 @@ func getFullTree(parentPath string) []models.FileTreeItem {
 
 		newFileItem := models.FileTreeItem{
 			Id:   uuid.New().String(),
-			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: config.AppConfiguration.RootPath}),
+			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: fileTreeManager.rootPath}),
 			Name: utilities.GetFilenameWithoutExtension(itemName),
 			Type: fileType,
 		}
 
 		if fileType == enums.IMAGE {
-			currentFileItems.HandleImageFile(newFileItem, currentItemPath)
+			currentFileItems.handleImageFile(fileTreeManager.rootPath, fileTreeManager.imageHandler, newFileItem, currentItemPath)
 			continue
 		}
 
 		if fileType == enums.VIDEO {
-			currentFileItems.HandleVideoFile(newFileItem)
+			currentFileItems.handleVideoFile(newFileItem)
 			continue
 		}
 
 		if fileType == enums.AUDIO {
-			currentFileItems.HandleAudioFile(newFileItem, currentItemPath, itemName)
+			currentFileItems.handleAudioFile(fileTreeManager.rootPath, newFileItem, currentItemPath, itemName)
 		}
 	}
 
 	return currentFileItems
 }
 
-func (input *SubFileTree) HandleDirectory(directoryPath string, directoryName string) {
+func (subTree *SubFileTree) handleDirectory(fileTreeManager FileTreeManager, directoryPath string, directoryName string) {
 	log.Default().Printf("'%v' is a directory\n", directoryName)
-	newDirectoryItems := getFullTree(directoryPath)
-	*input = append(*input, newDirectoryItems...)
+	newDirectoryItems := fileTreeManager.getSubTree(directoryPath)
+	*subTree = append(*subTree, newDirectoryItems...)
 }
 
-func (input *SubFileTree) HandleVideoFile(videoFile models.FileTreeItem) {
-	*input = append(*input, videoFile)
+func (subTree *SubFileTree) handleVideoFile(videoFile models.FileTreeItem) {
+	*subTree = append(*subTree, videoFile)
 }
 
-func (input *SubFileTree) HandleAudioFile(audioFile models.FileTreeItem, currentItemPath string, itemName string) {
-	*input = append(*input, audioFile)
+func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.FileTreeItem, currentItemPath string, itemName string) {
+	*subTree = append(*subTree, audioFile)
 
 	possibleSubtitleFileName := strings.Replace(currentItemPath, path.Ext(itemName), fmt.Sprintf("%v.vtt", path.Ext(itemName)), 1)
 	_, err := os.Stat(possibleSubtitleFileName)
@@ -99,24 +116,24 @@ func (input *SubFileTree) HandleAudioFile(audioFile models.FileTreeItem, current
 
 	subtitleFile := models.FileTreeItem{
 		Id:   uuid.New().String(),
-		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: config.AppConfiguration.RootPath}),
+		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
 		// TODO NAME INCLUDES THE WHOLE PATH
 		Name:                  utilities.GetFilenameWithoutExtension(possibleSubtitleFileName),
 		Type:                  enums.SUBTITLE,
 		AssociatedAudioFileId: audioFile.Id,
 	}
 
-	*input = append(*input, subtitleFile)
+	*subTree = append(*subTree, subtitleFile)
 }
 
-func (input *SubFileTree) HandleImageFile(imageFile models.FileTreeItem, currentItemPath string) {
-	isLowQualityImage := ImageQualityReducer.IsLowQualityFileName(currentItemPath)
+func (subTree *SubFileTree) handleImageFile(rootPath string, injectedImageHandler imageHandler.ImageHandler, imageFile models.FileTreeItem, currentItemPath string) {
+	isLowQualityImage := injectedImageHandler.IsLowQualityFile(currentItemPath)
 	if isLowQualityImage {
 		log.Default().Printf("'%v' is already a low quality image\n", imageFile.Name)
 		return
 	}
 
-	lowQualityImagePath, err := ImageQualityReducer.ReduceImageQuality(currentItemPath)
+	lowQualityImagePath, err := injectedImageHandler.ReduceImageQuality(currentItemPath)
 	if err != nil {
 		log.Default().Printf("Error reducing the quality of the image '%v': %v\n", imageFile.Path, err.Error())
 		return
@@ -124,12 +141,12 @@ func (input *SubFileTree) HandleImageFile(imageFile models.FileTreeItem, current
 
 	resizeImageFileItem := models.FileTreeItem{
 		Id:   uuid.New().String(),
-		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImagePath, RootPath: config.AppConfiguration.RootPath}),
+		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImagePath, RootPath: rootPath}),
 		Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
 		Type: enums.IMAGE,
 	}
 
 	imageFile.LowQualityImageId = resizeImageFileItem.Id
-	*input = append(*input, imageFile)
-	*input = append(*input, resizeImageFileItem)
+	*subTree = append(*subTree, imageFile)
+	*subTree = append(*subTree, resizeImageFileItem)
 }
