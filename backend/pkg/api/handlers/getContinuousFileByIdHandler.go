@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-const chunkSize = 1 * 1024 * 1024 // 3mb
+const chunkSize = 1 * 1024 * 1024 // 1mb
 
 type ContinuousFileByIdHandlerConfiguration struct {
 	RootPath string

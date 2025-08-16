@@ -20,6 +20,10 @@ type MagickImageHandler struct {
 }
 
 func NewMagickImageHandler(lowQualityFileSuffix string) *MagickImageHandler {
+	err := checkIfMagickImageHandlerIsInstalled()
+	if err != nil {
+		log.Panic(err.Error())
+	}
 	imageMagickCommands := []ImageMagickCommand{{command: "-resize", arg: "640x"}, {command: "-quality", arg: "10"}}
 	return &MagickImageHandler{
 		lowQualityFileSuffix:     lowQualityFileSuffix,
@@ -27,9 +31,15 @@ func NewMagickImageHandler(lowQualityFileSuffix string) *MagickImageHandler {
 	}
 }
 
+func checkIfMagickImageHandlerIsInstalled() error {
+	if _, err := exec.LookPath("magick"); err != nil {
+		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
+	}
+}
+
 func (imageHandler MagickImageHandler) ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
 	if imageHandler.lowQualityConversionArgs == nil || len(imageHandler.lowQualityConversionArgs) == 0 {
-		log.Panic("imageQualityReducer is not properly initialized. Please use the InitializeMagickArgs function before using it")
+		return "", fmt.Errorf("magick image handler is not initialized; construct it via NewMagickImageHandler")
 	}
 
 	lowQualityImagePath = getLowQualityImagePath(sourceImagePath, imageHandler.lowQualityFileSuffix)
@@ -44,6 +54,10 @@ func (imageHandler MagickImageHandler) ReduceImageQuality(sourceImagePath string
 }
 
 func (imageHandler MagickImageHandler) IsLowQualityFile(sourcePath string) bool {
+	if imageHandler.lowQualityFileSuffix == "" {
+		return false
+	}
+
 	return strings.Contains(filepath.Base(sourcePath), imageHandler.lowQualityFileSuffix)
 }
 
@@ -83,9 +97,6 @@ func addPathToLowQualityImage(sourceFilePath string, lowQualityImageFileName str
 }
 
 func executeReduceImageQuality(sourceFilePath string, lowQualityFilePath string, arguments []string) error {
-	if _, err := exec.LookPath("magick"); err != nil {
-		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
-	}
 
 	log.Default().Printf("Start quality reducing process for source '%v'\n", sourceFilePath)
 	command := exec.Command("magick", filepath.Clean(sourceFilePath))
