@@ -6,8 +6,11 @@ import (
 	"net/http"
 )
 
-var GetFileTreeRoute = router.Route{
-	Path:    "/file-tree",
-	Handler: handlers.GetFileTreeHandler,
-	Method:  http.MethodGet,
+// TODO REFACTOR: CURRENTLY A HARD COUPLING BETWEEN THE HANDLER AND ROUTE FILE EXISTS => MAYBE MERGE?
+func NewGetFileTreeRoute(configuration handlers.FileTreeHandlerConfiguration) router.Route {
+	return router.Route{
+		Path:    "/file-tree",
+		Handler: handlers.CreateGetFileTreeHandler(configuration),
+		Method:  http.MethodGet,
+	}
 }

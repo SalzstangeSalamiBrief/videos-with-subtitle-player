@@ -6,8 +6,9 @@ import (
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
-	"backend/pkg/services/ImageQualityReducer"
 	"backend/pkg/services/fileTreeManager"
+	"backend/pkg/services/imageHandler"
+	"backend/pkg/services/imageHandler/imageHandlerSources"
 	"log"
 	"net/http"
 	"os"
@@ -16,32 +17,35 @@ import (
 )
 
 func main() {
-	appConfiguration := config.InitializeConfiguration()
-	ImageQualityReducer.InitializeMagickArgs()
-	log.Default().Printf("Start server on '%v'", config.AppConfiguration.ServerAddress)
+	initializedConfiguration := config.InitializeConfiguration()
+	initializedImageHandler := imageHandlerSources.NewMagickImageHandler(imageHandler.LowQualityFileSuffix)
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedImageHandler, initializedConfiguration.RootPath).InitializeTree()
+
+	log.Default().Printf("Start server on '%v'", initializedConfiguration.ServerAddress)
 
 	go func() {
 		exit := make(chan os.Signal, 1)
 		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
 		<-exit
-		log.Default().Printf("Shutting down server at %v\n", config.AppConfiguration.ServerAddress)
+		log.Default().Printf("Shutting down server at %v\n", initializedConfiguration.ServerAddress)
 		os.Exit(0)
 	}()
 
-	fileTreeManager.InitializeFileTree()
-
-	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: appConfiguration.AllowedCors}).Build()
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.AllowedCors}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
 
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath: appConfiguration.RootPath,
+		RootPath:        initializedConfiguration.RootPath,
+		FileTreeManager: initializedFileTreeManager,
 	})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.RootPath, FileTreeManager: initializedFileTreeManager})
+	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: initializedFileTreeManager})
 
 	r := router.
 		NewRouterBuilder().
-		RegisterRoute(routes.GetContinuousFileRoute).
+		RegisterRoute(handleContinousFileRoute).
 		RegisterRoute(handleDiscreteFileRoute).
-		RegisterRoute(routes.GetFileTreeRoute).
+		RegisterRoute(getFileTreeRoute).
 		RegisterMiddleware(requestLoggerMiddleware).
 		RegisterMiddleware(corsMiddleware).
 		Build()
@@ -50,5 +54,5 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(config.AppConfiguration.ServerAddress, mux)
+	http.ListenAndServe(initializedConfiguration.ServerAddress, mux)
 }

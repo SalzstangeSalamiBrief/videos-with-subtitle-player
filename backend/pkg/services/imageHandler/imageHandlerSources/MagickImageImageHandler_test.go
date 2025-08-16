@@ -1,7 +1,8 @@
-package ImageQualityReducer
+package imageHandlerSources
 
 import (
 	"backend/pkg/models"
+	imageHandler2 "backend/pkg/services/imageHandler"
 	"fmt"
 	"path/filepath"
 	"reflect"
@@ -9,20 +10,21 @@ import (
 )
 
 func Test_IsResizeFileName(t *testing.T) {
+	imageHandler := NewMagickImageHandler(imageHandler2.LowQualityFileSuffix)
 	testData := []models.TestData[string, bool]{
 		{Title: "Should return false for empty input", Input: "", Expected: false},
 		{Title: "Should return false for filename without resize suffix", Input: "img", Expected: false},
 		{Title: "Should return false for path without filename", Input: filepath.Join("C:", "myPath"), Expected: false},
 		{Title: "Should return false for normal image filename", Input: filepath.Join("C:", "myPath", "image.png"), Expected: false},
-		{Title: "Should return true for resized image filename", Input: filepath.Join("C:", fmt.Sprintf("image%v.png", lowQualityFileSuffix)), Expected: true},
-		{Title: "Should return true for resized image with path", Input: filepath.Join("C:", "myPath", fmt.Sprintf("image%v.png", lowQualityFileSuffix)), Expected: true},
+		{Title: "Should return true for resized image filename", Input: filepath.Join("C:", fmt.Sprintf("image%v.png", imageHandler2.LowQualityFileSuffix)), Expected: true},
+		{Title: "Should return true for resized image with path", Input: filepath.Join("C:", "myPath", fmt.Sprintf("image%v.png", imageHandler2.LowQualityFileSuffix)), Expected: true},
 	}
 
 	for _, data := range testData {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			result := IsLowQualityFileName(data.Input)
+			result := imageHandler.IsLowQualityFile(data.Input)
 
 			// assert
 			if result != data.Expected {
@@ -42,14 +44,14 @@ func Test_getResizeImageName(t *testing.T) {
 		{Title: "Should return empty string on empty inputs", Input: GetResizeImageNameInput{name: "", extension: ""}, Expected: ""},
 		{Title: "Should return empty string on empty name", Input: GetResizeImageNameInput{name: "", extension: ".jpg"}, Expected: ""},
 		{Title: "Should return empty string on empty extension", Input: GetResizeImageNameInput{name: "file", extension: ""}, Expected: ""},
-		{Title: "Should return filename with resize tag", Input: GetResizeImageNameInput{name: "file", extension: ".jpg"}, Expected: fmt.Sprintf("file%v.jpg", lowQualityFileSuffix)},
+		{Title: "Should return filename with resize tag", Input: GetResizeImageNameInput{name: "file", extension: ".jpg"}, Expected: fmt.Sprintf("file%v.jpg", imageHandler2.LowQualityFileSuffix)},
 	}
 
 	for _, data := range testData {
 
 		t.Run(data.Title, func(t *testing.T) {
 			// act
-			result := getLowQualityImageName(data.Input.name, data.Input.extension)
+			result := getLowQualityImageName(data.Input.name, data.Input.extension, imageHandler2.LowQualityFileSuffix)
 
 			// assert
 			if result != data.Expected {
@@ -110,17 +112,17 @@ func Test_getFilenameAndExtensionParts(t *testing.T) {
 }
 
 func Test_getLowQualityImagePath(t *testing.T) {
- 	testData := []models.TestData[string, string]{
- 		{
+	testData := []models.TestData[string, string]{
+		{
 			Title:    "Should return low quality path with '_lowQuality' suffix",
- 			Input:    filepath.Join("images", "image.png"),
+			Input:    filepath.Join("images", "image.png"),
 			Expected: filepath.Join("images", "image_lowQuality.png"),
- 		},
- 		{
+		},
+		{
 			Title:    "Should handle files with multiple dots",
- 			Input:    filepath.Join("images", "my.image.png"),
+			Input:    filepath.Join("images", "my.image.png"),
 			Expected: filepath.Join("images", "my.image_lowQuality.png"),
- 		},
+		},
 		{
 			Title:    "Should handle file without extension",
 			Input:    filepath.Join("images", "image"),
@@ -131,7 +133,7 @@ func Test_getLowQualityImagePath(t *testing.T) {
 	for _, data := range testData {
 		t.Run(data.Title, func(t *testing.T) {
 			// Act
-			result := getLowQualityImagePath(data.Input)
+			result := getLowQualityImagePath(data.Input, imageHandler2.LowQualityFileSuffix)
 
 			// Assert
 			if result != data.Expected {

@@ -14,18 +14,24 @@ import (
 
 var fileTree models.FileTreeDto
 
-func GetFileTreeHandler(w http.ResponseWriter, r *http.Request) {
-	if fileTree.Id == "" {
-		fileTree = getFileTreeDto(fileTreeManager.FileTreeItems)
-	}
+type FileTreeHandlerConfiguration struct {
+	FileTreeManager *fileTreeManager.FileTreeManager
+}
 
-	encodedBytes, err := json.Marshal(fileTree.Children)
-	if err != nil {
-		ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
-		return
-	}
+func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if fileTree.Id == "" {
+			fileTree = getFileTreeDto(configuration.FileTreeManager.GetTree())
+		}
 
-	w.Write(encodedBytes)
+		encodedBytes, err := json.Marshal(fileTree.Children)
+		if err != nil {
+			ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
+			return
+		}
+
+		w.Write(encodedBytes)
+	}
 }
 
 func getFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {

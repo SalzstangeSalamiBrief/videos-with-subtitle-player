@@ -13,12 +13,13 @@ import (
 
 type DiscreteFileByIdHandlerConfig struct {
 	RootPath string
+	*fileTreeManager.FileTreeManager
 }
 
 func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/discrete/")
-		discreteFileInTree := utilities.GetFileByIdAndExtension(fileTreeManager.FileTreeItems, fileIdString, constants.AllowedDiscreteFileExtensions...)
+		discreteFileInTree := utilities.GetFileByIdAndExtension(config.FileTreeManager.GetTree(), fileIdString, constants.AllowedDiscreteFileExtensions...)
 		if discreteFileInTree.Id == "" {
 			ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
 			return
