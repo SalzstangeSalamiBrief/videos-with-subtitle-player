@@ -35,6 +35,8 @@ func checkIfMagickImageHandlerIsInstalled() error {
 	if _, err := exec.LookPath("magick"); err != nil {
 		return fmt.Errorf("ImageMagick 'magick' command not found in PATH: %w", err)
 	}
+
+	return nil
 }
 
 func (imageHandler MagickImageHandler) ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error) {
