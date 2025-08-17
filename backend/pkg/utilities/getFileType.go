@@ -1,8 +1,8 @@
 package utilities
 
 import (
+	"backend/pkg/constants"
 	"backend/pkg/enums"
-	"backend/pkg/services/fileTreeManager/constants"
 	"path"
 	"slices"
 )

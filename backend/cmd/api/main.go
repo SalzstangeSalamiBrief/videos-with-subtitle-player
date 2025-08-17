@@ -7,8 +7,9 @@ import (
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/services/imageHandler"
-	"backend/pkg/services/imageHandler/imageHandlerSources"
+	"backend/pkg/services/imageConverter"
+	"backend/pkg/services/imageConverter/imageHandlerSources"
+	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"net/http"
 	"os"
@@ -18,8 +19,13 @@ import (
 
 func main() {
 	initializedConfiguration := config.InitializeConfiguration()
-	initializedImageHandler := imageHandlerSources.NewMagickImageHandler(imageHandler.LowQualityFileSuffix)
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedImageHandler, initializedConfiguration.RootPath).InitializeTree()
+	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//initializedImageHandler := imageHandlerSources.NewMagickImageHandler(imageConverter.LowQualityFileSuffix)
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.RootPath).InitializeTree()
 
 	log.Default().Printf("Start server on '%v'", initializedConfiguration.ServerAddress)
 

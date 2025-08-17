@@ -2,7 +2,7 @@ package imageHandlerSources
 
 import (
 	"backend/pkg/models"
-	imageHandler2 "backend/pkg/services/imageHandler"
+	imageHandler2 "backend/pkg/services/imageConverter"
 	"fmt"
 	"path/filepath"
 	"reflect"
