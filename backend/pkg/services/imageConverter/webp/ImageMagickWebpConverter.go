@@ -23,7 +23,7 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	if err != nil {
 		return err
 	}
-
+	// TODO DELETE SOURCE IMAGES AFTER SUCCESSFULL CONVERSION
 	for _, image := range allImages {
 		if isLowQualityImage(image) {
 			log.Printf("Image %s is low quality. Skip processing \n", image)
@@ -39,25 +39,38 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 			}
 		}
 
-		if !hasLowQualityImage(image, allImages) {
+		if !containsLowQualityImagePath(image, allImages) {
 			log.Printf("Image %s has no low quality counterpart. Create low quality image \n", image)
 			createLowQualityImageError, _ := createLowQualityImage(image)
 			if createLowQualityImageError != nil {
 				log.Fatal(createLowQualityImageError)
 			}
 		}
-
 	}
 
+	for _, image := range allImages {
+		if isWebpImage(image) {
+			continue
+		}
+
+		deleteImageError := os.Remove(image)
+		if deleteImageError != nil {
+			// TODO ADD LOGGING
+			return deleteImageError
+		}
+	}
+
+	// TODO FIX
 	log.Printf("Finish webp conversion. Converted '%v' files\n", len(allImages))
 	return nil
 }
 
+// TODO MOVE TO UTILITEIS => MAYBE IMAGE UTILITIES
 func isWebpImage(relativeImagePath string) bool {
 	return filepath.Ext(relativeImagePath) == constants.WebpExtension
 }
 
-func hasLowQualityImage(relativeImagePath string, allImagePaths []string) bool {
+func containsLowQualityImagePath(relativeImagePath string, allImagePaths []string) bool {
 	if len(allImagePaths) == 0 {
 		return false
 	}
@@ -76,6 +89,7 @@ func isLossyImage(relativeImagePath string) bool {
 	return extension == ".jpg" || extension == ".jpeg"
 }
 
+// TODO MOVE TO UTILITEIS => MAYBE IMAGE UTILITIES
 func getLowQualityImagePath(inputRelativeFilePath string) string {
 	extension := filepath.Ext(inputRelativeFilePath)
 	newFileSuffix := fmt.Sprintf("%s%s", constants.LowQualityFileSuffix, constants.WebpExtension)

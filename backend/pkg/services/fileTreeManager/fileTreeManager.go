@@ -4,7 +4,7 @@ import (
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
-	"backend/pkg/services/imageConverter"
+	"backend/pkg/services/imageConverter/constants"
 	utilities2 "backend/pkg/utilities"
 	"fmt"
 	"github.com/google/uuid"
@@ -132,17 +132,24 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 	//	return
 	//}
 	//
-	//lowQualityImagePath, err := injectedImageHandler.ReduceImageQuality(currentItemPath)
+	//lowQualityImageName, err := injectedImageHandler.ReduceImageQuality(currentItemPath)
 	//if err != nil {
 	//	log.Default().Printf("Error reducing the quality of the image '%v': %v\n", imageFile.Path, err.Error())
 	//	return
 	//}
 
+	// TODO SKIP IF LOW QUALITY IMAGE
+	// TODO CHECK IF IT HAS A LOW QUALITY IMAGE DOES EXIST
+	// TODO USE UTILITY FUNCTION FROM THE WEBP BOI => OR INJECT?
+	// TODO USE getLowQualityImagePath
+	lowQualityImageName := fmt.Sprintf("%s%s%s", strings.TrimSuffix(filepath.Base(imageFile.Path), filepath.Ext(imageFile.Path)), constants.LowQualityFileSuffix, filepath.Ext(imageFile.Path)) // TODO
+
 	resizeImageFileItem := models.FileTreeItem{
 		Id: uuid.New().String(),
 		// TODO
-		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImagePath, RootPath: rootPath}),
-		Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
+		Path: strings.Replace(imageFile.Path, filepath.Base(imageFile.Path), lowQualityImageName, -1),
+		//utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImageName, RootPath: rootPath}),
+		Name: utilities.GetFilenameWithoutExtension(lowQualityImageName),
 		Type: enums.IMAGE,
 	}
 

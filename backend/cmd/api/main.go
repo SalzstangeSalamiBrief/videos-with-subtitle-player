@@ -7,8 +7,6 @@ import (
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/services/imageConverter"
-	"backend/pkg/services/imageConverter/imageHandlerSources"
 	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"net/http"

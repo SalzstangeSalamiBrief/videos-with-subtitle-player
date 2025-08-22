@@ -4,11 +4,13 @@ import (
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
+	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
 	"net/http"
+	"path/filepath"
 	"regexp"
 )
 
@@ -84,6 +86,16 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 
 func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
 	if file.Type != enums.IMAGE {
+		return
+	}
+
+	//// TODO ONLY USE WEBP => IMPORT HELPER FROM THE WEBP PACKAGE
+	//if filepath.Ext(file.Name) != constants.WebpExtension {
+	//	return
+	//}
+
+	isWebP := filepath.Ext(file.Path) == constants.WebpExtension
+	if !isWebP {
 		return
 	}
 
