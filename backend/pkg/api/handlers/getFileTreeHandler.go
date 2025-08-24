@@ -5,6 +5,7 @@ import (
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/imageConverter/constants"
+	utilities2 "backend/pkg/services/imageConverter/utilities"
 	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
@@ -93,6 +94,11 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	//if filepath.Ext(file.Name) != constants.WebpExtension {
 	//	return
 	//}
+
+	isLowQualityImage := utilities2.IsLowQualityImage(file.Path)
+	if isLowQualityImage {
+		return
+	}
 
 	isWebP := filepath.Ext(file.Path) == constants.WebpExtension
 	if !isWebP {

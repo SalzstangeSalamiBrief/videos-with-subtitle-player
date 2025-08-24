@@ -3,6 +3,7 @@ package main
 import (
 	"backend/pkg/enums"
 	"backend/pkg/services/imageConverter/constants"
+	"backend/pkg/services/imageConverter/webp"
 	"backend/pkg/utilities"
 	"fmt"
 	"log"
@@ -24,37 +25,10 @@ const imageSource = "Thumbnail.jpg"
 
 func main() {
 	//webpPoc()
-	allImages := traversalPoc(imageSourceFolder)
-	for _, image := range allImages {
-		isLow := isLowQualityImage(image)
-		if isLow {
-			log.Printf("Image %s is low quality. Skip processing \n", image)
-			continue
-		}
-
-		if !isWebpImage(image) {
-			webpConversionError, _ := convertToWebp(image)
-			if webpConversionError != nil {
-				log.Fatal(webpConversionError)
-			}
-		}
-
-		//if !isLowQualityImage(image) {
-		//	log.Printf("Image '%s' is already low quality. Skip", image)
-		//	continue
-		//}
-
-		if !hasLowQualityImageCounterpart(image, allImages) {
-			log.Printf("Image %s has no low quality counterpart. Create low quality image \n", image)
-			createLowQualityImageError, _ := createLowQualityImage(image)
-			if createLowQualityImageError != nil {
-				log.Fatal(createLowQualityImageError)
-			}
-		}
-
+	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: imageSourceFolder, ShouldDeleteNonWebpImages: false})
+	if err != nil {
+		log.Fatal(err)
 	}
-
-	fmt.Sprintf("finish traversal. Received '%v' files\n", len(allImages))
 }
 
 func webpPoc() {

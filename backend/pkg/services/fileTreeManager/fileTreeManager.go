@@ -4,8 +4,8 @@ import (
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
-	"backend/pkg/services/imageConverter/constants"
-	utilities2 "backend/pkg/utilities"
+	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
+	commonUtilities "backend/pkg/utilities"
 	"fmt"
 	"github.com/google/uuid"
 	"log"
@@ -57,7 +57,7 @@ func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.F
 			continue
 		}
 
-		fileType := utilities2.GetFileType(itemName)
+		fileType := commonUtilities.GetFileType(itemName)
 		if fileType == enums.UNKNOWN {
 			continue
 		}
@@ -70,7 +70,7 @@ func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.F
 		}
 
 		if fileType == enums.IMAGE {
-			currentFileItems.handleImageFile(fileTreeManager.rootPath, newFileItem, currentItemPath)
+			currentFileItems.handleImageFile(fileTreeManager.rootPath, newFileItem)
 			continue
 		}
 
@@ -125,35 +125,22 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 	*subTree = append(*subTree, subtitleFile)
 }
 
-func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.FileTreeItem, currentItemPath string) {
-	//isLowQualityImage := injectedImageHandler.IsLowQualityFile(currentItemPath)
-	//if isLowQualityImage {
-	//	log.Default().Printf("'%v' is already a low quality image\n", imageFile.Name)
-	//	return
-	//}
-	//
-	//lowQualityImageName, err := injectedImageHandler.ReduceImageQuality(currentItemPath)
-	//if err != nil {
-	//	log.Default().Printf("Error reducing the quality of the image '%v': %v\n", imageFile.Path, err.Error())
-	//	return
-	//}
+func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.FileTreeItem) {
+	lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
+	doesLowQualityImageExist := imageConverterUtilities.DoesLowQualityImageExist(rootPath, lowQualityImagePath)
+	if doesLowQualityImageExist {
+		resizeImageFileItem := models.FileTreeItem{
+			Id: uuid.New().String(),
+			// TODO
+			Path: lowQualityImagePath,
+			//utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImageName, RootPath: rootPath}),
+			Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
+			Type: enums.IMAGE,
+		}
+		imageFile.LowQualityImageId = resizeImageFileItem.Id
+		*subTree = append(*subTree, resizeImageFileItem)
 
-	// TODO SKIP IF LOW QUALITY IMAGE
-	// TODO CHECK IF IT HAS A LOW QUALITY IMAGE DOES EXIST
-	// TODO USE UTILITY FUNCTION FROM THE WEBP BOI => OR INJECT?
-	// TODO USE getLowQualityImagePath
-	lowQualityImageName := fmt.Sprintf("%s%s%s", strings.TrimSuffix(filepath.Base(imageFile.Path), filepath.Ext(imageFile.Path)), constants.LowQualityFileSuffix, filepath.Ext(imageFile.Path)) // TODO
-
-	resizeImageFileItem := models.FileTreeItem{
-		Id: uuid.New().String(),
-		// TODO
-		Path: strings.Replace(imageFile.Path, filepath.Base(imageFile.Path), lowQualityImageName, -1),
-		//utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImageName, RootPath: rootPath}),
-		Name: utilities.GetFilenameWithoutExtension(lowQualityImageName),
-		Type: enums.IMAGE,
 	}
 
-	imageFile.LowQualityImageId = resizeImageFileItem.Id
 	*subTree = append(*subTree, imageFile)
-	*subTree = append(*subTree, resizeImageFileItem)
 }
