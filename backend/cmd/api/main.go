@@ -16,8 +16,9 @@ import (
 )
 
 func main() {
+	// TODO MOVE INTO CUSTOM CMD
 	initializedConfiguration := config.InitializeConfiguration()
-	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath})
+	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath, ShouldDeleteNonWebpImages: true})
 	if err != nil {
 		log.Fatal(err)
 	}
