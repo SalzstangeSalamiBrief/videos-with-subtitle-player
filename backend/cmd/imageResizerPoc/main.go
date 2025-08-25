@@ -1,6 +1,7 @@
 package main
 
 import (
+	"backend/internal/config"
 	"backend/pkg/enums"
 	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/services/imageConverter/webp"
@@ -25,7 +26,8 @@ const imageSource = "Thumbnail.jpg"
 
 func main() {
 	//webpPoc()
-	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: imageSourceFolder, ShouldDeleteNonWebpImages: false})
+	initializedConfiguration := config.InitializeConfiguration()
+	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath, ShouldDeleteNonWebpImages: true})
 	if err != nil {
 		log.Fatal(err)
 	}

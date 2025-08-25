@@ -10,7 +10,7 @@ import (
 const DEFAULT_HOST_ADDRESS = "localhost"
 const DEFAULT_HOST_PORT = "3000"
 
-// TODO FIX: ONLY ONE SOURCE OF VARIABLES
+// TODO REFACTOR: ONE CONFIG READER FOR API AND ONE FOR THE WEBP CMD
 type configuration struct {
 	RootPath      string
 	AllowedCors   string
