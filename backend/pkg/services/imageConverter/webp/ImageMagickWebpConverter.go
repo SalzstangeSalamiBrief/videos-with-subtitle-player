@@ -70,7 +70,6 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	return nil
 }
 
-// TODO MOVE TO UTILITEIS => MAYBE IMAGE UTILITIES
 
 func containsLowQualityImagePath(relativeImagePath string, allImagePaths []string) bool {
 	if len(allImagePaths) == 0 {
