@@ -26,6 +26,7 @@
 
 - Test files should be co-located with source files
 - For tests use the model in _backend\pkg\models\testModels.go_ to ensure consistency and create multiple tests without overhead
+- For complex inputs create a struct on top of the file instead of defining the type in each test case in the array anew
 
 ### Frontend
 

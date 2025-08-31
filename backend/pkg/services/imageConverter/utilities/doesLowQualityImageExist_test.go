@@ -22,6 +22,7 @@ func beforeEach(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create test dir %s: %v", testSubDir, err)
 	}
+
 	filePathsToCleanUp = []string{
 		filepath.Join(tempDir, "image_lowQuality.webp"),
 		filepath.Join(testSubDir, "photo_lowQuality.webp"),
@@ -45,7 +46,6 @@ func TestDoesLowQualityImageExist(t *testing.T) {
 	testCases := []models.TestData[InputType, bool]{
 		{
 			Title: "File exists - simple case",
-
 			Input: InputType{
 				subDir:          "",
 				sourceImagePath: "image.webp",
@@ -125,7 +125,7 @@ func TestDoesLowQualityImageExist(t *testing.T) {
 			Expected: false,
 		},
 		{
-			Title: "Very long filename",
+			Title: "Very long filename without counter part",
 			Input: InputType{
 				subDir:          "",
 				sourceImagePath: "very_long_filename_that_might_cause_issues_in_some_filesystems_or_scenarios_but_should_still_work_correctly.jpg",
