@@ -8,6 +8,10 @@ import (
 )
 
 func GetLowQualityImageName(sourceImagePath string) string {
+	if filepath.Ext(sourceImagePath) == "" {
+		return ""
+	}
+
 	if sourceImagePath == "" {
 		return ""
 	}
