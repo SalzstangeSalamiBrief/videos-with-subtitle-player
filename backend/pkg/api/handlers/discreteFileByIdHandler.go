@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"backend/pkg/constants"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/services/fileTreeManager/constants"
 	"backend/pkg/utilities"
 	"fmt"
 	"net/http"

@@ -1,4 +1,4 @@
-package imageHandler
+package imageConverter
 
 type ImageHandler interface {
 	ReduceImageQuality(sourceImagePath string) (lowQualityImagePath string, err error)
