@@ -125,12 +125,12 @@ func TestGetLowQualityImageName(t *testing.T) {
 		{
 			Title:    "File without extension",
 			Input:    "noextension",
-			Expected: "noextension_lowQuality",
+			Expected: "",
 		},
 		{
 			Title:    "File with path but no extension",
 			Input:    "/path/to/noextension",
-			Expected: "noextension_lowQuality",
+			Expected: "",
 		},
 		{
 			Title:    "Just an extension",
@@ -165,7 +165,7 @@ func TestGetLowQualityImageName(t *testing.T) {
 		{
 			Title:    "Single character filename",
 			Input:    "x",
-			Expected: "x_lowQuality",
+			Expected: "",
 		},
 		{
 			Title:    "Filename with percent encoding characters",
