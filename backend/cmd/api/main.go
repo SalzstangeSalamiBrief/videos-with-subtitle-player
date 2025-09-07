@@ -1,13 +1,12 @@
 package main
 
 import (
-	"backend/internal/config"
+	"backend/internal/config/api"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"net/http"
 	"os"
@@ -16,34 +15,26 @@ import (
 )
 
 func main() {
-	// TODO MOVE INTO CUSTOM CMD
-	initializedConfiguration := config.InitializeConfiguration()
-	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath, ShouldDeleteNonWebpImages: true})
-	if err != nil {
-		log.Fatal(err)
+	initializedConfiguration, configurationError := api.NewApiConfiguration()
+	if configurationError != nil {
+		log.Fatal(configurationError)
 	}
 
-	//initializedImageHandler := imageHandlerSources.NewMagickImageHandler(imageConverter.LowQualityFileSuffix)
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.RootPath).InitializeTree()
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.GetRootPath()).InitializeTree()
 
-	log.Default().Printf("Start server on '%v'", initializedConfiguration.ServerAddress)
+	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
 
-	go func() {
-		exit := make(chan os.Signal, 1)
-		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
-		<-exit
-		log.Default().Printf("Shutting down server at %v\n", initializedConfiguration.ServerAddress)
-		os.Exit(0)
-	}()
+	shutdownCh := make(chan os.Signal, 1)
+	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 
-	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.AllowedCors}).Build()
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.GetCors()}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
 
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:        initializedConfiguration.RootPath,
+		RootPath:        initializedConfiguration.GetRootPath(),
 		FileTreeManager: initializedFileTreeManager,
 	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.RootPath, FileTreeManager: initializedFileTreeManager})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.GetRootPath(), FileTreeManager: initializedFileTreeManager})
 	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: initializedFileTreeManager})
 
 	r := router.
@@ -59,5 +50,5 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(initializedConfiguration.ServerAddress, mux)
+	http.ListenAndServe(initializedConfiguration.GetServerAddress(), mux)
 }

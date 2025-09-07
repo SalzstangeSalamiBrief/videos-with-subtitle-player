@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-const getDiscreteFilePath = `\/file\/discrete\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
+const getDiscreteFileByIdPath = `\/file\/discrete\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
 func NewGetDiscreteFileByIdRoute(config handlers.DiscreteFileByIdHandlerConfig) router.Route {
 	return router.Route{
-		Path:    getDiscreteFilePath,
+		Path:    getDiscreteFileByIdPath,
 		Method:  http.MethodGet,
 		Handler: handlers.CreateDiscreteFileByIdHandler(config),
 	}
