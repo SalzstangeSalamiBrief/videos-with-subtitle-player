@@ -1,13 +1,12 @@
 package main
 
 import (
-	"backend/internal/config"
+	"backend/internal/config/api"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
-	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"net/http"
 	"os"
@@ -17,13 +16,7 @@ import (
 
 func main() {
 	// TODO MOVE INTO CUSTOM CMD
-	initializedConfiguration := config.InitializeConfiguration()
-	err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath, ShouldDeleteNonWebpImages: true})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	//initializedImageHandler := imageHandlerSources.NewMagickImageHandler(imageConverter.LowQualityFileSuffix)
+	initializedConfiguration := api.InitializeConfiguration()
 	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.RootPath).InitializeTree()
 
 	log.Default().Printf("Start server on '%v'", initializedConfiguration.ServerAddress)

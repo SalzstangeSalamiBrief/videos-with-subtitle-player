@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-const getContinuousFilePath = `\/file\/continuous\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
+const getContinuousFileByIdPath = `\/file\/continuous\/([0-9A-Fa-f]{8}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{4}[-]?[0-9A-Fa-f]{12})$$`
 
 func CreateGetContinuousFileRoute(configuration handlers.ContinuousFileByIdHandlerConfiguration) router.Route {
 	return router.Route{
-		Path:    getContinuousFilePath,
+		Path:    getContinuousFileByIdPath,
 		Method:  http.MethodGet,
 		Handler: handlers.NewGetContinuousFileByIdHandler(configuration),
 	}

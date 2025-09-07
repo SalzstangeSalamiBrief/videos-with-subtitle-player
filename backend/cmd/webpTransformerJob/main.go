@@ -1,39 +1,40 @@
 package main
 
 import (
-	"backend/internal/config"
+	"backend/internal/config/webpTransformer"
 	"backend/pkg/services/imageConverter/webp"
-	"github.com/go-co-op/gocron/v2"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
 	// TODO ADD CUSTOM CONFIGURATION => SET ALL VALUES USING CONFIGURATION
-	initializedConfiguration := config.InitializeConfiguration()
+	initializedConfiguration := webpTransformer.NewWebpTransformerConfiguration()
 
-	scheduler, schedulerError := gocron.NewScheduler()
-	if schedulerError != nil {
-		log.Fatal(schedulerError)
-	}
+	osExitChannel := make(chan os.Signal, 1)
+	signal.Notify(osExitChannel, os.Interrupt, syscall.SIGTERM)
 
-	//defer func() { _ = scheduler.Shutdown() }()
+	ticker := time.NewTicker(time.Duration(initializedConfiguration.GetExecutionIntervalInMinutes()) * time.Minute)
+	quitChannel := make(chan struct{})
 
-	_, webpJobError := scheduler.NewJob(
-		gocron.DailyJob(1,
-			gocron.NewAtTimes(gocron.NewAtTime(16, 40, 0)),
-		),
-		gocron.NewTask(func() {
-			// TODO DOES NOT HIT
-			err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.RootPath, ShouldDeleteNonWebpImages: true})
+	for {
+		select {
+		case <-ticker.C:
+			log.Printf("Start webp transformer at '%v'\n", time.Now())
+			err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.GetRootPath(), ShouldDeleteNonWebpImages: initializedConfiguration.GetShouldDeleteNonWebpImages()})
 			if err != nil {
-				log.Fatal(err)
+				log.Println(err)
+				quitChannel <- struct{}{}
 			}
-		}),
-	)
 
-	if webpJobError != nil {
-		log.Fatal(webpJobError)
+			log.Printf("Finish webp transformer at '%v'\n", time.Now())
+		case <-osExitChannel:
+		case <-quitChannel:
+			ticker.Stop()
+			os.Exit(0)
+		}
 	}
-
-	scheduler.Start()
 }
