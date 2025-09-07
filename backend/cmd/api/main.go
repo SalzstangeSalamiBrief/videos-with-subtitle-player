@@ -15,28 +15,27 @@ import (
 )
 
 func main() {
-	// TODO MOVE INTO CUSTOM CMD
-	initializedConfiguration := api.InitializeConfiguration()
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.RootPath).InitializeTree()
+	initializedConfiguration := api.NewApiConfiguration()
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.GetRootPath()).InitializeTree()
 
-	log.Default().Printf("Start server on '%v'", initializedConfiguration.ServerAddress)
+	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
 
 	go func() {
 		exit := make(chan os.Signal, 1)
 		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
 		<-exit
-		log.Default().Printf("Shutting down server at %v\n", initializedConfiguration.ServerAddress)
+		log.Default().Printf("Shutting down server at %v\n", initializedConfiguration.GetServerAddress())
 		os.Exit(0)
 	}()
 
-	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.AllowedCors}).Build()
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.GetCors()}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
 
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:        initializedConfiguration.RootPath,
+		RootPath:        initializedConfiguration.GetRootPath(),
 		FileTreeManager: initializedFileTreeManager,
 	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.RootPath, FileTreeManager: initializedFileTreeManager})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.GetRootPath(), FileTreeManager: initializedFileTreeManager})
 	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: initializedFileTreeManager})
 
 	r := router.
@@ -52,5 +51,5 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(initializedConfiguration.ServerAddress, mux)
+	http.ListenAndServe(initializedConfiguration.GetServerAddress(), mux)
 }
