@@ -21,7 +21,7 @@ func main() {
 	signal.Notify(osExitChannel, os.Interrupt, syscall.SIGTERM)
 
 	ticker := time.NewTicker(time.Duration(initializedConfiguration.GetExecutionIntervalInMinutes()) * time.Minute)
-	quitChannel := make(chan struct{})
+	quitChannel := make(chan struct{}, 1)
 
 	var conversionMutex sync.Mutex
 
@@ -37,6 +37,7 @@ func main() {
 			err := webp.ExecuteWebpConversion(webp.ExecuteWebpConversionConfiguration{RootPath: initializedConfiguration.GetRootPath(), ShouldDeleteNonWebpImages: initializedConfiguration.GetShouldDeleteNonWebpImages()})
 			if err != nil {
 				log.Println(err)
+				conversionMutex.Unlock()
 				quitChannel <- struct{}{}
 			}
 
@@ -45,8 +46,9 @@ func main() {
 
 		case <-osExitChannel:
 		case <-quitChannel:
-			close(quitChannel)
+			signal.Stop(osExitChannel)
 			close(osExitChannel)
+			close(quitChannel)
 			ticker.Stop()
 			os.Exit(0)
 		}

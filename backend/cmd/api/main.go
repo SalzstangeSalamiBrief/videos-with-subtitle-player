@@ -24,13 +24,8 @@ func main() {
 
 	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
 
-	go func() {
-		exit := make(chan os.Signal, 1)
-		signal.Notify(exit, os.Interrupt, syscall.SIGTERM)
-		<-exit
-		log.Default().Printf("Shutting down server at %v\n", initializedConfiguration.GetServerAddress())
-		os.Exit(0)
-	}()
+	shutdownCh := make(chan os.Signal, 1)
+	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 
 	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.GetCors()}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()

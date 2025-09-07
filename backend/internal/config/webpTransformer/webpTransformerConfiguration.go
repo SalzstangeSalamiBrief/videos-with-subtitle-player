@@ -46,6 +46,11 @@ func loadRootPath() (string, error) {
 		return "", errors.New(fmt.Sprintf("Could not load env variable '%v'", rootPathKey))
 	}
 
+	_, checkPathExistsError := os.Stat(rp)
+	if os.IsNotExist(checkPathExistsError) {
+		return "", errors.New(fmt.Sprintf("The path '%v' does not exist", rp))
+	}
+
 	return rp, nil
 }
 
