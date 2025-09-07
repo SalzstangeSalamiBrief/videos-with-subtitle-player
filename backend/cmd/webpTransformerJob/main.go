@@ -12,8 +12,10 @@ import (
 )
 
 func main() {
-	// TODO ADD CUSTOM CONFIGURATION => SET ALL VALUES USING CONFIGURATION
-	initializedConfiguration := webpTransformer.NewWebpTransformerConfiguration()
+	initializedConfiguration, configurationError := webpTransformer.NewWebpTransformerConfiguration()
+	if configurationError != nil {
+		log.Fatal(configurationError)
+	}
 
 	osExitChannel := make(chan os.Signal, 1)
 	signal.Notify(osExitChannel, os.Interrupt, syscall.SIGTERM)

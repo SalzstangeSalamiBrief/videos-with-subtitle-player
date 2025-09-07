@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -20,31 +21,41 @@ type ApiConfiguration struct {
 	serverAddress string
 }
 
-func NewApiConfiguration() *ApiConfiguration {
-	return &ApiConfiguration{
-		rootPath:      loadRootPath(),
-		serverAddress: loadServerAddress(),
-		allowedCors:   loadAllowedCors(),
+func NewApiConfiguration() (*ApiConfiguration, error) {
+	rootPath, err := loadRootPath()
+	if err != nil {
+		return nil, err
 	}
+
+	allowedCorsKey, err := loadAllowedCors()
+	if err != nil {
+		return nil, err
+	}
+
+	return &ApiConfiguration{
+		rootPath:      rootPath,
+		serverAddress: loadServerAddress(),
+		allowedCors:   allowedCorsKey,
+	}, nil
 }
 
-func loadRootPath() string {
+func loadRootPath() (string, error) {
 	rp := os.Getenv(rootPathKey)
 	if rp == "" {
-		log.Fatalf("Could not load environment variable '%v'", rootPathKey)
+		return "", errors.New(fmt.Sprintf("Could not load environment variable '%v'", rootPathKey))
 	}
 
-	return rp
+	return rp, nil
 }
 
-func loadAllowedCors() string {
+func loadAllowedCors() (string, error) {
 	allowedCors := os.Getenv(allowedCorsKey)
 	if allowedCors == "" {
-		log.Fatalf("Could not load environment variable '%v'", allowedCorsKey)
+		return "", errors.New(fmt.Sprintf("Could not load environment variable '%v'", allowedCorsKey))
 
 	}
 
-	return allowedCors
+	return allowedCors, nil
 }
 
 func loadServerAddress() string {

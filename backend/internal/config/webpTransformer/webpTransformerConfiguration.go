@@ -1,7 +1,8 @@
 package webpTransformer
 
 import (
-	"log"
+	"errors"
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -16,49 +17,68 @@ const rootPathKey string = "RootPath"
 const shouldDeleteNonWebpImagesKey string = "ShouldDeleteNonWebpImages"
 const executionIntervalInMinutesKey string = "intervalInMinutes"
 
-func NewWebpTransformerConfiguration() *WebpTransformerConfiguration {
-	return &WebpTransformerConfiguration{
-		rootPath:                   loadRootPath(),
-		shouldDeleteNonWebpImages:  loadShouldDeleteNonWebpImages(),
-		executionIntervalInMinutes: loadExecutionIntervalInMinutes(),
+func NewWebpTransformerConfiguration() (*WebpTransformerConfiguration, error) {
+	rootPath, err := loadRootPath()
+	if err != nil {
+		return nil, err
 	}
+
+	shouldDeleteNonWebpImages, err := loadShouldDeleteNonWebpImages()
+	if err != nil {
+		return nil, err
+	}
+
+	executionIntervalInMinutes, err := loadExecutionIntervalInMinutes()
+	if err != nil {
+		return nil, err
+	}
+
+	return &WebpTransformerConfiguration{
+		rootPath:                   rootPath,
+		shouldDeleteNonWebpImages:  shouldDeleteNonWebpImages,
+		executionIntervalInMinutes: executionIntervalInMinutes,
+	}, nil
 }
 
-func loadRootPath() string {
+func loadRootPath() (string, error) {
 	rp := os.Getenv(rootPathKey)
 	if rp == "" {
-		log.Fatalf("Could not load env variable '%v'", rootPathKey)
+		return "", errors.New(fmt.Sprintf("Could not load env variable '%v'", rootPathKey))
 	}
 
-	return rp
+	return rp, nil
 }
 
-func loadShouldDeleteNonWebpImages() bool {
+func loadShouldDeleteNonWebpImages() (bool, error) {
 	stringifiedValue := os.Getenv(shouldDeleteNonWebpImagesKey)
 	if stringifiedValue == "" {
-		log.Fatalf("Could not load env variable '%v'", shouldDeleteNonWebpImagesKey)
+		return false, errors.New(fmt.Sprintf("Could not load env variable '%v'", shouldDeleteNonWebpImagesKey))
 	}
 
 	parsedValue, err := strconv.ParseBool(stringifiedValue)
 	if err != nil {
-		log.Fatalf("Could not parse '%v'", stringifiedValue)
+		return false, errors.New(fmt.Sprintf("Could not parse '%v'", stringifiedValue))
 	}
 
-	return parsedValue
+	return parsedValue, nil
 }
 
-func loadExecutionIntervalInMinutes() int64 {
+func loadExecutionIntervalInMinutes() (int64, error) {
 	stringifiedValue := os.Getenv(executionIntervalInMinutesKey)
 	if stringifiedValue == "" {
-		log.Fatalf("Could not load env variable '%v'", executionIntervalInMinutesKey)
+		return 0, errors.New(fmt.Sprintf("Could not load env variable '%v'", executionIntervalInMinutesKey))
 	}
 
 	parsedValue, err := strconv.ParseInt(stringifiedValue, 10, 64)
 	if err != nil {
-		log.Fatalf("Could not parse '%v'", stringifiedValue)
+		return 0, err
 	}
 
-	return parsedValue
+	if parsedValue < 1 {
+		return 0, errors.New(fmt.Sprintf("The value of '%v' '%v' cannot be lesser than '1'", executionIntervalInMinutesKey, parsedValue))
+	}
+
+	return parsedValue, nil
 }
 
 func (configuration *WebpTransformerConfiguration) GetRootPath() string {

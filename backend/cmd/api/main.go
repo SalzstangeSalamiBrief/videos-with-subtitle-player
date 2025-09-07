@@ -15,7 +15,11 @@ import (
 )
 
 func main() {
-	initializedConfiguration := api.NewApiConfiguration()
+	initializedConfiguration, configurationError := api.NewApiConfiguration()
+	if configurationError != nil {
+		log.Fatal(configurationError)
+	}
+
 	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.GetRootPath()).InitializeTree()
 
 	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
