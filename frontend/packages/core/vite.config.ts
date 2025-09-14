@@ -1,6 +1,13 @@
+import { createRequire } from 'node:module';
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
+
+const require = createRequire(import.meta.url);
+const packageJson = require('./package.json') as {
+  dependencies?: Record<string, string>;
+  peerDependencies?: Record<string, string>;
+};
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,7 +21,10 @@ export default defineConfig({
       formats: ['es'],
     },
     rollupOptions: {
-      external: [],
+      external: [
+        ...Object.keys(packageJson.dependencies ?? []),
+        ...Object.keys(packageJson.peerDependencies ?? []),
+      ],
       output: {
         entryFileNames: '[name].js',
       },

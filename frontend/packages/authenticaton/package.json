@@ -8,6 +8,12 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -16,7 +22,7 @@
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier . --write"
   },
-  "dependencies": {
+  "peerDependencies": {
     "keycloak-js": "^26.2.0",
     "@videos-with-subtitle-player/core": "workspace:*"
   },

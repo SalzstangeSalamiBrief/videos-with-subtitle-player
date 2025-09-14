@@ -16,7 +16,11 @@ interface IRouterContext {
 const baseUrl = import.meta.env.VITE_BASE_URL || '';
 export const Route = createRootRouteWithContext<IRouterContext>()({
   component: Root,
-  loader: async ({ context: { authenticator } }) => {
+  loader: async ({ context: { authenticator }, preload }) => {
+    if (preload) {
+      return;
+    }
+
     if (!authenticator.getIsSignedIn()) {
       await authenticator.signIn();
     }
