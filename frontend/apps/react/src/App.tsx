@@ -15,9 +15,9 @@ const authenticator = AuthenticatorFactory.createAuthenticator({
   config: {
     keycloak: {
       adminRoleName: import.meta.env.VITE_ADMIN_ROLE_NAME,
-      clientId: import.meta.env.VITE_KEYCLOACK_CLIENT_ID,
-      realm: import.meta.env.VITE_KEYCLOACK_REALM,
-      url: import.meta.env.VITE_KEYCLOACK_URL,
+      clientId: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+      realm: import.meta.env.VITE_KEYCLOAK_REALM,
+      url: import.meta.env.VITE_KEYCLOAK_URL,
     },
   },
 });
