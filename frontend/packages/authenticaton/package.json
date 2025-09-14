@@ -1,0 +1,35 @@
+{
+  "name": "@videos-with-subtitle-player/authentication",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
+    "prettier:check": "prettier --check .",
+    "prettier:write": "prettier . --write"
+  },
+  "dependencies": {
+    "keycloak-js": "^26.2.0",
+    "@videos-with-subtitle-player/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@videos-with-subtitle-player/eslint-base": "workspace:*",
+    "@videos-with-subtitle-player/prettier-base": "workspace:*",
+    "eslint": "^9.31.0",
+    "globals": "^16.3.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.37.0",
+    "vite": "^7.0.4",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
