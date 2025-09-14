@@ -3,7 +3,24 @@ import { LoadingSpinner } from '$sharedComponents/loadingSpinner/LoadingSpinner'
 import { NotFoundPage } from '$sharedComponents/notFoundPage/NotFoundPage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
+import {
+  AuthenticatorFactory,
+  type AuthenticatorType,
+} from '@videos-with-subtitle-player/authentication';
 import { routeTree } from './routeTree.gen';
+
+const authenticator = AuthenticatorFactory.createAuthenticator({
+  authenticatorType: import.meta.env
+    .VITE_AUTHENTICATOR_PROVIDER as AuthenticatorType,
+  config: {
+    keycloak: {
+      adminRoleName: import.meta.env.VITE_ADMIN_ROLE_NAME,
+      clientId: import.meta.env.VITE_KEYCLOACK_CLIENT_ID,
+      realm: import.meta.env.VITE_KEYCLOACK_REALM,
+      url: import.meta.env.VITE_KEYCLOACK_URL,
+    },
+  },
+});
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const queryClient = new QueryClient();
@@ -12,6 +29,7 @@ const router = createRouter({
   defaultNotFoundComponent: NotFoundPage,
   context: {
     queryClient,
+    authenticator,
   },
 });
 
