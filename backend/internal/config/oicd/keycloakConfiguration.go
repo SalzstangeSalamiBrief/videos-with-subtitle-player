@@ -1,4 +1,4 @@
-package keycloak
+package oicd
 
 import (
 	"errors"
@@ -11,13 +11,13 @@ const keycloakUrlKey string = "KeycloakUrl"
 const keycloakRealmKey string = "KeycloakRealm"
 const keycloakClientIdKey string = "KeycloakClientId"
 
-type OicdConfiguration struct {
-	keycloakUrl      *url.URL
-	keycloakRealm    string
-	keycloakClientId string
+type KeycloakConfiguration struct {
+	url      *url.URL
+	realm    string
+	clientId string
 }
 
-func NewOicdConfiguration() (*OicdConfiguration, error) {
+func NewKeycloakConfiguration() (*KeycloakConfiguration, error) {
 	u, err := loadUrl()
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func NewOicdConfiguration() (*OicdConfiguration, error) {
 		return nil, err
 	}
 
-	return &OicdConfiguration{u, realm, clientId}, nil
+	return &KeycloakConfiguration{u, realm, clientId}, nil
 
 }
 
@@ -45,7 +45,7 @@ func loadUrl() (*url.URL, error) {
 
 	parsedUrl, err := url.ParseRequestURI(stringifiedUrl)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("The environment variable '%v' is not an url: '%v'", keycloakUrlKey, url))
+		return nil, errors.New(fmt.Sprintf("The environment variable '%v' is not an url: '%v'", keycloakUrlKey, stringifiedUrl))
 	}
 
 	return parsedUrl, nil
@@ -69,18 +69,18 @@ func loadClientId() (string, error) {
 	return clientId, nil
 }
 
-func (configuration *OicdConfiguration) GetUrl() *url.URL {
-	return configuration.keycloakUrl
+func (configuration *KeycloakConfiguration) GetUrl() *url.URL {
+	return configuration.url
 }
 
-func (configuration *OicdConfiguration) GetUrlStringified() string {
-	return configuration.keycloakUrl.String()
+func (configuration *KeycloakConfiguration) GetUrlStringified() string {
+	return configuration.url.String()
 }
 
-func (configuration *OicdConfiguration) GetRealm() string {
-	return configuration.keycloakRealm
+func (configuration *KeycloakConfiguration) GetRealm() string {
+	return configuration.realm
 }
 
-func (configuration *OicdConfiguration) GetClientId() string {
-	return configuration.keycloakClientId
+func (configuration *KeycloakConfiguration) GetClientId() string {
+	return configuration.clientId
 }

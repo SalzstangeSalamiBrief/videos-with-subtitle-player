@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/config/api"
+	"backend/internal/config/oicd"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
@@ -15,26 +16,34 @@ import (
 )
 
 func main() {
-	initializedConfiguration, configurationError := api.NewApiConfiguration()
+	initializedApiConfiguration, configurationError := api.NewApiConfiguration()
 	if configurationError != nil {
 		log.Fatal(configurationError)
 	}
 
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.GetRootPath()).InitializeTree()
+	initializedKeycloakConfiguration, configurationError := oicd.NewKeycloakConfiguration()
+	if configurationError != nil {
+		log.Fatal(configurationError)
+	}
 
-	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
+	// TODO
+	log.Printf("Initialized Keycloak Configuration: %+v", initializedKeycloakConfiguration)
+
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedApiConfiguration.GetRootPath()).InitializeTree()
+
+	log.Default().Printf("Start server on '%v'", initializedApiConfiguration.GetServerAddress())
 
 	shutdownCh := make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 
-	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.GetCors()}).Build()
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedApiConfiguration.GetCors()}).Build()
 	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
 
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:        initializedConfiguration.GetRootPath(),
+		RootPath:        initializedApiConfiguration.GetRootPath(),
 		FileTreeManager: initializedFileTreeManager,
 	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.GetRootPath(), FileTreeManager: initializedFileTreeManager})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedApiConfiguration.GetRootPath(), FileTreeManager: initializedFileTreeManager})
 	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: initializedFileTreeManager})
 
 	r := router.
@@ -50,5 +59,5 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(initializedConfiguration.GetServerAddress(), mux)
+	http.ListenAndServe(initializedApiConfiguration.GetServerAddress(), mux)
 }

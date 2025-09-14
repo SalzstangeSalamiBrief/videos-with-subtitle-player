@@ -64,13 +64,13 @@ func loadAllowedCors() (string, error) {
 }
 
 func loadServerAddress() string {
-	address := os.Getenv("HOST_ADDRESS")
+	address := os.Getenv(serverAddressKey)
 	if address == "" {
 		log.Default().Printf("Could not load environment variable '%v'. Use default value '%v'", serverAddressKey, defaultServerAddress)
 		address = defaultServerAddress
 	}
 
-	port := os.Getenv("HOST_PORT")
+	port := os.Getenv(serverPortKey)
 	if port == "" {
 		log.Default().Printf("Could not load environment variable '%v. Use default value '%v'", serverPortKey, defaultServerPort)
 		port = defaultServerPort
