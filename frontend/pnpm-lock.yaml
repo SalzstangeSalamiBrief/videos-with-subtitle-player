@@ -184,6 +184,46 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.0.14)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)
 
+  packages/authenticator:
+    dependencies:
+      '@videos-with-subtitle-player/core':
+        specifier: workspace:*
+        version: link:../core
+      keycloak-js:
+        specifier: ^26.2.0
+        version: 26.2.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.31.0
+        version: 9.31.0
+      '@videos-with-subtitle-player/eslint-base':
+        specifier: workspace:*
+        version: link:../eslintBase
+      '@videos-with-subtitle-player/prettier-base':
+        specifier: workspace:*
+        version: link:../prettierBase
+      eslint:
+        specifier: ^9.31.0
+        version: 9.31.0(jiti@2.4.2)
+      globals:
+        specifier: ^16.3.0
+        version: 16.3.0
+      prettier:
+        specifier: ^3.6.2
+        version: 3.6.2
+      typescript:
+        specifier: ~5.8.3
+        version: 5.8.3
+      typescript-eslint:
+        specifier: ^8.37.0
+        version: 8.37.0(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
+      vite:
+        specifier: ^7.0.4
+        version: 7.0.4(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0)
+      vite-plugin-dts:
+        specifier: ^4.5.4
+        version: 4.5.4(@types/node@24.0.14)(rollup@4.45.1)(typescript@5.8.3)(vite@7.0.4(@types/node@24.0.14)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.43.1)(tsx@4.20.3)(yaml@2.8.0))
+
   packages/core:
     devDependencies:
       '@eslint/js':
@@ -3902,6 +3942,9 @@ packages:
   jwt-decode@4.0.0:
     resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
     engines: {node: '>=18'}
+
+  keycloak-js@26.2.0:
+    resolution: {integrity: sha512-CrFcXTN+d6J0V/1v3Zpioys6qHNWE6yUzVVIsCUAmFn9H14GZ0vuYod+lt+SSpMgWGPuneDZBSGBAeLBFuqjsw==}
 
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
@@ -10012,6 +10055,8 @@ snapshots:
   junk@4.0.1: {}
 
   jwt-decode@4.0.0: {}
+
+  keycloak-js@26.2.0: {}
 
   keyv@4.5.4:
     dependencies:
