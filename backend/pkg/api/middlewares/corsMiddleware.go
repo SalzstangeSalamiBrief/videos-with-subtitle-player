@@ -51,7 +51,8 @@ func (builder *CorsMiddleWareBuilder) Build() func(next http.HandlerFunc) http.H
 				}
 			}
 
-			if origin != "" && !hasMatchedOrigin {
+			// TODO REVERT
+			if origin != "" && hasMatchedOrigin {
 				problemDetailsErrors.NewForbiddenProblemDetails("The origin is not allowed (CORS)").SendErrorResponse(w)
 				return
 			}

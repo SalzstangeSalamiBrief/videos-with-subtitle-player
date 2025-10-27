@@ -1,6 +1,7 @@
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import {
+  ApiError,
   getFileTreeQuery,
   getFileTreeSelect,
 } from '@videos-with-subtitle-player/core';
@@ -11,7 +12,20 @@ export const Route = createRootRoute({
   component: Root,
   loader: async () => {
     const responseData = await getFileTreeQuery(baseUrl);
-    const result = getFileTreeSelect(responseData);
+    if (responseData.error) {
+      throw responseData.error;
+    }
+
+    if (!responseData.data) {
+      throw new ApiError({
+        detail: 'No data received from server',
+        status: 500,
+        title: 'Data Error',
+        type: 'about:blank',
+      });
+    }
+
+    const result = getFileTreeSelect(responseData.data);
     return result;
   },
   shouldReload: false,
