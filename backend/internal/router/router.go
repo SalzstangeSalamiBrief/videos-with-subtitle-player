@@ -1,6 +1,8 @@
 package router
 
 import (
+	"backend/internal/problemDetailsErrors"
+	"fmt"
 	"net/http"
 	"regexp"
 	"slices"
@@ -43,7 +45,7 @@ func (routerBase *RouterBase) Build() http.HandlerFunc {
 
 func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Request) {
 	if !slices.Contains(acceptedMethods, r.Method) {
-		http.NotFound(w, r)
+		problemDetailsErrors.NewMethodNotAllowedProblemDetails(fmt.Sprintf("The method '%v' is not supported", r.Method)).SendErrorResponse(w)
 		return
 	}
 
@@ -54,8 +56,8 @@ func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Reque
 		isMethodMatching := route.Method == r.Method
 
 		if pathMatchingErr != nil {
-			http.NotFound(w, r)
-			break
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(pathMatchingErr.Error()).SendErrorResponse(w)
+			return
 		}
 
 		if !isPathMatching || !isMethodMatching {
@@ -72,7 +74,7 @@ func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Reque
 	}
 
 	if !hasMatched {
-		http.NotFound(w, r)
+		problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("The Route '%v' does not exist", r.URL.Path)).SendErrorResponse(w)
 	}
 }
 

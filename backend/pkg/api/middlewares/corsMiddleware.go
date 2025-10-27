@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"backend/internal/problemDetailsErrors"
 	"fmt"
 	"log"
 	"net/http"
@@ -40,12 +41,19 @@ func (builder *CorsMiddleWareBuilder) Build() func(next http.HandlerFunc) http.H
 			origin := r.Header.Get("Origin")
 			fmt.Printf("Origin: %s\n", origin)
 
+			hasMatchedOrigin := false
 			allowedCors := strings.Split(builder.configuration.AllowedCors, ",")
 			for _, allowedOrigin := range allowedCors {
 				if origin == allowedOrigin {
 					w.Header().Set("Access-Control-Allow-Origin", allowedOrigin)
+					hasMatchedOrigin = true
 					break
 				}
+			}
+
+			if origin != "" && !hasMatchedOrigin {
+				problemDetailsErrors.NewForbiddenProblemDetails("The origin is not allowed (CORS)").SendErrorResponse(w)
+				return
 			}
 
 			next(w, r)
