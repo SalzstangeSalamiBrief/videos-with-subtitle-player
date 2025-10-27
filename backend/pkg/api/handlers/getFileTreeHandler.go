@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/problemDetailsErrors"
 	"backend/pkg/enums"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
@@ -10,6 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/google/uuid"
+	"log"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -29,7 +31,9 @@ func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(h
 
 		encodedBytes, err := json.Marshal(fileTree.Children)
 		if err != nil {
-			ErrorHandler(w, fmt.Sprintf("Could not marshal file tree: %v", err.Error()), http.StatusInternalServerError)
+			log.Default().Println(fmt.Sprintf("Could not marshal file tree: %v", err.Error()))
+			problemDetailsErrors.NewInternalServerErrorProblemDetails("Could not marshal file tree").SendErrorResponse(w)
+
 			return
 		}
 

@@ -1,11 +1,13 @@
 package handlers
 
 import (
+	"backend/internal/problemDetailsErrors"
 	"backend/pkg/constants"
 	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/utilities"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path"
@@ -22,9 +24,16 @@ type ContinuousFileByIdHandlerConfiguration struct {
 func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConfiguration) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
+		if fileIdString == "" {
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n"))
+			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("The parameter 'fileId' is empty but required. Please provide an id\n")).SendErrorResponse(w)
+			return
+		}
+
 		continuousFileInTree := utilities.GetFileByIdAndExtension(configuration.FileTreeManager.GetTree(), fileIdString, constants.AllowedContinuousFileExtensions...)
 		if continuousFileInTree.Id == "" {
-			ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusBadRequest)
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
+			problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("Could not find file with id '%v'\n", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
@@ -32,29 +41,30 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 		file, err := os.Open(filePathOnHardDisk)
 		defer file.Close()
 		if err != nil {
-			fmt.Println(err.Error())
-			ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", fileIdString), http.StatusInternalServerError)
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", err.Error()))
+			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("Could not find the file with id '%v': %v\n", fileIdString, err)).SendErrorResponse(w)
 			return
 		}
 
 		fileSize, err := getFileSize(file)
 		if err != nil {
-			fmt.Println(err.Error())
-			ErrorHandler(w, fmt.Sprintf("Could not get resource '%v'", fileIdString), http.StatusInternalServerError)
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while getting size of the file with id '%v'\n", err.Error()))
+			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("Could not find the file with id '%v': %v\n", fileIdString, err)).SendErrorResponse(w)
 			return
 		}
 
 		rangeHeaderWithPrefix := r.Header.Get("Range")
 		start, end := utilities.GetRequestedRangesFromHeaderField(utilities.GetRequestRangesInput{RangeHeaderWithPrefix: rangeHeaderWithPrefix, ChunkSize: chunkSize, FileSize: fileSize})
 		if start == 0 && end == 0 {
-			ErrorHandler(w, fmt.Sprintf("The request does not contain a range header for file '%v'", fileIdString), http.StatusBadRequest)
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while the getting range header for file with id: '%v'\n", err.Error()))
+			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("The request for file with id '%v' does not contain range header.\n", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
 		_, err = file.Seek(start, io.SeekStart)
 		if err != nil {
-			fmt.Println(err.Error())
-			ErrorHandler(w, fmt.Sprintf("Could not get resource %v", fileIdString), http.StatusInternalServerError)
+			log.Default().Println(err.Error())
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("The request for file with id '%v' does not contain range header.\n", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
