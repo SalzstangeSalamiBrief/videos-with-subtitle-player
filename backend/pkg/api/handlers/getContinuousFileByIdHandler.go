@@ -25,7 +25,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/continuous/")
 		if fileIdString == "" {
-			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n"))
+			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
 			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("The parameter 'fileId' is empty but required. Please provide an id\n")).SendErrorResponse(w)
 			return
 		}
@@ -40,6 +40,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 		filePathOnHardDisk := path.Join(configuration.RootPath, continuousFileInTree.Path)
 		file, err := os.Open(filePathOnHardDisk)
 		defer file.Close()
+
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", err.Error()))
 			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("Could not find the file with id '%v': %v\n", fileIdString, err)).SendErrorResponse(w)
@@ -64,7 +65,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 		_, err = file.Seek(start, io.SeekStart)
 		if err != nil {
 			log.Default().Println(err.Error())
-			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("The request for file with id '%v' does not contain range header.\n", fileIdString)).SendErrorResponse(w)
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Failed to seek the file with id '%v' with the provided range header.\n", fileIdString)).SendErrorResponse(w)
 			return
 		}
 

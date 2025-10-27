@@ -13,6 +13,15 @@ func NewNotFoundProblemDetails(detail string) *ProblemDetailsError {
 	}
 }
 
+func NewMethodNotAllowedProblemDetails(detail string) *ProblemDetailsError {
+	return &ProblemDetailsError{
+		Status:      http.StatusMethodNotAllowed,
+		Title:       "Method not allowed",
+		Detail:      detail,
+		ProblemType: "https://datatracker.ietf.org/doc/html/rfc9110#section-15.5.6",
+	}
+}
+
 func NewBadRequestProblemDetails(detail string) *ProblemDetailsError {
 	return &ProblemDetailsError{
 		Status:      http.StatusBadRequest,

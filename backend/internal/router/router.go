@@ -45,7 +45,7 @@ func (routerBase *RouterBase) Build() http.HandlerFunc {
 
 func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Request) {
 	if !slices.Contains(acceptedMethods, r.Method) {
-		problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("The method '%v' is not supported", r.Method)).SendErrorResponse(w)
+		problemDetailsErrors.NewMethodNotAllowedProblemDetails(fmt.Sprintf("The method '%v' is not supported", r.Method)).SendErrorResponse(w)
 		return
 	}
 
@@ -57,7 +57,7 @@ func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Reque
 
 		if pathMatchingErr != nil {
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(pathMatchingErr.Error()).SendErrorResponse(w)
-			break
+			return
 		}
 
 		if !isPathMatching || !isMethodMatching {

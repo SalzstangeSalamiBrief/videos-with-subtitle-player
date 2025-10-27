@@ -24,6 +24,7 @@ func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(ht
 		if fileIdString == "" {
 			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
 			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("The parameter 'fileId' is empty but required. Please provide an id\n")).SendErrorResponse(w)
+			return
 		}
 
 		discreteFileInTree := utilities.GetFileByIdAndExtension(config.FileTreeManager.GetTree(), fileIdString, constants.AllowedDiscreteFileExtensions...)
@@ -37,7 +38,7 @@ func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(ht
 		fileBytes, err := os.ReadFile(filePathOnHardDisk)
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", err.Error()))
-			problemDetailsErrors.NewBadRequestProblemDetails(fmt.Sprintf("Could not find the file with id '%v': %v\n", fileIdString, err)).SendErrorResponse(w)
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not find the file with id '%v': %v\n", fileIdString, err)).SendErrorResponse(w)
 			return
 		}
 
