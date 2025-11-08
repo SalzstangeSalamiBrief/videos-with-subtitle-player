@@ -7,12 +7,13 @@ import (
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	commonUtilities "backend/pkg/utilities"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type SubFileTree []models.FileTreeItem
@@ -136,10 +137,8 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 		lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
 
 		resizeImageFileItem := models.FileTreeItem{
-			Id: uuid.New().String(),
-			// TODO
+			Id:   uuid.New().String(),
 			Path: lowQualityImagePath,
-			//utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImageName, RootPath: rootPath}),
 			Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
 			Type: enums.IMAGE,
 		}
