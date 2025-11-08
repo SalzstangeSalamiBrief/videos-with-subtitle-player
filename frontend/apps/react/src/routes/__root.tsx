@@ -11,7 +11,11 @@ export const Route = createRootRoute({
   component: Root,
   loader: async () => {
     const responseData = await getFileTreeQuery(baseUrl);
-    const result = getFileTreeSelect(responseData);
+    if (responseData.error) {
+      throw responseData.error;
+    }
+
+    const result = getFileTreeSelect(responseData.data!);
     return result;
   },
   shouldReload: false,

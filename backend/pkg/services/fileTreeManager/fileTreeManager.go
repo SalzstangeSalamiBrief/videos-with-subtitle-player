@@ -126,14 +126,13 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 }
 
 func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.FileTreeItem) {
-	lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
-	doesLowQualityImageExist := imageConverterUtilities.DoesLowQualityImageExist(rootPath, lowQualityImagePath)
+	doesLowQualityImageExist := imageConverterUtilities.DoesLowQualityImageExist(rootPath, imageFile.Path)
 	if doesLowQualityImageExist {
+		lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
+
 		resizeImageFileItem := models.FileTreeItem{
-			Id: uuid.New().String(),
-			// TODO
+			Id:   uuid.New().String(),
 			Path: lowQualityImagePath,
-			//utilities.GetFolderPath(utilities.GetFolderPathInput{Path: lowQualityImageName, RootPath: rootPath}),
 			Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
 			Type: enums.IMAGE,
 		}
