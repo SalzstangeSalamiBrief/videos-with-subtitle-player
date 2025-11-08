@@ -6,9 +6,9 @@
   border-radius: var(--radius-md);
   transition: rotateX 150ms ease-in;
 
-  img {
-    /* hide alt text in case the image cannot be loaded */
-    font-size: 0;
+  > figure {
+    position: absolute;
+    z-index: -1;
   }
 }
 

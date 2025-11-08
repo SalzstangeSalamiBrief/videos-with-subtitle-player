@@ -1,9 +1,13 @@
 .progressive-image-container {
-  position: absolute;
-  z-index: -1;
+  position: relative;
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  img {
+    /* hide alt text in case the image cannot be loaded */
+    font-size: 0;
+  }
 }
 
 .progressive-image {

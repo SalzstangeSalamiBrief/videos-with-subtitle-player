@@ -22,7 +22,7 @@ export function ProgressiveImage({
   }
 
   return (
-    <div className={styles['progressive-image-container']}>
+    <figure className={styles['progressive-image-container']}>
       {lowQualityImageUrl && (
         <img
           loading="eager"
@@ -40,6 +40,6 @@ export function ProgressiveImage({
           onLoad={() => setIsHighQualityImageLoaded(true)}
         />
       )}
-    </div>
+    </figure>
   );
 }
