@@ -1,5 +1,7 @@
+import { ApiError } from '@videos-with-subtitle-player/core';
+
 interface IErrorMessageProps {
-  error: unknown;
+  error: ApiError | Error;
   message: string;
   description?: string;
 }
@@ -10,7 +12,25 @@ export function ErrorMessage({
   description,
 }: IErrorMessageProps) {
   console.error(error);
-  // TODO IMPROVE
+
+  if (ApiError.isApiError(error)) {
+    return (
+      <section className="h-fit rounded-md bg-red-50 p-4 text-red-900">
+        <h1 className="text-lg font-bold">
+          {error.status}: {error.title}
+        </h1>
+        <details>
+          <summary className="mt-2 cursor-pointer underline">Details</summary>
+          <div>
+            <p className="whitespace-pre-wrap">{error.detail}</p>
+            <p>{error.type}</p>
+          </div>
+        </details>
+      </section>
+    );
+  }
+
+  // TODO IMPROVE later with daisy ui
   return (
     <section className="h-fit rounded-md bg-red-50 p-4 text-red-900">
       <h1 className="text-lg font-bold">{message}</h1>

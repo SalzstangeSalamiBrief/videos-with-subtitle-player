@@ -6,7 +6,7 @@ import (
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/imageConverter/constants"
-	utilities2 "backend/pkg/services/imageConverter/utilities"
+	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
@@ -99,7 +99,7 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	//	return
 	//}
 
-	isLowQualityImage := utilities2.IsLowQualityImage(file.Path)
+	isLowQualityImage := imageConverterUtilities.IsLowQualityImage(file.Path)
 	if isLowQualityImage {
 		return
 	}

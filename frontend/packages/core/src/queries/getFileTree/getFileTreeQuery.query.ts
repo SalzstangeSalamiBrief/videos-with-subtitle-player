@@ -1,4 +1,9 @@
-import type { IFileTreeDto } from '../../models/fileTree/dtos/fileTreeDto';
+import { ApiError, type IApiError } from '../../models/ApiError';
+import type { IApiResponse } from '../../models/ApiResponse';
+import {
+  isFileTreeDtoArray,
+  type IFileTreeDto,
+} from '../../models/fileTree/dtos/fileTreeDto';
 
 // TODO OUTSOURCE PATHS INTO CONSTANTS OR GENERATE CODE?
 
@@ -6,10 +11,28 @@ const path = '/api/file-tree';
 
 export async function getFileTreeQuery(
   baseUrl: string,
-): Promise<IFileTreeDto[]> {
-  const url = baseUrl + path;
+): Promise<IApiResponse<IFileTreeDto[]>> {
+  try {
+    const url = baseUrl + path;
 
-  const response = await fetch(url);
-  const json: IFileTreeDto[] = await response.json();
-  return json;
+    const response = await fetch(url);
+
+    const json: IFileTreeDto[] | IApiError = await response.json();
+    if (!response.ok) {
+      if (ApiError.isApiError(json)) {
+        return { error: new ApiError(json) };
+      }
+
+      throw new Error('Unknown error occurred');
+    }
+
+    if (isFileTreeDtoArray(json)) {
+      return { data: json };
+    }
+
+    throw new Error('Invalid data format received');
+  } catch (error) {
+    console.error('Error in getFileTreeQuery:', error);
+    throw new Error('Failed to fetch file tree data');
+  }
 }
