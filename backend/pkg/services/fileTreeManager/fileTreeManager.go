@@ -7,12 +7,13 @@ import (
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	commonUtilities "backend/pkg/utilities"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 type SubFileTree []models.FileTreeItem
@@ -126,6 +127,11 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 }
 
 func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.FileTreeItem) {
+	isLowQualityImage := imageConverterUtilities.IsLowQualityImage(imageFile.Path)
+	if isLowQualityImage {
+		return
+	}
+
 	doesLowQualityImageExist := imageConverterUtilities.DoesLowQualityImageExist(rootPath, imageFile.Path)
 	if doesLowQualityImageExist {
 		lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
@@ -138,7 +144,6 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 		}
 		imageFile.LowQualityImageId = resizeImageFileItem.Id
 		*subTree = append(*subTree, resizeImageFileItem)
-
 	}
 
 	*subTree = append(*subTree, imageFile)

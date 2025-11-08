@@ -6,15 +6,23 @@ export { FileType } from './enums/FileType';
 
 // <---- models---->
 export {
+  isFileDto,
+  isFileDtoArray,
+  isSubtitleFileDto,
+  isSubtitleFileDtoArray,
   type IFileDto,
   type ISubtitleFileDto,
 } from './models/fileTree/dtos/fileDtos';
 export {
+  isFileTreeDto,
+  isFileTreeDtoArray,
   type IFileTreeDto,
   type PossibleFilesDto,
 } from './models/fileTree/dtos/fileTreeDto';
 export { type IFileNode, type IFileTree } from './models/fileTree/fileTree';
 export type { Maybe } from './models/maybe';
+
+export { ApiError, type IApiError } from './models/ApiError';
 
 // <---- lib ---->
 export {
