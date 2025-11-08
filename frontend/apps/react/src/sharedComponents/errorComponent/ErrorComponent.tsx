@@ -4,7 +4,6 @@ import { ApiError } from '@videos-with-subtitle-player/core';
 import { useEffect } from 'react';
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  console.log('ERROR COMPONENT RENDERED WITH ERROR:', error);
   const router = useRouter();
   const queryErrorResetBoundary = useQueryErrorResetBoundary();
 
