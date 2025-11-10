@@ -37,6 +37,7 @@
     "@videos-with-subtitle-player/eslint-base": "workspace:*",
     "@videos-with-subtitle-player/prettier-base": "workspace:*",
     "@vitejs/plugin-react": "^4.6.0",
+    "daisyui": "^5.4.7",
     "eslint": "^9.31.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

@@ -1,5 +1,6 @@
 .progressive-image-container {
   position: relative;
+  z-index: 0;
   height: 100%;
   width: 100%;
   overflow: hidden;
@@ -13,8 +14,9 @@
 .progressive-image {
   position: absolute;
   z-index: -1;
-  height: 100%;
-  width: 100%;
+  /* height: 100%; */
+  /* width: 100%; */
+  aspect-ratio: 16 / 9;
   object-fit: contain;
 
   transition:
