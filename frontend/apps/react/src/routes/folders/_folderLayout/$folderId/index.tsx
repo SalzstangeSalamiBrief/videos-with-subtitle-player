@@ -60,7 +60,7 @@ function AudioFilePage() {
       ),
     },
     {
-      label: `Image (${selectedFolder.images.length})`,
+      label: `Image (${Math.floor(selectedFolder.images.length / 2)})`,
       content: <ImageListSection images={selectedFolder.images} />,
     },
   ];
