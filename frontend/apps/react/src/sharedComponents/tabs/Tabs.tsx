@@ -44,13 +44,6 @@ export function Tabs({
             panelProps={{ children: activeTab.content }}
           />
         ))}
-        {/* <div role="tablist" className="tabs tabs-box"> */}
-        {/* <TabButtons
-          tabs={tabs}
-          activeTabIndex={activeTabIndex}
-          onChangeTab={onChangeTab}
-        />
-        <TabPanel activeTabIndex={activeTabIndex}>{activeTab.content}</TabPanel> */}
       </div>
     </section>
   );

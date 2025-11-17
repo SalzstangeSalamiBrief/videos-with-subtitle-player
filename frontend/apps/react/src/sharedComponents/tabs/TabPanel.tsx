@@ -10,7 +10,6 @@ interface ITabPanelProps {
 export function TabPanel({ children, activeTabIndex }: ITabPanelProps) {
   return (
     <div
-      // className="grow"
       className="tab-content bg-base-100 p-4"
       id={getTabPanelId(activeTabIndex)}
       role="tabpanel"
