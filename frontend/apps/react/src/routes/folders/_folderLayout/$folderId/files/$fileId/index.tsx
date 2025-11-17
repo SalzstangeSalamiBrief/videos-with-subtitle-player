@@ -19,12 +19,7 @@ function FilePage() {
   );
 
   if (!currentFile) {
-    return (
-      <ErrorMessage
-        error="Could not find file."
-        message="Could not find file."
-      />
-    );
+    return <ErrorMessage error="Could not find file." />;
   }
 
   return (

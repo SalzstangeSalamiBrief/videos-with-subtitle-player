@@ -26,14 +26,7 @@ function AudioFilePage() {
   const selectedFolder = getFolderFromFileTree(fileTrees, folderId);
   if (!selectedFolder) {
     const message = `Could not find folder with id '${folderId}'`;
-    return (
-      <ErrorMessage
-        // TODO FIX ERROR TYPING
-        error={message}
-        message={message}
-        description="Please try again"
-      />
-    );
+    return <ErrorMessage error={message} description="Please try again" />;
   }
 
   const tabs: ITab[] = [
