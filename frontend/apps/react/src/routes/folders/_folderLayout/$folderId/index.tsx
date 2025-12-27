@@ -28,15 +28,6 @@ function AudioFilePage() {
     return <ErrorMessage error={message} description="Please try again" />;
   }
 
-  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
-  if (activeTabIndex !== searchParams.activeTab) {
-    navigate({
-      search: () => ({
-        activeTab: activeTabIndex,
-      }),
-    });
-  }
-
   const tabs: ITab[] = [
     {
       label: `Subfolders (${selectedFolder.children?.length})`,
@@ -65,6 +56,15 @@ function AudioFilePage() {
       content: <ImageListSection images={selectedFolder.images} />,
     },
   ];
+
+  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
+  if (activeTabIndex !== searchParams.activeTab) {
+    navigate({
+      search: () => ({
+        activeTab: activeTabIndex,
+      }),
+    });
+  }
 
   document.title = selectedFolder.name;
   return (
