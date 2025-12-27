@@ -15,7 +15,6 @@ import type { IFolderLayoutSearchParams } from '../../_folderLayout';
 
 export const Route = createFileRoute('/folders/_folderLayout/$folderId/')({
   component: AudioFilePage,
-  // TODO ADD META  => SET TITLE AS TITLE OF THE FOLDER => MAYBE USE ROUTER CONTEXT
 });
 
 function AudioFilePage() {
@@ -27,6 +26,15 @@ function AudioFilePage() {
   if (!selectedFolder) {
     const message = `Could not find folder with id '${folderId}'`;
     return <ErrorMessage error={message} description="Please try again" />;
+  }
+
+  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
+  if (activeTabIndex !== searchParams.activeTab) {
+    navigate({
+      search: () => ({
+        activeTab: activeTabIndex,
+      }),
+    });
   }
 
   const tabs: ITab[] = [
@@ -57,15 +65,6 @@ function AudioFilePage() {
       content: <ImageListSection images={selectedFolder.images} />,
     },
   ];
-
-  const activeTabIndex = getActiveTabIndex(searchParams.activeTab, tabs.length);
-  if (activeTabIndex !== searchParams.activeTab) {
-    navigate({
-      search: () => ({
-        activeTab: activeTabIndex,
-      }),
-    });
-  }
 
   document.title = selectedFolder.name;
   return (

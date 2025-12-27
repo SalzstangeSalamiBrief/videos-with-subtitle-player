@@ -26,29 +26,37 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	if err != nil {
 		return err
 	}
-	
+
+	numberOfImagesConverted := 0
+
 	for _, image := range allImages {
-		if imageUtilities.IsLowQualityImage(image) { // TODO DOES NOT WORK => first _lowQuality image creates another _lowQuality_lowQuality image
+		if imageUtilities.IsLowQualityImage(image) {
 			log.Printf("Image %s is low quality. Skip processing \n", image)
 			continue
 		}
 
-		if !webpUtilties.IsWebpImage(image) {
-			webpConversionError, _ := convertToWebp(image)
-			// TODO REMOVE SOURCE FILE?
+		currentImage := image
 
+		if !webpUtilties.IsWebpImage(image) {
+			webpConversionError, nameOfConvertedImage := convertToWebp(image)
+			// TODO REMOVE SOURCE FILE?
 			if webpConversionError != nil {
 				return webpConversionError
 			}
+			numberOfImagesConverted += 1
+			currentImage = nameOfConvertedImage
+
 		}
 
-		if !containsLowQualityImagePath(image, allImages) {
+		if !containsLowQualityImagePath(currentImage, allImages) {
 			log.Printf("Image %s has no low quality counterpart. Create low quality image \n", image)
 			createLowQualityImageError, _ := createLowQualityImage(image)
 			if createLowQualityImageError != nil {
 				return createLowQualityImageError
 			}
+			numberOfImagesConverted += 1
 		}
+
 	}
 
 	if configuration.ShouldDeleteNonWebpImages {
@@ -66,10 +74,9 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	}
 
 	// TODO FIX
-	log.Printf("Finish webp conversion. Converted '%v' files\n", len(allImages))
+	log.Printf("Finish webp conversion. Processed '%v' files. Converted '%v' files.\n", len(allImages), numberOfImagesConverted)
 	return nil
 }
-
 
 func containsLowQualityImagePath(relativeImagePath string, allImagePaths []string) bool {
 	if len(allImagePaths) == 0 {

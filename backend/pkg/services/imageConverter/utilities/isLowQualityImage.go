@@ -4,9 +4,15 @@ import (
 	"backend/pkg/services/imageConverter/constants"
 	"fmt"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
+var lowQualityImageSuffix = regexp.MustCompile(fmt.Sprintf("%s$", constants.LowQualityFileSuffix))
+
 func IsLowQualityImage(relativeImagePath string) bool {
-	return strings.Contains(filepath.Base(relativeImagePath), fmt.Sprintf("%s%s", constants.LowQualityFileSuffix, constants.WebpExtension))
+	fileName := filepath.Base(relativeImagePath)
+	fileNameWithoutExtension := strings.TrimSuffix(fileName, filepath.Ext(fileName))
+	isLowQualityImage := lowQualityImageSuffix.MatchString(fileNameWithoutExtension)
+	return isLowQualityImage
 }
