@@ -13,19 +13,21 @@ export function Playlist({ siblings }: IPlaylistProps) {
 
   return (
     <section aria-labelledby={labelId}>
-      <h2 id={labelId} className="mb-2 text-base font-bold">
-        Playlist
-      </h2>
-      <ol className="flex h-80 flex-col gap-1 overflow-x-hidden overflow-y-auto">
-        {siblings.map((item) => (
-          <PlaylistItem
-            key={item.id}
-            isActive={item.id === fileId}
-            item={item}
-            folderId={folderId}
-          />
-        ))}
-      </ol>
+      <nav>
+        <h2 id={labelId} className="mb-2 text-base font-bold">
+          Playlist
+        </h2>
+        <ol className="flex h-80 flex-col gap-1 overflow-x-hidden overflow-y-auto">
+          {siblings.map((item) => (
+            <PlaylistItem
+              key={item.id}
+              isActive={item.id === fileId}
+              item={item}
+              folderId={folderId}
+            />
+          ))}
+        </ol>
+      </nav>
     </section>
   );
 }

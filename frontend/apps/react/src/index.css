@@ -1,5 +1,5 @@
 @import 'tailwindcss';
-
+@plugin "daisyui";
 @theme {
   --transition-property-rotate: rotate;
 

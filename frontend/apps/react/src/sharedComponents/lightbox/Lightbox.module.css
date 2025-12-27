@@ -1,8 +1,6 @@
 dialog {
-  width: min(100%, 1080px);
   & .lightbox {
     padding: calc(var(--spacing) * 4);
-    background-color: var(--colors-fuchsia-800);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,6 +10,7 @@ dialog {
       object-fit: contain;
     }
   }
+
   &::backdrop {
     background: var(--colors-slate-800);
     opacity: var(--opacity-75);

@@ -1,16 +1,22 @@
 .progressive-image-container {
-  position: absolute;
-  z-index: -1;
+  position: relative;
+  z-index: 0;
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  img {
+    /* hide alt text in case the image cannot be loaded */
+    font-size: 0;
+  }
 }
 
 .progressive-image {
   position: absolute;
   z-index: -1;
-  height: 100%;
-  width: 100%;
+  /* height: 100%; */
+  /* width: 100%; */
+  aspect-ratio: 16 / 9;
   object-fit: contain;
 
   transition:

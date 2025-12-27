@@ -22,7 +22,7 @@ export function BreadcrumbItem({ isLink, item }: IBreadcrumbItemProps) {
 
   if (!isLink) {
     return (
-      <li className={baseClasses} title={item.name}>
+      <li className={baseClasses} title={item.name} aria-current="page">
         &gt; {item.name}
       </li>
     );

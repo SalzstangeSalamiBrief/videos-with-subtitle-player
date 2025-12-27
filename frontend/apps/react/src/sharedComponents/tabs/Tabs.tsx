@@ -1,7 +1,6 @@
 import type { Maybe } from '@videos-with-subtitle-player/core';
 import { useId, type JSX } from 'react';
-import { TabButtons } from './TabButtons';
-import { TabPanel } from './TabPanel';
+import { Tab } from './Tab';
 
 export interface ITab {
   label: string;
@@ -35,13 +34,16 @@ export function Tabs({
       <h1 id={labelId} className="sr-only">
         {label}
       </h1>
-      <div role="tablist" className="flex h-full flex-col gap-8">
-        <TabButtons
-          tabs={tabs}
-          activeTabIndex={activeTabIndex}
-          onChangeTab={onChangeTab}
-        />
-        <TabPanel activeTabIndex={activeTabIndex}>{activeTab.content}</TabPanel>
+      <div role="tablist" className="tabs tabs-lift">
+        {tabs.map((tab, index) => (
+          <Tab
+            key={index}
+            activeTabIndex={activeTabIndex}
+            currentTabIndex={index}
+            buttonProps={{ label: tab.label, onClick: onChangeTab }}
+            panelProps={{ children: activeTab.content }}
+          />
+        ))}
       </div>
     </section>
   );

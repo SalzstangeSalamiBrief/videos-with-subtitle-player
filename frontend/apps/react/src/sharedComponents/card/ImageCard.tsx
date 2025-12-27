@@ -9,6 +9,7 @@ import {
   type IProgressiveImageProps,
 } from '../progressiveImage/ProgressiveImage';
 import styles from './ImageCard.module.css';
+
 interface ICardProps {
   title: string;
   children?: JSX.Element;
@@ -18,22 +19,22 @@ interface ICardProps {
 
 export function ImageCard({ title, imageUrls, linkOptions }: ICardProps) {
   return (
-    <article className={`${styles.card} ${imageUrls ? '' : 'bg-fuchsia-800'}`}>
-      {imageUrls && (
-        <ProgressiveImage
-          {...imageUrls}
-          alt={`Cover image of the item ${title}`}
-        />
-      )}
-      <div role="presentation">
+    <>
+      <article className={`card image-full ${styles.card}`}>
+        {imageUrls && (
+          <ProgressiveImage
+            {...imageUrls}
+            alt={`Cover image of the item ${title}`}
+          />
+        )}
         <div
           role="presentation"
-          className="flex h-full items-end bg-linear-to-t from-slate-800 from-[5ch] to-[20ch]"
+          className={`card-body ${styles['card-body']} bg-linear-to-t from-slate-800 from-[5ch] to-[20ch] p-2`}
         >
-          <header className="h-fit overflow-hidden rounded-b-md p-4">
+          <header className="card-title">
             <h1
-              className="max-w-text line-clamp-3 overflow-hidden font-bold text-ellipsis whitespace-normal"
               title={title}
+              className="max-w-text line-clamp-3 overflow-hidden font-bold text-ellipsis whitespace-normal"
             >
               <TanStackRouterLink
                 {...linkOptions}
@@ -44,7 +45,7 @@ export function ImageCard({ title, imageUrls, linkOptions }: ICardProps) {
             </h1>
           </header>
         </div>
-      </div>
-    </article>
+      </article>
+    </>
   );
 }

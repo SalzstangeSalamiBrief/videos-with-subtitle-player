@@ -10,10 +10,10 @@ interface IPlayerProps {
 
 export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
   return (
-    <div style={{ flexGrow: 1 }}>
+    <div className="grow rounded-md border border-slate-700">
       <video
         controls
-        style={{ width: '100%' }}
+        className="h-full w-full"
         crossOrigin="anonymous"
         autoPlay
         data-testid="video"

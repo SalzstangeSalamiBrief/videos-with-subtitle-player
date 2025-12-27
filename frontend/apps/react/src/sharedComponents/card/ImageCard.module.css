@@ -1,18 +1,30 @@
 .card {
   position: relative;
+  /* use z-index to create new stacking context to display images properly */
+  z-index: 0;
   display: grid;
   gap: calc(var(--spacing) * 4);
   height: calc(var(--spacing) * 64);
   border-radius: var(--radius-md);
   transition: rotateX 150ms ease-in;
+  background-color: var(--color-slate-800);
+  /* use overflow to ensure rounded borders in  the stacking context of the card */
+  overflow: hidden;
 
-  img {
-    /* hide alt text in case the image cannot be loaded */
-    font-size: 0;
+  > figure {
+    position: absolute;
+    z-index: -1;
   }
 }
 
 .card:hover {
   transform: rotateX(25deg);
   box-shadow: 0px 10px 10px -5px var(--color-fuchsia-300);
+}
+
+.card-body {
+  display: flex;
+  height: 100%;
+  justify-content: end;
+  padding: calc(var(--spacing) * 2);
 }

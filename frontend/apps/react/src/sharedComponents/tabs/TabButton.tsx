@@ -4,7 +4,7 @@ interface ITabButtonProps {
   label: string;
   isActive: boolean;
   index: number;
-  onClick: () => void;
+  onClick: (selectedTabIndex: number) => void;
 }
 
 export function TabButton({
@@ -20,8 +20,8 @@ export function TabButton({
       id={getTabId(index)}
       aria-selected={isActive ? 'true' : 'false'}
       aria-controls={getTabPanelId(index)}
-      onClick={onClick}
-      className={`px-4 py-2 ${isActive ? 'bg-fuchsia-800 hover:bg-fuchsia-700' : 'bg-slate-800 hover:bg-slate-700'} rounded-md`}
+      onClick={() => onClick(index)}
+      className={`tab ${isActive ? 'tab-active' : ''}`}
     >
       {label}
     </button>

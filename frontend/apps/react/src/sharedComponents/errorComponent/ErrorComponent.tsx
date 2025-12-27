@@ -15,6 +15,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
   const resetButton = (
     <button
+      className="btn btn-outline hover:bg-slate-800"
       onClick={() => {
         // Invalidate the route to reload the loader, and reset any router error boundaries
         router.invalidate();
@@ -22,13 +23,13 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
         reset();
       }}
     >
-      retry
+      Retry
     </button>
   );
 
   if (ApiError.isApiError(error)) {
     return (
-      <div className="mx-auto w-full max-w-120 rounded bg-red-800 px-4">
+      <div role="alert" className="alert alert-error alert-outline">
         <details>
           <summary className="p-4 hover:cursor-pointer">
             {error.status}: {error.title}
@@ -41,9 +42,12 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
   }
 
   return (
-    <div>
-      {error.message}
+    <section
+      role="alert"
+      className="alert alert-error alert-outline flex flex-col items-start"
+    >
+      <h2 className="text-lg font-bold">{error.message}</h2>
       {resetButton}
-    </div>
+    </section>
   );
 }

@@ -1,24 +1,31 @@
 import { ApiError } from '@videos-with-subtitle-player/core';
 
 interface IErrorMessageProps {
-  error: ApiError | Error;
-  message: string;
+  error: ApiError | Error | string;
   description?: string;
 }
 
-export function ErrorMessage({
-  error,
-  message,
-  description,
-}: IErrorMessageProps) {
-  console.error(error);
+export function ErrorMessage(props: IErrorMessageProps) {
+  console.error(props.error);
 
+  const { content, title } = getContent(props);
+
+  return (
+    <section
+      role="alert"
+      className="alert alert-error alert-outline flex flex-col items-start"
+    >
+      <h2 className="text-lg font-bold">{title}</h2>
+      {content && content}
+    </section>
+  );
+}
+
+function getContent({ error, description }: IErrorMessageProps) {
   if (ApiError.isApiError(error)) {
-    return (
-      <section className="h-fit rounded-md bg-red-50 p-4 text-red-900">
-        <h1 className="text-lg font-bold">
-          {error.status}: {error.title}
-        </h1>
+    return {
+      title: `${error.status}: ${error.title}`,
+      content: (
         <details>
           <summary className="mt-2 cursor-pointer underline">Details</summary>
           <div>
@@ -26,15 +33,19 @@ export function ErrorMessage({
             <p>{error.type}</p>
           </div>
         </details>
-      </section>
-    );
+      ),
+    };
   }
 
-  // TODO IMPROVE later with daisy ui
-  return (
-    <section className="h-fit rounded-md bg-red-50 p-4 text-red-900">
-      <h1 className="text-lg font-bold">{message}</h1>
-      {description && <p>{description}</p>}
-    </section>
-  );
+  if (typeof error === 'string') {
+    return {
+      title: error,
+      content: null,
+    };
+  }
+
+  return {
+    title: error?.toString(),
+    content: description ? <p>{description}</p> : null,
+  };
 }
