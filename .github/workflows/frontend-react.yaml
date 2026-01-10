@@ -3,11 +3,7 @@ name: frontend-ci
 on:
   pull_request:
     paths:
-      - "frontend/apps/react/**"
-      - "frontend/packages/core/**"
-      - "frontend/packages/eslintBase/**"
-      - "frontend/packages/prettierBase/**"
-      - ".github/workflows/frontend-react.yaml"
+      - "frontend/**"
 
 jobs:
   code_analysis:
@@ -25,17 +21,11 @@ jobs:
         run: pnpm install
         working-directory: frontend
       - name: Run ESLint check in core
-        run: pnpm run core:lint
+        run: pnpm run lint
         working-directory: frontend
       - name: Run Prettier check in core
-        run: pnpm run core:prettier:check
-        working-directory: frontend
-      - name: Run ESLint check in react app
-        run: pnpm run react:lint
-        working-directory: frontend
-      - name: Run Prettier check in react app
-        run: pnpm run react:prettier:check
+        run: pnpm run prettier:check
         working-directory: frontend
       - name: Run vitest
-        run: pnpm run react:test
+        run: pnpm run test
         working-directory: frontend
