@@ -18,7 +18,15 @@ export default [
     rules: {
       '@typescript-eslint/no-explicit-any': 'error',
       'no-console': ['error', { allow: ['warn', 'error'] }],
-      '@typescript-eslint/array-type': 'generic',
+      '@typescript-eslint/array-type': [
+        'error',
+        {
+          default: 'array',
+        },
+      ],
+      '@typescript-eslint/prefer-for-of': 'off',
+      'import-x/order': 'off',
+      'import/order': 'off',
     },
   },
   js.configs.recommended,

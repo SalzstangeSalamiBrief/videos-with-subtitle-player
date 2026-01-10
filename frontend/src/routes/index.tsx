@@ -1,6 +1,6 @@
-import { FolderList } from '$sharedComponents/folderList/FolderList';
 import { createFileRoute } from '@tanstack/react-router';
 import { Route as RootLayoutRoute } from './__root';
+import { FolderList } from '$sharedComponents/folderList/FolderList';
 
 export const Route = createFileRoute('/')({
   component: LandingPage,

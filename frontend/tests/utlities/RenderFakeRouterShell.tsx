@@ -1,8 +1,8 @@
 import {
+  RouterProvider,
   createRootRoute,
   createRoute,
   createRouter,
-  RouterProvider,
 } from '@tanstack/react-router';
 import { render } from '@testing-library/react';
 

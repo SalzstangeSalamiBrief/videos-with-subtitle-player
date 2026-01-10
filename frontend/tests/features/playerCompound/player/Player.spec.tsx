@@ -1,7 +1,7 @@
-import { Player } from '$features/playerCompound/player/Player';
 import { render, screen, within } from '@testing-library/react';
 import { FileType } from '@videos-with-subtitle-player/core';
 import { describe, expect, test } from 'vitest';
+import { Player } from '$features/playerCompound/player/Player';
 
 describe('Player', () => {
   test('Render video player without track', () => {

@@ -1,7 +1,7 @@
-import { imageHandler } from '$lib/imageHandler';
 import type { IFileTree } from '$models/fileTree/fileTree';
-import { ImageCard } from '$sharedComponents/card/ImageCard';
 import type { LinkOptions } from '@tanstack/react-router';
+import { imageHandler } from '$lib/imageHandler';
+import { ImageCard } from '$sharedComponents/card/ImageCard';
 
 interface IFolderListSectionProps {
   folders: IFileTree[];

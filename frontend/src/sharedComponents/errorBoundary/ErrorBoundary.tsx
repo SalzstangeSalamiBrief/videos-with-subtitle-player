@@ -1,4 +1,5 @@
-import React, { type ErrorInfo, type ReactNode } from 'react';
+import React from 'react';
+import type {ErrorInfo, ReactNode} from 'react';
 
 interface IProps {
   children?: ReactNode;

@@ -1,6 +1,6 @@
-import { imageHandler } from '$lib/imageHandler';
-import type { IFileNode } from '$models/fileTree/fileTree';
 import styles from './ImageSlider.module.css';
+import type { IFileNode } from '$models/fileTree/fileTree';
+import { imageHandler } from '$lib/imageHandler';
 
 interface IFolderListSectionProps {
   images: IFileNode[];

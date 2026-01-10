@@ -40,7 +40,7 @@ function getFlatFilesGroups(fileTrees: IFileTree[]) {
       fileGroups.push(fileTree.images);
     }
 
-    if (fileTree.children?.length) {
+    if (fileTree.children.length) {
       const flatGroup = getFlatFilesGroups(fileTree.children);
       fileGroups.push(...flatGroup);
     }
@@ -57,17 +57,17 @@ function transformDtoTreeToFileTree(
   }
 
   const fileTrees: IFileTree[] = dtoTree.map<IFileTree>((fileTree) => {
-    const subtitleFiles = fileTree.files?.filter(isSubtitleFile);
+    const subtitleFiles = fileTree.files.filter(isSubtitleFile);
     const images: IFileNode[] = fileTree.files
-      ?.filter(isImageFile)
+      .filter(isImageFile)
       .map((f) => transformFileDtoToFile(f, subtitleFiles));
 
     const videos: IFileNode[] = fileTree.files
-      ?.filter(isVideoFile)
+      .filter(isVideoFile)
       .map((f) => transformFileDtoToFile(f, subtitleFiles));
 
     const audios: IFileNode[] = fileTree.files
-      ?.filter(isAudioFile)
+      .filter(isAudioFile)
       .map((f) => transformFileDtoToFile(f, subtitleFiles));
     const children = transformDtoTreeToFileTree(fileTree.children);
 

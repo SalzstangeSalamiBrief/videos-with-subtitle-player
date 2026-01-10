@@ -16,13 +16,13 @@ export function Menu<T extends IMenuItemBase<T>>(props: IMenuProps<T>) {
   const { items, itemKey, onRenderMenuItem, activeItemIds } = props;
   return (
     <menu>
-      {items?.map((item) => {
+      {items.map((item) => {
         return (
           <li key={item[itemKey] as Key}>
             {onRenderMenuItem(item)}
             {/* TODO ANIMATE HEIGHT */}
             {item.children &&
-              item.children?.length > 0 &&
+              item.children.length > 0 &&
               activeItemIds.includes(item.id) && (
                 <Menu<T>
                   itemKey={itemKey}

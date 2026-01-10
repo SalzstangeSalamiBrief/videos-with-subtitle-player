@@ -1,14 +1,16 @@
-import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 import {
-  Link as TanStackRouterLink,
-  type LinkOptions,
+  
+  Link as TanStackRouterLink
 } from '@tanstack/react-router';
-import type { JSX } from 'react';
 import {
-  ProgressiveImage,
-  type IProgressiveImageProps,
+  
+  ProgressiveImage
 } from '../progressiveImage/ProgressiveImage';
 import styles from './ImageCard.module.css';
+import type {IProgressiveImageProps} from '../progressiveImage/ProgressiveImage';
+import type {LinkOptions} from '@tanstack/react-router';
+import type { JSX } from 'react';
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 
 interface ICardProps {
   title: string;

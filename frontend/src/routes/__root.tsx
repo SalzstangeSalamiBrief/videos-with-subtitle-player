@@ -1,5 +1,5 @@
+import { Outlet, createRootRoute } from '@tanstack/react-router';
 import { ErrorComponent } from '$sharedComponents/errorComponent/ErrorComponent';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
 
 import { ApiError } from '$models/ApiError';
 import { getFileTreeSelect } from '$queries/getFileTree/getFileTree.select';

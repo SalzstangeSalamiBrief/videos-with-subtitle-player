@@ -1,5 +1,5 @@
+import { Outlet, createFileRoute } from '@tanstack/react-router';
 import { Breadcrumbs } from '$features/breadcrumbs/Breadcrumbs';
-import { createFileRoute, Outlet } from '@tanstack/react-router';
 
 export interface IFolderLayoutSearchParams {
   activeTab?: number;

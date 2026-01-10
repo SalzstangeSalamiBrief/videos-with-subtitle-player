@@ -1,8 +1,8 @@
-import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
-import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 import { Link as TanStackRouterLink, useParams } from '@tanstack/react-router';
 import { Route as RootLayoutRoute } from '../../routes/__root';
 import { BreadcrumbItem } from './BreadcrumbItem';
+import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 
 export function Breadcrumbs() {
   const { folderId, fileId } = useParams({ strict: false });

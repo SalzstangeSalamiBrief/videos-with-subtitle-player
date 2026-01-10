@@ -1,7 +1,7 @@
-import type { IFileNode } from '$models/fileTree/fileTree';
 import { useId } from 'react';
 import { Route } from '../../../routes/folders/_folderLayout/$folderId/files/$fileId';
 import { PlaylistItem } from './PlaylistItem';
+import type { IFileNode } from '$models/fileTree/fileTree';
 
 interface IPlaylistProps {
   siblings: IFileNode[];

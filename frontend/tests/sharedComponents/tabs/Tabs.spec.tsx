@@ -1,6 +1,8 @@
-import { type ITab, Tabs } from '$sharedComponents/tabs/Tabs';
+import type { ITab } from '$sharedComponents/tabs/Tabs';
+import { Tabs } from '$sharedComponents/tabs/Tabs';
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, test } from 'vitest';
+
 describe('Tabs', () => {
   test('Renders nothing if no tabs are provided', () => {
     const { container } = render(
@@ -48,10 +50,12 @@ describe('Tabs', () => {
             label="SectionLabel"
             activeTabIndex={i}
             onChangeTab={() => {}}
-            tabs={differentTabsTestCases.map(({ label, content }) => ({
-              label,
-              content: <div>{content}</div>,
-            }))}
+            tabs={differentTabsTestCases.map(
+              ({ label: testLabel, content: testContent }) => ({
+                label: testLabel,
+                content: <div>{testContent}</div>,
+              }),
+            )}
           />,
         );
 

@@ -45,7 +45,7 @@ function getContent({ error, description }: IErrorMessageProps) {
   }
 
   return {
-    title: error?.toString(),
+    title: error.toString(),
     content: description ? <p>{description}</p> : null,
   };
 }

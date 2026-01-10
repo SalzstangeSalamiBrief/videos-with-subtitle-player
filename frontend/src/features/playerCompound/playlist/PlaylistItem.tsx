@@ -1,5 +1,5 @@
-import type { IFileNode } from '$models/fileTree/fileTree';
 import { Link as TanStackLink } from '@tanstack/react-router';
+import type { IFileNode } from '$models/fileTree/fileTree';
 
 interface IPlaylistItemProps {
   item: IFileNode;

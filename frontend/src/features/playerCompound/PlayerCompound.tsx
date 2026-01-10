@@ -1,6 +1,6 @@
-import type { IFileNode } from '$models/fileTree/fileTree';
 import { Player } from './player/Player';
 import { Playlist } from './playlist/Playlist';
+import type { IFileNode } from '$models/fileTree/fileTree';
 
 interface IPlayerCompoundProps {
   currentFile: IFileNode;

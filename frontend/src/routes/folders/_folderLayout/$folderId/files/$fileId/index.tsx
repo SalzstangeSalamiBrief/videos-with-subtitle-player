@@ -1,8 +1,8 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { Route as RootLayoutRoute } from '../../../../../__root';
 import { PlayerCompound } from '$features/playerCompound/PlayerCompound';
 import { getCurrentNodeWithSiblings } from '$lib/utilities/getCurrentFileNodeWithSibling';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
-import { createFileRoute } from '@tanstack/react-router';
-import { Route as RootLayoutRoute } from '../../../../../__root';
 
 export const Route = createFileRoute(
   '/folders/_folderLayout/$folderId/files/$fileId/',

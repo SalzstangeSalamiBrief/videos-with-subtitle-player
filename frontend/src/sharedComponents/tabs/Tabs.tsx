@@ -1,4 +1,5 @@
-import { useId, type JSX } from 'react';
+import type { JSX } from 'react';
+import { useId } from 'react';
 import { Tab } from './Tab';
 
 export interface ITab {

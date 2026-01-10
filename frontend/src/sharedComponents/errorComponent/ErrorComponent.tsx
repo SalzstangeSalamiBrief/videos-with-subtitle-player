@@ -1,5 +1,6 @@
+import {  useRouter } from '@tanstack/react-router';
+import type {ErrorComponentProps} from '@tanstack/react-router';
 import { ApiError } from '$models/ApiError';
-import { useRouter, type ErrorComponentProps } from '@tanstack/react-router';
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();

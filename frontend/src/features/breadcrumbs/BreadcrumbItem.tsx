@@ -1,8 +1,8 @@
-import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
-import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
-import type { IFileTree } from '$models/fileTree/fileTree';
 import { Link as TanStackRouterLink, useParams } from '@tanstack/react-router';
 import { Route as RootLayoutRoute } from '../../routes/__root';
+import type { IFileTree } from '$models/fileTree/fileTree';
+import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
+import { getFoldersInActiveTree } from '$lib/utilities/getFoldersInActiveTree';
 
 interface IBreadcrumbItemProps {
   item: IFileTree;

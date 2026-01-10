@@ -38,7 +38,7 @@ function getActiveChildNodes(
     return [true, result];
   }
 
-  if (!currentNode.children?.length) {
+  if (!currentNode.children.length) {
     return [false, []];
   }
 

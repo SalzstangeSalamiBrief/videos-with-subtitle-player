@@ -1,10 +1,10 @@
-import { FileType } from '$enums/FileType';
 import type { PossibleFilesDto } from '$models/fileTree/dtos/fileTreeDto';
 import type { IFileNode } from '$models/fileTree/fileTree';
 import type {
   IFileDto,
   ISubtitleFileDto,
 } from '../../models/fileTree/dtos/fileDtos';
+import { FileType } from '$enums/FileType';
 
 export function isSubtitleFile(
   file: PossibleFilesDto | IFileNode,

@@ -1,6 +1,6 @@
-import type { IFileTreeDto } from '$models/fileTree/dtos/fileTreeDto';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Link as TanStackLink } from '@tanstack/react-router';
+import type { IFileTreeDto } from '$models/fileTree/dtos/fileTreeDto';
 
 interface INavigationItemProps {
   item: IFileTreeDto;

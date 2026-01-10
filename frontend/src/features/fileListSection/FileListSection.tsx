@@ -1,6 +1,6 @@
 import type { IFileNode } from '$models/fileTree/fileTree';
-import { ImageCard } from '$sharedComponents/card/ImageCard';
 import type { LinkOptions } from '@tanstack/react-router';
+import { ImageCard } from '$sharedComponents/card/ImageCard';
 
 interface IFileListSectionProps {
   folderId: string;

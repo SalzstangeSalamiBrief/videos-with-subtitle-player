@@ -1,9 +1,9 @@
-import { imageHandler } from '$lib/imageHandler';
-import type { IFileNode } from '$models/fileTree/fileTree';
-import { ImageSlider } from '$sharedComponents/imageSlider/ImageSlider';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useRef, useState } from 'react';
 import styles from './Lightbox.module.css';
+import type { IFileNode } from '$models/fileTree/fileTree';
+import { ImageSlider } from '$sharedComponents/imageSlider/ImageSlider';
+import { imageHandler } from '$lib/imageHandler';
 
 interface ILightboxContainerProps {
   images: IFileNode[];

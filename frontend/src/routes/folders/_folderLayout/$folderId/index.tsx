@@ -3,7 +3,8 @@ import { FolderListSection } from '$features/folderListSection/FolderListSection
 import { ImageListSection } from '$features/imageListSection/ImageListSection';
 import { getFolderFromFileTree } from '$lib/utilities/getFoldersFromFileTree';
 import { ErrorMessage } from '$sharedComponents/errorMessage/ErrorMessage';
-import { Tabs, type ITab } from '$sharedComponents/tabs/Tabs';
+import type { ITab } from '$sharedComponents/tabs/Tabs';
+import { Tabs } from '$sharedComponents/tabs/Tabs';
 import {
   createFileRoute,
   useNavigate,
@@ -30,11 +31,11 @@ function AudioFilePage() {
 
   const tabs: ITab[] = [
     {
-      label: `Subfolders (${selectedFolder.children?.length})`,
+      label: `Subfolders (${selectedFolder.children.length})`,
       content: <FolderListSection folders={selectedFolder.children} />,
     },
     {
-      label: `Videos (${selectedFolder.videos?.length})`,
+      label: `Videos (${selectedFolder.videos.length})`,
       content: (
         <FileListSection
           folderId={selectedFolder.id}

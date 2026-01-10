@@ -1,5 +1,5 @@
-import type { JSX } from 'react';
 import { getTabId, getTabPanelId } from './tabUtilities';
+import type { JSX } from 'react';
 
 interface ITabPanelProps {
   children: Maybe<JSX.Element>;

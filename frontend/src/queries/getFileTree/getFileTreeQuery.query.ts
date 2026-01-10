@@ -1,10 +1,12 @@
 // TODO OUTSOURCE PATHS INTO CONSTANTS OR GENERATE CODE?
 
-import { type IApiError, ApiError } from '$models/ApiError';
 import type { IApiResponse } from '$models/ApiResponse';
+import type {IFileTreeDto} from '$models/fileTree/dtos/fileTreeDto';
+import type {IApiError} from '$models/ApiError';
+import { ApiError  } from '$models/ApiError';
 import {
-  type IFileTreeDto,
-  isFileTreeDtoArray,
+  
+  isFileTreeDtoArray
 } from '$models/fileTree/dtos/fileTreeDto';
 
 const path = '/api/file-tree';

@@ -1,6 +1,6 @@
-import type { JSX } from 'react';
 import { TabButton } from './TabButton';
 import { TabPanel } from './TabPanel';
+import type { JSX } from 'react';
 
 interface ITabProps {
   activeTabIndex: number;
