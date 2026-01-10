@@ -1,7 +1,0 @@
-@import 'tailwindcss';
-@plugin "daisyui";
-
-/*TODO COMMENT IN TO FIX NOT SCROLLING TO TOP ON PAGE CHANGE?  */
-/* html {
-  scroll-behavior: smooth;
-} */
