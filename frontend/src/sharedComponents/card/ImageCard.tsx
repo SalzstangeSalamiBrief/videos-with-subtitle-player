@@ -1,14 +1,8 @@
-import {
-  
-  Link as TanStackRouterLink
-} from '@tanstack/react-router';
-import {
-  
-  ProgressiveImage
-} from '../progressiveImage/ProgressiveImage';
+import { Link as TanStackRouterLink } from '@tanstack/react-router';
+import { ProgressiveImage } from '../progressiveImage/ProgressiveImage';
 import styles from './ImageCard.module.css';
-import type {IProgressiveImageProps} from '../progressiveImage/ProgressiveImage';
-import type {LinkOptions} from '@tanstack/react-router';
+import type { IProgressiveImageProps } from '../progressiveImage/ProgressiveImage';
+import type { LinkOptions } from '@tanstack/react-router';
 import type { JSX } from 'react';
 import { baseLinkStyles } from '$lib/styles/baseLinkStyles';
 

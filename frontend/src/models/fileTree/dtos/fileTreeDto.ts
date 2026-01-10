@@ -1,10 +1,5 @@
-import {
-  
-  
-  isFileDto,
-  isSubtitleFileDto
-} from './fileDtos';
-import type {IFileDto, ISubtitleFileDto} from './fileDtos';
+import { isFileDto, isSubtitleFileDto } from './fileDtos';
+import type { IFileDto, ISubtitleFileDto } from './fileDtos';
 
 export type PossibleFilesDto = IFileDto | ISubtitleFileDto;
 
