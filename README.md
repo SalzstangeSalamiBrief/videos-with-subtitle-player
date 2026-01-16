@@ -136,3 +136,20 @@ docker build . --target videos-with-subtitle-player_frontend --tag videos-with-s
 # to use nginx the port inside the container has to be 80
 docker run -p 4200:80 videos-with-subtitle-player_frontend
 ```
+
+### Database - dev
+
+Currently a Postgres database is set up in the file [docker/compose.dev.yaml ](docker/compose.dev.yaml).
+A GUI is also provided by using [PG Admin](https://www.pgadmin.org/).
+The compose file ensures that PG Admin automatically connects to the database.
+
+```bash
+cd docker 
+
+# optional: ensure the containers of the compose file is not already running
+docker compose -f compose.dev.yaml down
+
+# build, create and start the containers defined in the compose file
+# use the flag _-d_ if the containers should be detached from the terminal
+docker compose -f compose.dev.yaml up
+```
