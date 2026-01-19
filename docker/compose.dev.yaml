@@ -23,6 +23,8 @@ services:
     image: postgres
     restart: always
     shm_size: 120mb
+    ports:
+      - 5432:5432
     environment:
       POSTGRES_PASSWORD: tempPassword
       POSTGRES_USER: streamingServiceAccount
