@@ -120,19 +120,13 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	}
 
 	currentNode.ThumbnailId = file.Id
-	currentNode.LowQualityThumbnailId = file.LowQualityImageId
+	currentNode.LowQualityThumbnailId = *file.LowQualityImageId
 }
 
 func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
 	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
 
-	fileItem := models.FileDto{
-		Id:                    file.Id,
-		Name:                  file.Name,
-		Type:                  file.Type,
-		AssociatedAudioFileId: file.AssociatedAudioFileId,
-		LowQualityImageId:     file.LowQualityImageId,
-	}
+	fileItem := file.ToFileDto()
 
 	currentNode.Files = append(currentNode.Files, fileItem)
 }

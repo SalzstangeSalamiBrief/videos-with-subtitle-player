@@ -120,7 +120,7 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 		// TODO NAME INCLUDES THE WHOLE PATH
 		Name:                  utilities.GetFilenameWithoutExtension(possibleSubtitleFileName),
 		Type:                  enums.SUBTITLE,
-		AssociatedAudioFileId: audioFile.Id,
+		AssociatedAudioFileId: &audioFile.Id,
 	}
 
 	*subTree = append(*subTree, subtitleFile)
@@ -142,7 +142,7 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 			Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
 			Type: enums.IMAGE,
 		}
-		imageFile.LowQualityImageId = resizeImageFileItem.Id
+		imageFile.LowQualityImageId = &resizeImageFileItem.Id
 		*subTree = append(*subTree, resizeImageFileItem)
 	}
 
