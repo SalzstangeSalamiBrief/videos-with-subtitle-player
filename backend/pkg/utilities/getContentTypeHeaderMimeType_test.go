@@ -18,8 +18,8 @@ func Test_GetContentTypeHeaderMimeType(t *testing.T) {
 		t.Run(data.Title, func(t *testing.T) {
 			// arrange
 			file := models2.FileTreeItem{
-				Id:   "1",
-				Path: data.Input,
+				FileId: "1",
+				Path:   data.Input,
 			}
 
 			// act

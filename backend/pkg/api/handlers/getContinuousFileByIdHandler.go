@@ -31,7 +31,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 		}
 
 		continuousFileInTree := utilities.GetFileByIdAndExtension(configuration.FileTreeManager.GetTree(), fileIdString, constants.AllowedContinuousFileExtensions...)
-		if continuousFileInTree.Id == "" {
+		if continuousFileInTree.FileId == "" {
 			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
 			problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("Could not find file with id '%v'\n", fileIdString)).SendErrorResponse(w)
 			return

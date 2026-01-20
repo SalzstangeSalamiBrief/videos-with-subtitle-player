@@ -28,7 +28,7 @@ func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(ht
 		}
 
 		discreteFileInTree := utilities.GetFileByIdAndExtension(config.FileTreeManager.GetTree(), fileIdString, constants.AllowedDiscreteFileExtensions...)
-		if discreteFileInTree.Id == "" {
+		if discreteFileInTree.FileId == "" {
 			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
 			problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("Could not find file with id '%v'\n", fileIdString)).SendErrorResponse(w)
 			return

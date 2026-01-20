@@ -1,0 +1,1 @@
+CREATE TYPE file_type AS ENUM ('video', 'audio', 'subtitle', 'image', 'unknown');

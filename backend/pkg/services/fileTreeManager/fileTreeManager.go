@@ -64,10 +64,10 @@ func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.F
 		}
 
 		newFileItem := models.FileTreeItem{
-			Id:   uuid.New().String(),
-			Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: fileTreeManager.rootPath}),
-			Name: utilities.GetFilenameWithoutExtension(itemName),
-			Type: fileType,
+			FileId: uuid.New().String(),
+			Path:   utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: fileTreeManager.rootPath}),
+			Name:   utilities.GetFilenameWithoutExtension(itemName),
+			Type:   fileType,
 		}
 
 		if fileType == enums.IMAGE {
@@ -115,12 +115,12 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 	}
 
 	subtitleFile := models.FileTreeItem{
-		Id:   uuid.New().String(),
-		Path: utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
+		FileId: uuid.New().String(),
+		Path:   utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
 		// TODO NAME INCLUDES THE WHOLE PATH
 		Name:                  utilities.GetFilenameWithoutExtension(possibleSubtitleFileName),
 		Type:                  enums.SUBTITLE,
-		AssociatedAudioFileId: &audioFile.Id,
+		AssociatedAudioFileId: &audioFile.FileId,
 	}
 
 	*subTree = append(*subTree, subtitleFile)
@@ -137,12 +137,12 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 		lowQualityImagePath := imageConverterUtilities.GetLowQualityImagePath(imageFile.Path)
 
 		resizeImageFileItem := models.FileTreeItem{
-			Id:   uuid.New().String(),
-			Path: lowQualityImagePath,
-			Name: utilities.GetFilenameWithoutExtension(lowQualityImagePath),
-			Type: enums.IMAGE,
+			FileId: uuid.New().String(),
+			Path:   lowQualityImagePath,
+			Name:   utilities.GetFilenameWithoutExtension(lowQualityImagePath),
+			Type:   enums.IMAGE,
 		}
-		imageFile.LowQualityImageId = &resizeImageFileItem.Id
+		imageFile.LowQualityImageId = &resizeImageFileItem.FileId
 		*subTree = append(*subTree, resizeImageFileItem)
 	}
 

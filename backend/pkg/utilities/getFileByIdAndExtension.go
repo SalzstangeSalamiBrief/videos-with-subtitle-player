@@ -9,7 +9,7 @@ import (
 func GetFileByIdAndExtension(fileTreeItems []models.FileTreeItem, id string, allowedExtension ...string) models.FileTreeItem {
 	var file models.FileTreeItem
 	for _, fileTreeItem := range fileTreeItems {
-		isMatch := fileTreeItem.Id == id
+		isMatch := fileTreeItem.FileId == id
 		if !isMatch {
 			continue
 		}

@@ -2,20 +2,22 @@ package models
 
 import (
 	"backend/pkg/enums"
+	"gorm.io/gorm"
 )
 
 type FileTreeItem struct {
-	Id                    string
+	gorm.Model
+	FileId                string
 	Path                  string
 	Name                  string
-	Type                  enums.FileType
+	Type                  enums.FileType `gorm:"type:file_type;not null"`
 	AssociatedAudioFileId *string
 	LowQualityImageId     *string
 }
 
 func (item *FileTreeItem) ToFileDto() FileDto {
 	dto := FileDto{
-		Id:   item.Id,
+		Id:   item.FileId,
 		Name: item.Name,
 		Type: item.Type,
 	}
