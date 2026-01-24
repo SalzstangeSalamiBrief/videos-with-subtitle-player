@@ -2,11 +2,12 @@ package main
 
 import (
 	"backend/pkg/models"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"os"
 	"path"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -35,7 +36,7 @@ func main() {
 
 	log.Println(result)
 
-	migrationError := databaseConnection.AutoMigrate(&models.FileTreeItem{})
+	migrationError := databaseConnection.AutoMigrate(&models.FileTreeItem{}, &models.Tag{})
 	if migrationError != nil {
 		log.Fatal(migrationError)
 	}

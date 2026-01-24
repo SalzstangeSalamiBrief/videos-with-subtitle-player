@@ -68,3 +68,5 @@ test-content
 **/.tanstack
 **/frontend/node_modules
 node_modules
+
+seed_*.sql
