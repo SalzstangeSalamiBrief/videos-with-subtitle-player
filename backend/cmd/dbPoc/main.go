@@ -4,6 +4,7 @@ import (
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
 	"context"
+	"database/sql"
 	"log"
 	"os"
 	"path"
@@ -26,17 +27,10 @@ func main() {
 		log.Fatal(openDatabaseConnectionError)
 	}
 
-	firstMigration, getFirstMigrationError := getMigrationFileContent("1_AddFileTypeEnum.sql")
-	if getFirstMigrationError != nil {
-		log.Fatal(getFirstMigrationError)
+	addFileTypeEnumError := getAndExecuteSqlFile(db, "1_AddFileTypeEnum.sql")
+	if addFileTypeEnumError != nil {
+		log.Fatal(addFileTypeEnumError)
 	}
-
-	firstMigrationResult, executeFirstMigrationError := db.Exec(firstMigration)
-	if executeFirstMigrationError != nil {
-		log.Fatal(executeFirstMigrationError)
-	}
-
-	log.Println(firstMigrationResult)
 
 	migrationError := databaseConnection.AutoMigrate(&models.FileTreeItem{}, &models.Tag{})
 	if migrationError != nil {
@@ -56,6 +50,25 @@ func main() {
 	if createInBatchError != nil {
 		log.Fatal(createInBatchError)
 	}
+
+	seedTagsError := getAndExecuteSqlFile(db, "2_tags_seed.sql")
+	if seedTagsError != nil {
+		log.Fatal(seedTagsError)
+	}
+}
+
+func getAndExecuteSqlFile(db *sql.DB, filename string) error {
+	addFileTypeMigration, addFileTypeMigrationError := getMigrationFileContent(filename)
+	if addFileTypeMigrationError != nil {
+		return addFileTypeMigrationError
+	}
+
+	_, executeAddFileTypeMigrationError := db.Exec(addFileTypeMigration)
+	if executeAddFileTypeMigrationError != nil {
+		return executeAddFileTypeMigrationError
+	}
+
+	return nil
 }
 
 func getMigrationFileContent(filename string) (string, error) {
@@ -67,5 +80,4 @@ func getMigrationFileContent(filename string) (string, error) {
 
 	var stringifiedContent = string(contentAsByteArray)
 	return stringifiedContent, nil
-
 }
