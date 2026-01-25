@@ -20,7 +20,7 @@ func main() {
 	if openDatabaseConnectionError != nil {
 		log.Fatal(openDatabaseConnectionError)
 	}
-
+	// TODO TRANSACTION WHILE MIGRATING
 	db, dbError := databaseConnection.DB()
 	defer db.Close()
 	if dbError != nil {
@@ -55,6 +55,13 @@ func main() {
 	if seedTagsError != nil {
 		log.Fatal(seedTagsError)
 	}
+
+	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](databaseConnection).Find(ctx)
+	if getFileTreeItemsFromDbError != nil {
+		log.Fatal(getFileTreeItemsFromDbError)
+	}
+
+	log.Println(fileTreeItemsFromDb)
 }
 
 func getAndExecuteSqlFile(db *sql.DB, filename string) error {
