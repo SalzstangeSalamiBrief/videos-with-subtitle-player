@@ -1,9 +1,8 @@
 package models
 
-import "time"
+import "gorm.io/gorm"
 
 type Tag struct {
-	Id        uint   `gorm:"primary_key"`
-	Name      string `gorm:"unique"`
-	CreatedAt time.Time
+	gorm.Model
+	Name string `gorm:"unique"`
 }

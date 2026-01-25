@@ -69,4 +69,5 @@ test-content
 **/frontend/node_modules
 node_modules
 
-seed_*.sql
+*seed*.sql
+!*seed_example.sql
