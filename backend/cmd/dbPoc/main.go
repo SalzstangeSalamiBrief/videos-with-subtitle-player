@@ -2,6 +2,8 @@ package main
 
 import (
 	"backend/pkg/models"
+	"backend/pkg/services/fileTreeManager"
+	"context"
 	"log"
 	"os"
 	"path"
@@ -29,16 +31,30 @@ func main() {
 		log.Fatal(getFirstMigrationError)
 	}
 
-	result, executeFirstMigrationError := db.Exec(firstMigration)
+	firstMigrationResult, executeFirstMigrationError := db.Exec(firstMigration)
 	if executeFirstMigrationError != nil {
 		log.Fatal(executeFirstMigrationError)
 	}
 
-	log.Println(result)
+	log.Println(firstMigrationResult)
 
 	migrationError := databaseConnection.AutoMigrate(&models.FileTreeItem{}, &models.Tag{})
 	if migrationError != nil {
 		log.Fatal(migrationError)
+	}
+
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager("E:\\projects\\videos-with-subtitle-player\\test-content").InitializeTree()
+	fileTree := initializedFileTreeManager.GetTree()
+	_, clearDbError := db.Exec("DELETE FROM file_tree_items")
+	if clearDbError != nil {
+		log.Fatal(clearDbError)
+	}
+
+	result := gorm.WithResult()
+	ctx := context.Background()
+	createInBatchError := gorm.G[models.FileTreeItem](databaseConnection, result).CreateInBatches(ctx, &fileTree, len(fileTree))
+	if createInBatchError != nil {
+		log.Fatal(createInBatchError)
 	}
 }
 

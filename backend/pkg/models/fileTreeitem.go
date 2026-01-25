@@ -6,8 +6,9 @@ import (
 )
 
 type FileTreeItem struct {
+	// TODO DO I NEED FILE_ID IF I HAVE gorm.Model.ID?
 	gorm.Model
-	FileId                string
+	FileId                string `gorm:"type:UUID"`
 	Path                  string
 	Name                  string
 	Type                  enums.FileType `gorm:"type:file_type;not null"`

@@ -120,7 +120,9 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	}
 
 	currentNode.ThumbnailId = file.FileId
-	currentNode.LowQualityThumbnailId = *file.LowQualityImageId
+	if file.LowQualityImageId != nil {
+		currentNode.LowQualityThumbnailId = *file.LowQualityImageId
+	}
 }
 
 func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
