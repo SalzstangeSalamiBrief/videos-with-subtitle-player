@@ -3,9 +3,9 @@ package fileType
 type FileType string
 
 const (
-	VIDEO    FileType = "video"
-	AUDIO    FileType = "audio"
-	SUBTITLE FileType = "subtitle"
-	IMAGE    FileType = "image"
-	UNKNOWN  FileType = "unknown"
+	VIDEO    FileType = "Video"
+	AUDIO    FileType = "Audio"
+	SUBTITLE FileType = "Subtitle"
+	IMAGE    FileType = "Image"
+	UNKNOWN  FileType = "Unknown"
 )

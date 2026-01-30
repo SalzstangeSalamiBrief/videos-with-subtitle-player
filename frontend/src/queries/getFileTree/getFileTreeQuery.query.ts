@@ -1,22 +1,22 @@
 // TODO OUTSOURCE PATHS INTO CONSTANTS OR GENERATE CODE?
 
-import type { IApiResponse } from '$models/ApiResponse';
-import type { IFileTreeDto } from '$models/fileTree/dtos/fileTreeDto';
+import { isFileTreeDtoArray } from '$lib/type-predicates/dtos/isFileTreeDtoArray';
 import type { IApiError } from '$models/ApiError';
 import { ApiError } from '$models/ApiError';
-import { isFileTreeDtoArray } from '$models/fileTree/dtos/fileTreeDto';
+import type { IApiResponse } from '$models/ApiResponse';
+import type { FileTreeDto } from 'src/client/generated/fileTreeDto';
 
 const path = '/api/file-tree';
 
 export async function getFileTreeQuery(
   baseUrl: string,
-): Promise<IApiResponse<IFileTreeDto[]>> {
+): Promise<IApiResponse<FileTreeDto[]>> {
   try {
     const url = baseUrl + path;
 
     const response = await fetch(url);
 
-    const json: IFileTreeDto[] | IApiError = await response.json();
+    const json: FileTreeDto[] | IApiError = await response.json();
     if (!response.ok) {
       if (ApiError.isApiError(json)) {
         return { error: new ApiError(json) };

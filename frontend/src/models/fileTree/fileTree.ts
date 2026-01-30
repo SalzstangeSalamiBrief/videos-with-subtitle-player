@@ -1,4 +1,4 @@
-import type { IFileDto } from './dtos/fileDtos';
+import type { FileDto } from 'src/client/generated/fileDto';
 
 export interface IFileTree {
   name: string;
@@ -11,6 +11,6 @@ export interface IFileTree {
   videos: IFileNode[];
 }
 
-export interface IFileNode extends IFileDto {
+export interface IFileNode extends FileDto {
   subtitleFileId?: string;
 }

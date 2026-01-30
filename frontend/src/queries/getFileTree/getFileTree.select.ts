@@ -4,12 +4,9 @@ import {
   isSubtitleFile,
   isVideoFile,
 } from '$lib/type-predicates/file-type-predicates';
-import type {
-  IFileDto,
-  ISubtitleFileDto,
-} from '$models/fileTree/dtos/fileDtos';
-import type { IFileTreeDto } from '$models/fileTree/dtos/fileTreeDto';
+import type { ISubtitleFileDto } from '$models/fileTree/dtos/fileDtos';
 import type { IFileNode, IFileTree } from '$models/fileTree/fileTree';
+import type { FileDto, FileTreeDto } from 'src/client/generated';
 
 export interface IGetFileTreeSelectReturn {
   fileTrees: IFileTree[];
@@ -17,7 +14,7 @@ export interface IGetFileTreeSelectReturn {
 }
 
 export function getFileTreeSelect(
-  input: IFileTreeDto[],
+  input: FileTreeDto[],
 ): IGetFileTreeSelectReturn {
   const fileTrees = transformDtoTreeToFileTree(input);
   const fileGroups = getFlatFilesGroups(fileTrees);
@@ -50,7 +47,7 @@ function getFlatFilesGroups(fileTrees: IFileTree[]) {
 }
 
 function transformDtoTreeToFileTree(
-  dtoTree: IFileTreeDto[] | undefined,
+  dtoTree: FileTreeDto[] | undefined,
 ): IFileTree[] {
   if (!dtoTree?.length) {
     return [];
@@ -89,7 +86,7 @@ function transformDtoTreeToFileTree(
 }
 
 function transformFileDtoToFile(
-  dto: IFileDto,
+  dto: FileDto,
   subtitleFiles: ISubtitleFileDto[],
 ): IFileNode {
   const result: IFileNode = {

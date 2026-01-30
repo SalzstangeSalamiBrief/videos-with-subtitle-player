@@ -1,0 +1,287 @@
+openapi: 3.1.0
+info:
+  title: Videos with Subtitle Player API
+  description: API for managing video files with subtitle synchronization
+  version: 1.0.0
+  contact:
+    name: API Support
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /file-tree:
+    get:
+      summary: Get file tree
+      description: Retrieves the hierarchical file tree structure containing folders and files
+      operationId: getFileTree
+      tags:
+        - File Tree
+      responses:
+        "200":
+          description: Successfully retrieved the file tree
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FileTreeDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+
+  /file/continuous/{fileId}:
+    get:
+      summary: Get continuous file by ID
+      description: Retrieves a continuous file (video or audio) by its UUID. Continous files have the dimension time as part of their definition. The route supports range requests for streaming.
+      operationId: getContinuousFileById
+      tags:
+        - Files
+      parameters:
+        - $ref: "#/components/parameters/FileId"
+        - $ref: "#/components/parameters/RangeHeader"
+      responses:
+        "200":
+          description: Full file content returned
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: MIME type of the file
+            Content-Length:
+              schema:
+                type: integer
+              description: Size of the file in bytes
+            Accept-Ranges:
+              schema:
+                type: string
+                const: bytes
+              description: Indicates that range requests are supported
+          content:
+            video/*:
+              schema:
+                type: string
+                format: binary
+            audio/*:
+              schema:
+                type: string
+                format: binary
+        "206":
+          description: Partial content returned (range request)
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: MIME type of the file
+            Content-Length:
+              schema:
+                type: integer
+              description: Size of the returned range in bytes
+            Content-Range:
+              schema:
+                type: string
+                example: bytes 0-1023/4096
+              description: The range of bytes returned
+            Accept-Ranges:
+              schema:
+                type: string
+                const: bytes
+              description: Indicates that range requests are supported using bytes
+          content:
+            video/*:
+              schema:
+                type: string
+                format: binary
+            audio/*:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "416":
+          description: Range not satisfiable
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+
+  /file/discrete/{fileId}:
+    get:
+      summary: Get discrete file by ID
+      description: Retrieves a discrete file (subtitle or image) by its UUID. Discrete files don not have the dimension time
+      operationId: getDiscreteFileById
+      tags:
+        - Files
+      parameters:
+        - $ref: "#/components/parameters/FileId"
+      responses:
+        "200":
+          description: Successfully retrieved the file
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: MIME type of the file
+            Content-Length:
+              schema:
+                type: integer
+              description: Size of the file in bytes
+          content:
+            text/vtt:
+              schema:
+                type: string
+                description: WebVTT subtitle content
+            image/*:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: File not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+
+components:
+  parameters:
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      description: UUID of the file
+      schema:
+        type: string
+        format: uuid
+        pattern: "^[0-9A-Fa-f]{8}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{4}-?[0-9A-Fa-f]{12}$"
+        examples:
+          - "550e8400-e29b-41d4-a716-446655440000"
+
+    RangeHeader:
+      name: Range
+      in: header
+      required: false
+      description: Range header for partial content requests
+      schema:
+        type: string
+        pattern: "^bytes=\\d*-\\d*(,\\s*\\d*-\\d*)*$"
+        examples:
+          - "bytes=0-1023"
+          - "bytes=1024-2047"
+
+  schemas:
+    FileType:
+      type: string
+      description: Type of file
+      enum:
+        - Video
+        - Audio
+        - Subtitle
+        - Image
+        - Unknown
+
+    FileDto:
+      type: object
+      description: Represents a file in the file tree
+      required:
+        - id
+        - name
+        - fileType
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the file
+        name:
+          type: string
+          description: Name of the file
+        fileType:
+          $ref: "#/components/schemas/FileType"
+        audioFileId:
+          type: string
+          format: uuid
+          description: UUID of the associated audio file (for subtitles)
+        lowQualityImageId:
+          type: string
+          format: uuid
+          description: UUID of the low quality version of the image
+
+    FileTreeDto:
+      type: object
+      description: Represents a node in the file tree hierarchy
+      required:
+        - name
+        - id
+        - files
+        - children
+      properties:
+        name:
+          type: string
+          description: Name of the folder
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the folder
+        thumbnailId:
+          type: string
+          format: uuid
+          description: UUID of the thumbnail image for the folder
+        lowQualityThumbnailId:
+          type: string
+          format: uuid
+          description: UUID of the low quality thumbnail image for the folder
+        files:
+          type: array
+          description: List of files in this folder
+          items:
+            $ref: "#/components/schemas/FileDto"
+        children:
+          type: array
+          description: List of child folders
+          items:
+            $ref: "#/components/schemas/FileTreeDto"
+
+    ProblemDetails:
+      type: object
+      description: RFC 9457 Problem Details for HTTP APIs
+      properties:
+        type:
+          type: string
+          format: uri
+          description: A URI reference that identifies the problem type
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+        status:
+          type: integer
+          description: The HTTP status code
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+        instance:
+          type: string
+          format: uri
+          description: A URI reference that identifies the specific occurrence of the problem
+
+tags:
+  - name: File Tree
+    description: Operations for retrieving the file tree structure
+  - name: Files
+    description: Operations for retrieving individual files
