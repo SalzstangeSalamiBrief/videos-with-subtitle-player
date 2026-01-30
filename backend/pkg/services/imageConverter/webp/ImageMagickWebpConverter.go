@@ -1,7 +1,7 @@
 package webp
 
 import (
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/services/imageConverter/models"
 	imageUtilities "backend/pkg/services/imageConverter/utilities"
@@ -161,7 +161,7 @@ func traverseFileTreeToGetImages(rootPath string) (error, []string) {
 		}
 
 		fileType := utilities.GetFileType(item.Name())
-		if fileType == enums.IMAGE {
+		if fileType == fileType.IMAGE {
 			imageFilePaths = append(imageFilePaths, fullPath)
 		}
 	}

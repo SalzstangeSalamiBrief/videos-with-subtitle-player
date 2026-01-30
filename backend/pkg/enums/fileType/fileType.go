@@ -1,4 +1,4 @@
-package enums
+package fileType
 
 type FileType string
 

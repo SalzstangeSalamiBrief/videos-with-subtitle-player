@@ -1,7 +1,7 @@
 package models
 
 import (
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 )
 
 type FileTreeDto struct {
@@ -14,9 +14,9 @@ type FileTreeDto struct {
 }
 
 type FileDto struct {
-	Id                    string         `json:"id"`
-	Name                  string         `json:"name"`
-	Type                  enums.FileType `json:"fileType"`
-	AssociatedAudioFileId string         `json:"audioFileId"`
-	LowQualityImageId     string         `json:"lowQualityImageId"`
+	Id                    string            `json:"id"`
+	Name                  string            `json:"name"`
+	Type                  fileType.FileType `json:"fileType"`
+	AssociatedAudioFileId string            `json:"audioFileId"`
+	LowQualityImageId     string            `json:"lowQualityImageId"`
 }

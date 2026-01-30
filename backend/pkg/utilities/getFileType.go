@@ -2,30 +2,30 @@ package utilities
 
 import (
 	"backend/pkg/constants"
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"path"
 	"slices"
 )
 
-func GetFileType(fileName string) enums.FileType {
+func GetFileType(fileName string) fileType.FileType {
 
 	extension := path.Ext(fileName)
 
 	if slices.Contains(constants.AllowedAudioFileExtensions, extension) {
-		return enums.AUDIO
+		return fileType.AUDIO
 	}
 
 	if slices.Contains(constants.AllowedVideoFileExtensions, extension) {
-		return enums.VIDEO
+		return fileType.VIDEO
 	}
 
 	if slices.Contains(constants.AllowedImageFileExtensions, extension) {
-		return enums.IMAGE
+		return fileType.IMAGE
 	}
 
 	if slices.Contains(constants.AllowedSubtitleFileExtensions, extension) {
-		return enums.SUBTITLE
+		return fileType.SUBTITLE
 	}
 
-	return enums.UNKNOWN
+	return fileType.UNKNOWN
 }

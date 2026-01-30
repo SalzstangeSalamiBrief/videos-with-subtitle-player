@@ -2,7 +2,7 @@ package main
 
 import (
 	"backend/internal/config/api"
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/services/imageConverter/webp"
 	"backend/pkg/utilities"
@@ -125,7 +125,7 @@ func traversalPoc(rootPath string) []string {
 		}
 
 		fileType := utilities.GetFileType(item.Name())
-		if fileType == enums.IMAGE {
+		if fileType == fileType.IMAGE {
 			imageFilePaths = append(imageFilePaths, filepath.Join(rootPath, item.Name()))
 		}
 	}

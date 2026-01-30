@@ -1,7 +1,7 @@
 package models
 
 import (
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type FileTreeItem struct {
 	FileId                string `gorm:"type:UUID"`
 	Path                  string
 	Name                  string
-	Type                  enums.FileType `gorm:"type:file_type;not null"`
+	Type                  fileType.FileType `gorm:"type:file_type;not null"`
 	AssociatedAudioFileId *string
 	LowQualityImageId     *string
 }

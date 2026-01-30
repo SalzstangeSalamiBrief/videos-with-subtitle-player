@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"backend/internal/problemDetailsErrors"
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/imageConverter/constants"
@@ -90,7 +90,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 }
 
 func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
-	if file.Type != enums.IMAGE {
+	if file.Type != fileType.IMAGE {
 		return
 	}
 

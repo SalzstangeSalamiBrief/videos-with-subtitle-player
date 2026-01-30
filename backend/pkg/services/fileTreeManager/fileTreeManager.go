@@ -1,7 +1,7 @@
 package fileTreeManager
 
 import (
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
 	"backend/pkg/services/fileTreeManager/utilities"
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
@@ -58,8 +58,8 @@ func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.F
 			continue
 		}
 
-		fileType := commonUtilities.GetFileType(itemName)
-		if fileType == enums.UNKNOWN {
+		fileTypeOfItem := commonUtilities.GetFileType(itemName)
+		if fileTypeOfItem == fileType.UNKNOWN {
 			continue
 		}
 
@@ -67,20 +67,20 @@ func (fileTreeManager *FileTreeManager) getSubTree(parentPath string) []models.F
 			FileId: uuid.New().String(),
 			Path:   utilities.GetFolderPath(utilities.GetFolderPathInput{Path: currentItemPath, RootPath: fileTreeManager.rootPath}),
 			Name:   utilities.GetFilenameWithoutExtension(itemName),
-			Type:   fileType,
+			Type:   fileTypeOfItem,
 		}
 
-		if fileType == enums.IMAGE {
+		if fileTypeOfItem == fileType.IMAGE {
 			currentFileItems.handleImageFile(fileTreeManager.rootPath, newFileItem)
 			continue
 		}
 
-		if fileType == enums.VIDEO {
+		if fileTypeOfItem == fileType.VIDEO {
 			currentFileItems.handleVideoFile(newFileItem)
 			continue
 		}
 
-		if fileType == enums.AUDIO {
+		if fileTypeOfItem == fileType.AUDIO {
 			currentFileItems.handleAudioFile(fileTreeManager.rootPath, newFileItem, currentItemPath, itemName)
 		}
 	}
@@ -119,7 +119,7 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 		Path:   utilities.GetFolderPath(utilities.GetFolderPathInput{Path: possibleSubtitleFileName, RootPath: rootPath}),
 		// TODO NAME INCLUDES THE WHOLE PATH
 		Name:                  utilities.GetFilenameWithoutExtension(possibleSubtitleFileName),
-		Type:                  enums.SUBTITLE,
+		Type:                  fileType.SUBTITLE,
 		AssociatedAudioFileId: &audioFile.FileId,
 	}
 
@@ -140,7 +140,7 @@ func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.Fi
 			FileId: uuid.New().String(),
 			Path:   lowQualityImagePath,
 			Name:   utilities.GetFilenameWithoutExtension(lowQualityImagePath),
-			Type:   enums.IMAGE,
+			Type:   fileType.IMAGE,
 		}
 		imageFile.LowQualityImageId = &resizeImageFileItem.FileId
 		*subTree = append(*subTree, resizeImageFileItem)
