@@ -2,12 +2,15 @@ package models
 
 import (
 	"backend/pkg/enums"
-	"gorm.io/gorm"
+	"time"
 )
 
 type FileTreeItem struct {
 	// TODO DO I NEED FILE_ID IF I HAVE gorm.Model.ID?
-	gorm.Model
+	// Dont use gorm.Model to prevent soft delete
+	ID                    uint `gorm:"primary_key"`
+	CreatedAt             time.Time
+	UpdatedAt             time.Time
 	FileId                string `gorm:"type:UUID"`
 	Path                  string
 	Name                  string

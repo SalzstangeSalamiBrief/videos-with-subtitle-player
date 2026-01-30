@@ -1,8 +1,13 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
+)
 
 type Tag struct {
-	gorm.Model
-	Name string `gorm:"unique"`
+	// Dont use gorm.Model to prevent soft delete
+	ID        uint `gorm:"primary_key"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Name      string `gorm:"unique"`
 }

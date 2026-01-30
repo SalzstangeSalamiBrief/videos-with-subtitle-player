@@ -38,18 +38,8 @@ func main() {
 	}
 
 	initializedFileTreeManager := fileTreeManager.NewFileTreeManager("E:\\projects\\videos-with-subtitle-player\\test-content").InitializeTree()
-	fileTree := initializedFileTreeManager.GetTree()
-	_, clearDbError := db.Exec("DELETE FROM file_tree_items")
-	if clearDbError != nil {
-		log.Fatal(clearDbError)
-	}
-
-	result := gorm.WithResult()
+	fileTreeFromDisk := initializedFileTreeManager.GetTree()
 	ctx := context.Background()
-	createInBatchError := gorm.G[models.FileTreeItem](databaseConnection, result).CreateInBatches(ctx, &fileTree, len(fileTree))
-	if createInBatchError != nil {
-		log.Fatal(createInBatchError)
-	}
 
 	seedTagsError := getAndExecuteSqlFile(db, "2_tags_seed.sql")
 	if seedTagsError != nil {
@@ -59,6 +49,11 @@ func main() {
 	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](databaseConnection).Find(ctx)
 	if getFileTreeItemsFromDbError != nil {
 		log.Fatal(getFileTreeItemsFromDbError)
+	}
+
+	syncError := syncFiles(databaseConnection, fileTreeFromDisk, fileTreeItemsFromDb)
+	if syncError != nil {
+		log.Fatal(syncError)
 	}
 
 	log.Println(fileTreeItemsFromDb)
@@ -87,4 +82,104 @@ func getMigrationFileContent(filename string) (string, error) {
 
 	var stringifiedContent = string(contentAsByteArray)
 	return stringifiedContent, nil
+}
+
+func syncFiles(databaseConnection *gorm.DB, filesFromDisk []models.FileTreeItem, filesFromDatabase []models.FileTreeItem) error {
+	ctx := context.Background()
+	filesToDelete := getDistinctFiles(filesFromDatabase, filesFromDisk)
+	filesToCreate := getDistinctFiles(filesFromDisk, filesFromDatabase)
+
+	deleteError := deleteFileTreeItemsFromDb(databaseConnection, ctx, filesToDelete)
+	if deleteError != nil {
+		return deleteError
+	}
+
+	insertError := insertFileTreeItemsIntoDb(databaseConnection, ctx, filesToCreate)
+	if insertError != nil {
+		return insertError
+	}
+
+	return nil
+}
+
+func getDistinctFiles(left []models.FileTreeItem, right []models.FileTreeItem) []models.FileTreeItem {
+	distinctFiles := make([]models.FileTreeItem, 0)
+	for _, leftItem := range left {
+		isItemInBoothSets := false
+		for _, rightItem := range right {
+			if rightItem.Path == leftItem.Path {
+				isItemInBoothSets = true
+				continue
+			}
+		}
+
+		if !isItemInBoothSets {
+			distinctFiles = append(distinctFiles, leftItem)
+		}
+	}
+
+	return distinctFiles
+}
+
+func deleteFileTreeItemsFromDb(databaseConnection *gorm.DB, ctx context.Context, filesToDelete []models.FileTreeItem) error {
+	for _, fileToDelete := range filesToDelete {
+		_, deleteError := gorm.G[models.FileTreeItem](databaseConnection).Where("id = ?", fileToDelete.ID).Delete(ctx)
+		if deleteError != nil {
+			log.Printf("Error while deleting file: %v\n", fileToDelete.Path)
+			return deleteError
+		}
+
+		log.Printf("Successfully deleted file: %v\n", fileToDelete.Path)
+
+		if fileToDelete.AssociatedAudioFileId != nil {
+			doesAudioFileExits := doesFileWithFileIdExitsInDb(databaseConnection, *fileToDelete.AssociatedAudioFileId)
+			if doesAudioFileExits {
+				_, deleteError = gorm.G[models.FileTreeItem](databaseConnection).Where("file_id = ?", fileToDelete.AssociatedAudioFileId).Delete(ctx)
+				if deleteError != nil {
+					log.Printf("Error while deleting audio file with fileId='%v' of subtitle file with path='%v'\n", fileToDelete.AssociatedAudioFileId, fileToDelete.Path)
+					return deleteError
+				}
+
+				log.Printf("Successfully deleted audio file with fileId='%v' of subtitle file with path='%v'\n", fileToDelete.AssociatedAudioFileId, fileToDelete.Path)
+			}
+		}
+
+		if fileToDelete.LowQualityImageId != nil {
+			doesLowQualityImageExist := doesFileWithFileIdExitsInDb(databaseConnection, *fileToDelete.LowQualityImageId)
+			if doesLowQualityImageExist {
+				_, deleteError = gorm.G[models.FileTreeItem](databaseConnection).Where("file_id = ?", fileToDelete.LowQualityImageId).Delete(ctx)
+				if deleteError != nil {
+					log.Printf("Error while deleting low quality image with fileId='%v' of item with path='%v'\n", fileToDelete.LowQualityImageId, fileToDelete.Path)
+					return deleteError
+				}
+
+				log.Printf("Successfully deleted low quality image with fileId='%v' of item with path='%v'\n", fileToDelete.LowQualityImageId, fileToDelete.Path)
+			}
+		}
+	}
+
+	log.Printf("Deleted '%v' files\n", len(filesToDelete))
+	return nil
+}
+
+func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAdd []models.FileTreeItem) error {
+	// TODO this logic current can only create initial associations between items.
+	// TODO adding subtitle files (associatedAudioFiles) or images (lowQualityImage) later on (e. G. first creating a mp3 file and later on creating a vtt file)
+	// TODO will not be able to set corresponding associations (ids)
+	// TODO there has to be added
+	result := gorm.WithResult()
+	createInBatchError := gorm.G[models.FileTreeItem](databaseConnection, result).CreateInBatches(ctx, &filesToAdd, len(filesToAdd))
+	if createInBatchError != nil {
+		log.Println("Error creating files")
+		return createInBatchError
+	}
+
+	log.Printf("Created '%v' files\n", len(filesToAdd))
+	return nil
+}
+
+func doesFileWithFileIdExitsInDb(databaseConnection *gorm.DB, fileId string) bool {
+	count := int64(0)
+	databaseConnection.Model(&models.FileTreeItem{}).Where("file_id = ?", fileId).Count(&count)
+	return count > 0
 }
