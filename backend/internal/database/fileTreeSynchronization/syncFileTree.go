@@ -1,8 +1,8 @@
 package fileTreeSynchronization
 
 import (
+	"backend/internal/database/utilities"
 	"backend/pkg/models"
-	"backend/pkg/services/database/utilities"
 	"context"
 	"gorm.io/gorm"
 )

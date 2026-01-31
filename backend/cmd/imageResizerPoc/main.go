@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/config/api"
+	"backend/internal/configuration/api"
 	"backend/pkg/enums/fileType"
 	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/services/imageConverter/webp"

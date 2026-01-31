@@ -1,7 +1,7 @@
 package migrationExecution
 
 import (
-	"backend/pkg/services/database/utilities"
+	"backend/internal/database/utilities"
 	"context"
 	"gorm.io/gorm"
 )

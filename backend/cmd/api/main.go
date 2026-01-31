@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/config/api"
+	"backend/internal/configuration/api"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"

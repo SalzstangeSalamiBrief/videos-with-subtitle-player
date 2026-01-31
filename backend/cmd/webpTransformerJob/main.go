@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/config/webpTransformer"
+	"backend/internal/configuration/webpTransformer"
 	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"os"
