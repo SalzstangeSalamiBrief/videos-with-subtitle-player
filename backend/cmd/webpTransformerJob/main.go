@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/configuration/webpTransformer"
+	"backend/internal/configuration"
 	"backend/pkg/services/imageConverter/webp"
 	"log"
 	"os"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	initializedConfiguration, configurationError := webpTransformer.NewWebpTransformerConfiguration()
+	initializedConfiguration, configurationError := configuration.NewWebpTransformerConfiguration()
 	if configurationError != nil {
 		log.Fatal(configurationError)
 	}

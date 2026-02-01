@@ -187,7 +187,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 	*/
 	for i, initialFileToAdd := range initialFilesToAdd {
 		if initialFileToAdd.Type == fileType.IMAGE {
-			isLowQuality := utilities.IsLowQualityImage(initialFileToAdd.Path)
+			isLowQuality := utilities.IsLowQualityImagePath(initialFileToAdd.Path)
 			if isLowQuality {
 				pathWithoutLowQualitySuffix := utilities.RemoveLowQualitySuffixFromImageName(initialFileToAdd.Path)
 

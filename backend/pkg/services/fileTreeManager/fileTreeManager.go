@@ -127,7 +127,7 @@ func (subTree *SubFileTree) handleAudioFile(rootPath string, audioFile models.Fi
 }
 
 func (subTree *SubFileTree) handleImageFile(rootPath string, imageFile models.FileTreeItem) {
-	isLowQualityImage := imageConverterUtilities.IsLowQualityImage(imageFile.Path)
+	isLowQualityImage := imageConverterUtilities.IsLowQualityImagePath(imageFile.Path)
 	if isLowQualityImage {
 		return
 	}

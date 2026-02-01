@@ -1,7 +1,7 @@
-package api
+package configuration
 
 import (
-	"backend/internal/configuration"
+	"backend/internal/configuration/utilities"
 	"fmt"
 )
 
@@ -16,27 +16,27 @@ type DbConfiguration struct {
 }
 
 func NewDbConfiguration() (*DbConfiguration, error) {
-	host, err := configuration.GetEnvironmentString("Host", true, nil)
+	host, err := utilities.GetEnvironmentString("Host", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	port, err := configuration.GetEnvironmentInt("Port", false, &defaultPort)
+	port, err := utilities.GetEnvironmentInt("Port", false, &defaultPort)
 	if err != nil {
 		return nil, err
 	}
 
-	username, err := configuration.GetEnvironmentString("Username", true, nil)
+	username, err := utilities.GetEnvironmentString("Username", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	password, err := configuration.GetEnvironmentString("Password", true, nil)
+	password, err := utilities.GetEnvironmentString("Password", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	dbname, err := configuration.GetEnvironmentString("DbName", true, nil)
+	dbname, err := utilities.GetEnvironmentString("DbName", true, nil)
 	if err != nil {
 		return nil, err
 	}

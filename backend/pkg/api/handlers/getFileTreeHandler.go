@@ -99,7 +99,7 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	//	return
 	//}
 
-	isLowQualityImage := imageConverterUtilities.IsLowQualityImage(file.Path)
+	isLowQualityImage := imageConverterUtilities.IsLowQualityImagePath(file.Path)
 	if isLowQualityImage {
 		return
 	}

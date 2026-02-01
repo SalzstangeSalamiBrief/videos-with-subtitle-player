@@ -196,7 +196,7 @@ func TestIsLowQualityImage(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.Title, func(t *testing.T) {
-			result := IsLowQualityImage(testCase.Input)
+			result := IsLowQualityImagePath(testCase.Input)
 			if result != testCase.Expected {
 				t.Errorf("Expected %v, but got %v for input %q",
 					testCase.Expected, result, testCase.Input)

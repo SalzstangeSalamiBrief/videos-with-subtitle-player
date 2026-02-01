@@ -1,22 +1,23 @@
 package fileTreeSynchronization
 
 import (
+	"backend/internal/database/utilities"
 	"backend/pkg/constants"
 	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
-	"backend/pkg/services/imageConverter/utilities"
+	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"context"
 	"gorm.io/gorm"
 	"log"
 	"strings"
 )
 
-func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context, initialFilesToAdd []models.FileTreeItem) error {
-	if len(initialFilesToAdd) == 0 {
+func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileTreeItem) error {
+	if len(filesToAddInput) == 0 {
 		return nil
 	}
 
-	filesToAdd := make([]models.FileTreeItem, len(initialFilesToAdd))
+	filesToAdd := make([]models.FileTreeItem, len(filesToAddInput))
 
 	/**
 	There are two cases files and their associated files can be added:
@@ -27,19 +28,12 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 		- subtitle
 		- image
 	*/
-	for i, initialFileToAdd := range initialFilesToAdd {
+	for i, initialFileToAdd := range filesToAddInput {
 		if initialFileToAdd.Type == fileType.IMAGE {
-			isLowQuality := utilities.IsLowQualityImage(initialFileToAdd.Path)
+			isLowQuality := imageConverterUtilities.IsLowQualityImagePath(initialFileToAdd.Path)
 			if isLowQuality {
-				pathWithoutLowQualitySuffix := utilities.RemoveLowQualitySuffixFromImageName(initialFileToAdd.Path)
-
-				isSameBatchInsert := false
-				for _, referenceFile := range initialFilesToAdd {
-					if referenceFile.Path == pathWithoutLowQualitySuffix {
-						isSameBatchInsert = true
-						break
-					}
-				}
+				pathWithoutLowQualitySuffix := imageConverterUtilities.RemoveLowQualitySuffixFromImageName(initialFileToAdd.Path)
+				isSameBatchInsert := utilities.CheckIfFileIsInBatchByPath(pathWithoutLowQualitySuffix, filesToAddInput)
 
 				if !isSameBatchInsert {
 					matchingImage, tryGetMatchingImageByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathWithoutLowQualitySuffix)
@@ -57,14 +51,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 
 		if initialFileToAdd.Type == fileType.SUBTITLE {
 			pathOfPossibleMatchingAudioFile := strings.TrimSuffix(initialFileToAdd.Path, constants.SubtitleExtension)
-
-			isSameBatchInsert := false
-			for _, referenceFile := range initialFilesToAdd {
-				if referenceFile.Path == pathOfPossibleMatchingAudioFile {
-					isSameBatchInsert = true
-					break
-				}
-			}
+			isSameBatchInsert := utilities.CheckIfFileIsInBatchByPath(pathOfPossibleMatchingAudioFile, filesToAddInput)
 
 			if !isSameBatchInsert {
 				matchingAudioFile, tryGetMatchingAudioFileByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathOfPossibleMatchingAudioFile)

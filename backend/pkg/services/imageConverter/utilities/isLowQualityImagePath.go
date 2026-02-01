@@ -10,7 +10,7 @@ import (
 
 var lowQualityImageSuffix = regexp.MustCompile(fmt.Sprintf("%s$", constants.LowQualityFileSuffix))
 
-func IsLowQualityImage(relativeImagePath string) bool {
+func IsLowQualityImagePath(relativeImagePath string) bool {
 	fileName := filepath.Base(relativeImagePath)
 	fileNameWithoutExtension := strings.TrimSuffix(fileName, filepath.Ext(fileName))
 	isLowQualityImage := lowQualityImageSuffix.MatchString(fileNameWithoutExtension)

@@ -30,7 +30,7 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	numberOfImagesConverted := 0
 
 	for _, image := range allImages {
-		if imageUtilities.IsLowQualityImage(image) {
+		if imageUtilities.IsLowQualityImagePath(image) {
 			log.Printf("Image %s is low quality. Skip processing \n", image)
 			continue
 		}

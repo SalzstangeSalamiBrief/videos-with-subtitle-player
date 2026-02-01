@@ -1,7 +1,7 @@
-package api
+package configuration
 
 import (
-	"backend/internal/configuration"
+	"backend/internal/configuration/utilities"
 	"fmt"
 )
 
@@ -16,22 +16,22 @@ type ApiConfiguration struct {
 }
 
 func NewApiConfiguration() (*ApiConfiguration, error) {
-	rootPath, err := configuration.GetEnvironmentString("RootPath", true, nil)
+	rootPath, err := utilities.GetEnvironmentString("RootPath", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	allowedCors, err := configuration.GetEnvironmentString("AllowedCors", true, nil)
+	allowedCors, err := utilities.GetEnvironmentString("AllowedCors", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	address, err := configuration.GetEnvironmentString("ServerAddress", false, &defaultServerAddress)
+	address, err := utilities.GetEnvironmentString("ServerAddress", false, &defaultServerAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	port, err := configuration.GetEnvironmentInt("Port", false, &defaultServerPort)
+	port, err := utilities.GetEnvironmentInt("Port", false, &defaultServerPort)
 	if err != nil {
 		return nil, err
 	}

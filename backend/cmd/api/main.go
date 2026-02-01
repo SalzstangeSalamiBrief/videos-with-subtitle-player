@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/internal/configuration/api"
+	"backend/internal/configuration"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	initializedConfiguration, configurationError := api.NewApiConfiguration()
+	initializedConfiguration, configurationError := configuration.NewApiConfiguration()
 	if configurationError != nil {
 		log.Fatal(configurationError)
 	}

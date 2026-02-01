@@ -1,8 +1,6 @@
-package webpTransformer
+package configuration
 
-import (
-	"backend/internal/configuration"
-)
+import "backend/internal/configuration/utilities"
 
 var shouldDeleteNonWebpImagesDefault = false
 
@@ -13,17 +11,17 @@ type WebpTransformerConfiguration struct {
 }
 
 func NewWebpTransformerConfiguration() (*WebpTransformerConfiguration, error) {
-	rootPath, err := configuration.GetEnvironmentString("RootPath", true, nil)
+	rootPath, err := utilities.GetEnvironmentString("RootPath", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	executionIntervalInMinutes, err := configuration.GetEnvironmentInt("IntervalInMinutes", true, nil)
+	executionIntervalInMinutes, err := utilities.GetEnvironmentInt("IntervalInMinutes", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	shouldDeleteNonWebpImages, err := configuration.GetEnvironmentBoolean("ShouldDeleteNonWebpImages", false, &shouldDeleteNonWebpImagesDefault)
+	shouldDeleteNonWebpImages, err := utilities.GetEnvironmentBoolean("ShouldDeleteNonWebpImages", false, &shouldDeleteNonWebpImagesDefault)
 	if err != nil {
 		return nil, err
 	}
