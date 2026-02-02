@@ -71,3 +71,4 @@ node_modules
 
 *seed*.sql
 !*seed_example.sql
+testdata

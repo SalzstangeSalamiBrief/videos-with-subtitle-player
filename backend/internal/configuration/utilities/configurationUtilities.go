@@ -9,7 +9,7 @@ import (
 )
 
 func GetEnvironmentString(key string, isRequired bool, defaultValue *string) (string, error) {
-	value := strings.Trim(os.Getenv(key), " ")
+	value := strings.TrimSpace(os.Getenv(key))
 
 	if value == "" {
 		if isRequired {
@@ -18,7 +18,7 @@ func GetEnvironmentString(key string, isRequired bool, defaultValue *string) (st
 		}
 
 		if defaultValue != nil && *defaultValue != "" {
-			return *defaultValue, nil
+			return strings.TrimSpace(*defaultValue), nil
 		}
 	}
 
@@ -26,7 +26,7 @@ func GetEnvironmentString(key string, isRequired bool, defaultValue *string) (st
 }
 
 func GetEnvironmentInt(key string, isRequired bool, defaultValue *int64) (int64, error) {
-	valueString := strings.Trim(os.Getenv(key), " ")
+	valueString := strings.TrimSpace(os.Getenv(key))
 	if valueString == "" {
 		if isRequired {
 			return 0, errors.New(fmt.Sprintf("Could not load required int environment variable '%v'", key))
@@ -42,7 +42,7 @@ func GetEnvironmentInt(key string, isRequired bool, defaultValue *int64) (int64,
 }
 
 func GetEnvironmentBoolean(key string, isRequired bool, defaultValue *bool) (bool, error) {
-	valueString := strings.Trim(os.Getenv(key), " ")
+	valueString := strings.TrimSpace(os.Getenv(key))
 	if valueString == "" {
 		if isRequired {
 			return false, errors.New(fmt.Sprintf("Could not load required int environment variable '%v'", key))
