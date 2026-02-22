@@ -8,11 +8,11 @@ import (
 var defaultPort int64 = 5432
 
 type DbConfiguration struct {
-	host     string
-	port     int64
-	username string
-	password string
-	dbname   string
+	Host     string
+	Port     int64
+	Username string
+	Password string
+	DbName   string
 }
 
 func NewDbConfiguration() (*DbConfiguration, error) {
@@ -51,25 +51,25 @@ func NewDbConfiguration() (*DbConfiguration, error) {
 }
 
 func (configuration *DbConfiguration) GetHost() string {
-	return configuration.host
+	return configuration.Host
 }
 
 func (configuration *DbConfiguration) GetPort() int64 {
-	return configuration.port
+	return configuration.Port
 }
 
 func (configuration *DbConfiguration) GetUsername() string {
-	return configuration.username
+	return configuration.Username
 }
 
 func (configuration *DbConfiguration) GetPassword() string {
-	return configuration.password
+	return configuration.Password
 }
 
 func (configuration *DbConfiguration) GetDbName() string {
-	return configuration.dbname
+	return configuration.DbName
 }
 
 func (configuration *DbConfiguration) GetConnectionString() string {
-	return fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable TimeZone=Europe/Berlin", configuration.host, configuration.port, configuration.username, configuration.password, configuration.dbname)
+	return fmt.Sprintf("host=%v port=%v user=%v password=%v dbname=%v sslmode=disable TimeZone=Europe/Berlin", configuration.Host, configuration.Port, configuration.Username, configuration.Password, configuration.DbName)
 }
