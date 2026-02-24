@@ -7,18 +7,23 @@ import (
 	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/imageConverter/utilities"
 	"context"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
 	"os"
 	"path"
 	"strings"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 // TODO CONFIGURATION
 func main() {
 
-	connectionString := "host=localhost port=5432 user=streamingServiceAccount password=tempPassword dbname=streaming-db sslmode=disable TimeZone=Europe/Berlin"
+	connectionString := "host=localhost port=5432 " +
+		"user=streamingServiceAccount " +
+		"password=tempPassword " +
+		"dbname=streaming-db " +
+		"sslmode=disable TimeZone=Europe/Berlin"
 	databaseConnection, openDatabaseConnectionError := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 	if openDatabaseConnectionError != nil {
 		log.Fatal(openDatabaseConnectionError)

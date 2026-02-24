@@ -2,6 +2,9 @@ package database
 
 import (
 	"backend/internal/configuration"
+	"backend/internal/database/migrationExecution"
+	"backend/pkg/models"
+	"context"
 	"errors"
 	"log"
 
@@ -12,7 +15,7 @@ import (
 // TODO
 
 type FileTreeDatabase struct {
-	configuration      configuration.DbConfiguration
+	configuration      *configuration.DbConfiguration
 	DatabaseConnection *gorm.DB
 }
 
@@ -20,13 +23,13 @@ func NewFileTreeDatabase() *FileTreeDatabase {
 	return &FileTreeDatabase{}
 }
 
-func (fileTree *FileTreeDatabase) AddConfiguration(configuration configuration.DbConfiguration) *FileTreeDatabase {
+func (fileTree *FileTreeDatabase) AddConfiguration(configuration *configuration.DbConfiguration) *FileTreeDatabase {
 	fileTree.configuration = configuration
 	return fileTree
 }
 
 func (fileTreeDatabase *FileTreeDatabase) Build() (*FileTreeDatabase, error) {
-	validationError := fileTreeDatabase.validateConfiguration()
+	_, validationError := fileTreeDatabase.validateConfiguration()
 	if validationError != nil {
 		return nil, validationError
 	}
@@ -41,26 +44,72 @@ func (fileTreeDatabase *FileTreeDatabase) Build() (*FileTreeDatabase, error) {
 	return fileTreeDatabase, nil
 }
 
-func (fileTreeDatabase *FileTreeDatabase) validateConfiguration() error {
+func (fileTreeDatabase *FileTreeDatabase) validateConfiguration() (*FileTreeDatabase, error) {
+	if fileTreeDatabase.configuration == nil {
+		return nil, errors.New("configuration is missing")
+	}
+
 	if fileTreeDatabase.configuration.Port <= 0 {
-		return errors.New("configuration not complete: No 'Port' provided")
+		return fileTreeDatabase, errors.New("configuration not complete: No 'Port' provided")
 	}
 
 	if fileTreeDatabase.configuration.Host == "" {
-		return errors.New("configuration not complete: No 'Host' provided")
+		return fileTreeDatabase, errors.New("configuration not complete: No 'Host' provided")
 	}
 
 	if fileTreeDatabase.configuration.Username == "" {
-		return errors.New("configuration not complete: No 'Username' provided")
+		return fileTreeDatabase, errors.New("configuration not complete: No 'Username' provided")
 	}
 
 	if fileTreeDatabase.configuration.Password == "" {
-		return errors.New("configuration not complete: No 'Password' provided")
+		return fileTreeDatabase, errors.New("configuration not complete: No 'Password' provided")
 	}
 
 	if fileTreeDatabase.configuration.DbName == "" {
-		return errors.New("configuration not complete: No 'DbName' provided")
+		return fileTreeDatabase, errors.New("configuration not complete: No 'DbName' provided")
+	}
+
+	return fileTreeDatabase, nil
+}
+
+func (fileTreeDatabase *FileTreeDatabase) Close() error {
+	if fileTreeDatabase.DatabaseConnection == nil {
+		return errors.New("database connection not initialized")
+	}
+
+	db, err := fileTreeDatabase.DatabaseConnection.DB()
+	if err != nil {
+		return err
+	}
+
+	err = db.Close()
+	if err != nil {
+		return err
 	}
 
 	return nil
+}
+
+func (fileTreeDatabase *FileTreeDatabase) MigrateDatabase() (*FileTreeDatabase, error) {
+	if fileTreeDatabase.DatabaseConnection == nil {
+		return nil, errors.New("database connection not initialized")
+	}
+
+	ctx := context.Background()
+	addFileTypeEnumError := migrationExecution.ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "1_AddFileTypeEnum.sql")
+	if addFileTypeEnumError != nil {
+		return fileTreeDatabase, addFileTypeEnumError
+	}
+
+	migrationError := fileTreeDatabase.DatabaseConnection.AutoMigrate(&models.FileTreeItem{}, &models.Tag{})
+	if migrationError != nil {
+		return fileTreeDatabase, migrationError
+	}
+
+	seedTagsError := migrationExecution.ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "2_tags_seed.sql")
+	if seedTagsError != nil {
+		log.Fatal(seedTagsError)
+	}
+
+	return fileTreeDatabase, nil
 }

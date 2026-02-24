@@ -8,30 +8,30 @@ import (
 var defaultPort int64 = 5432
 
 type DbConfiguration struct {
-	Host     string
 	Port     int64
+	Host     string
 	Username string
 	Password string
 	DbName   string
 }
 
 func NewDbConfiguration() (*DbConfiguration, error) {
-	host, err := utilities.GetEnvironmentString("Host", true, nil)
+	host, err := utilities.GetEnvironmentString("DbHost", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	port, err := utilities.GetEnvironmentInt("Port", false, &defaultPort)
+	port, err := utilities.GetEnvironmentInt("DbPort", false, &defaultPort)
 	if err != nil {
 		return nil, err
 	}
 
-	username, err := utilities.GetEnvironmentString("Username", true, nil)
+	username, err := utilities.GetEnvironmentString("DbUsername", true, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	password, err := utilities.GetEnvironmentString("Password", true, nil)
+	password, err := utilities.GetEnvironmentString("DbPassword", true, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func NewDbConfiguration() (*DbConfiguration, error) {
 	}
 
 	return &DbConfiguration{
-		host,
 		port,
+		host,
 		username,
 		password,
 		dbname,

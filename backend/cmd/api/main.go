@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/configuration"
+	"backend/internal/database"
 	"backend/internal/router"
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
@@ -15,40 +16,89 @@ import (
 )
 
 func main() {
-	initializedConfiguration, configurationError := configuration.NewApiConfiguration()
-	if configurationError != nil {
-		log.Fatal(configurationError)
-	}
+	apiConfiguration, _ := loadConfigurations()
 
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(initializedConfiguration.GetRootPath()).InitializeTree()
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(apiConfiguration.GetRootPath()).InitializeTree()
+	//dbConnection, createDbError := createDatabases(dbConfiguration)
+	//if createDbError != nil {
+	//	if dbConnection != nil {
+	//		dbConnection.Close()
+	//	}
+	//
+	//	log.Fatal(createDbError)
+	//}
+	log.Default().Printf("Start server on '%v'", apiConfiguration.GetServerAddress())
 
-	log.Default().Printf("Start server on '%v'", initializedConfiguration.GetServerAddress())
-
+	// TODO CLEANUP OF DB
 	shutdownCh := make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 
-	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: initializedConfiguration.GetCors()}).Build()
-	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
+	routerBuilder := router.NewRouterBuilder()
 
-	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:        initializedConfiguration.GetRootPath(),
-		FileTreeManager: initializedFileTreeManager,
-	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: initializedConfiguration.GetRootPath(), FileTreeManager: initializedFileTreeManager})
-	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: initializedFileTreeManager})
+	createdRoutes := createRoutes(apiConfiguration, initializedFileTreeManager)
+	for _, route := range createdRoutes {
+		routerBuilder.RegisterRoute(route)
+	}
 
-	r := router.
-		NewRouterBuilder().
-		RegisterRoute(handleContinousFileRoute).
-		RegisterRoute(handleDiscreteFileRoute).
-		RegisterRoute(getFileTreeRoute).
-		RegisterMiddleware(requestLoggerMiddleware).
-		RegisterMiddleware(corsMiddleware).
-		Build()
+	createdMiddlewares := createMiddlewares(apiConfiguration)
+	for _, middleware := range createdMiddlewares {
+		routerBuilder.RegisterMiddleware(middleware)
+	}
+
+	r := routerBuilder.Build()
 
 	mux := http.NewServeMux()
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(initializedConfiguration.GetServerAddress(), mux)
+	http.ListenAndServe(apiConfiguration.GetServerAddress(), mux)
+}
+
+func loadConfigurations() (*configuration.ApiConfiguration, *configuration.DbConfiguration) {
+	apiConfiguration, apiConfigurationError := configuration.NewApiConfiguration()
+	if apiConfigurationError != nil {
+		log.Fatal(apiConfigurationError)
+	}
+
+	dbConfiguration, dbConfigurationError := configuration.NewDbConfiguration()
+	if dbConfigurationError != nil {
+		log.Fatal(dbConfigurationError)
+	}
+
+	return apiConfiguration, dbConfiguration
+}
+
+func createDatabases(dbConfiguration *configuration.DbConfiguration) (*database.FileTreeDatabase, error) {
+	fileTreeDb := database.NewFileTreeDatabase().AddConfiguration(dbConfiguration)
+	_, migrateDbError := fileTreeDb.MigrateDatabase()
+	if migrateDbError != nil {
+		log.Fatal(migrateDbError)
+	}
+
+	return fileTreeDb, nil
+}
+
+func createRoutes(apiConfiguration *configuration.ApiConfiguration, ftm *fileTreeManager.FileTreeManager) []router.Route {
+	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
+		RootPath:        apiConfiguration.GetRootPath(),
+		FileTreeManager: ftm,
+	})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeManager: ftm})
+	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: ftm})
+
+	return []router.Route{
+		handleDiscreteFileRoute,
+		handleContinousFileRoute,
+		getFileTreeRoute,
+	}
+}
+
+func createMiddlewares(apiConfiguration *configuration.ApiConfiguration) []router.Middleware {
+	corsMiddleware := middlewares.NewCorsMiddleWare().AddConfiguration(middlewares.CorsMiddleWareConfiguration{AllowedCors: apiConfiguration.GetCors()}).Build()
+	requestLoggerMiddleware := middlewares.NewRequestLogger().Build()
+
+	return []router.Middleware{
+		corsMiddleware,
+		requestLoggerMiddleware,
+	}
 }
