@@ -1,4 +1,4 @@
-package utilities
+package database
 
 import "backend/pkg/models"
 

@@ -1,15 +1,16 @@
 package fileTreeSynchronization
 
 import (
-	"backend/internal/database/utilities"
+	"backend/internal/database"
 	"backend/pkg/constants"
 	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"context"
-	"gorm.io/gorm"
 	"log"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileTreeItem) error {
@@ -33,7 +34,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 			isLowQuality := imageConverterUtilities.IsLowQualityImagePath(initialFileToAdd.Path)
 			if isLowQuality {
 				pathWithoutLowQualitySuffix := imageConverterUtilities.RemoveLowQualitySuffixFromImageName(initialFileToAdd.Path)
-				isSameBatchInsert := utilities.CheckIfFileIsInBatchByPath(pathWithoutLowQualitySuffix, filesToAddInput)
+				isSameBatchInsert := database.CheckIfFileIsInBatchByPath(pathWithoutLowQualitySuffix, filesToAddInput)
 
 				if !isSameBatchInsert {
 					matchingImage, tryGetMatchingImageByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathWithoutLowQualitySuffix)
@@ -51,7 +52,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 
 		if initialFileToAdd.Type == fileType.SUBTITLE {
 			pathOfPossibleMatchingAudioFile := strings.TrimSuffix(initialFileToAdd.Path, constants.SubtitleExtension)
-			isSameBatchInsert := utilities.CheckIfFileIsInBatchByPath(pathOfPossibleMatchingAudioFile, filesToAddInput)
+			isSameBatchInsert := database.CheckIfFileIsInBatchByPath(pathOfPossibleMatchingAudioFile, filesToAddInput)
 
 			if !isSameBatchInsert {
 				matchingAudioFile, tryGetMatchingAudioFileByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathOfPossibleMatchingAudioFile)

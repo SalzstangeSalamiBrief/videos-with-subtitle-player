@@ -8,6 +8,7 @@ import (
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
 	"backend/pkg/services/fileTreeManager"
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -16,17 +17,18 @@ import (
 )
 
 func main() {
-	apiConfiguration, _ := loadConfigurations()
+	apiConfiguration, dbConfiguration := loadConfigurations()
 
 	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(apiConfiguration.GetRootPath()).InitializeTree()
-	//dbConnection, createDbError := createDatabases(dbConfiguration)
-	//if createDbError != nil {
-	//	if dbConnection != nil {
-	//		dbConnection.Close()
-	//	}
-	//
-	//	log.Fatal(createDbError)
-	//}
+	dbConnection, createDbError := createDatabases(dbConfiguration)
+	if createDbError != nil {
+		if dbConnection != nil {
+			dbConnection.Close()
+		}
+
+		log.Fatal(createDbError)
+	}
+
 	log.Default().Printf("Start server on '%v'", apiConfiguration.GetServerAddress())
 
 	// TODO CLEANUP OF DB
@@ -51,7 +53,30 @@ func main() {
 	mux.Handle("/", http.FileServer(http.Dir("./public")))
 
 	mux.Handle("/api/", r)
-	http.ListenAndServe(apiConfiguration.GetServerAddress(), mux)
+
+	log.Println("Listening on " + apiConfiguration.GetServerAddress() + "...")
+	server := &http.Server{
+		Addr:    apiConfiguration.GetServerAddress(),
+		Handler: mux,
+	}
+
+	go func() {
+		server.ListenAndServe()
+	}()
+
+	<-shutdownCh
+	log.Println("Shutting down server...")
+	shutdownError := server.Shutdown(context.Background())
+	if shutdownError != nil {
+		log.Fatalf("Forced shutdown: %v", shutdownError)
+	}
+
+	if dbConnection != nil {
+		log.Println("Closing database connection...")
+		dbConnection.Close()
+	}
+
+	log.Println("Server successfully stopped")
 }
 
 func loadConfigurations() (*configuration.ApiConfiguration, *configuration.DbConfiguration) {
@@ -69,10 +94,14 @@ func loadConfigurations() (*configuration.ApiConfiguration, *configuration.DbCon
 }
 
 func createDatabases(dbConfiguration *configuration.DbConfiguration) (*database.FileTreeDatabase, error) {
-	fileTreeDb := database.NewFileTreeDatabase().AddConfiguration(dbConfiguration)
+	fileTreeDb, openDbError := database.NewFileTreeDatabase().AddConfiguration(dbConfiguration).Open()
+	if openDbError != nil {
+		return nil, openDbError
+	}
+
 	_, migrateDbError := fileTreeDb.MigrateDatabase()
 	if migrateDbError != nil {
-		log.Fatal(migrateDbError)
+		return nil, migrateDbError
 	}
 
 	return fileTreeDb, nil

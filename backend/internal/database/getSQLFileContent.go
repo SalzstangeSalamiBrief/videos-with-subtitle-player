@@ -1,17 +1,14 @@
-package utilities
+package database
 
 import (
 	"embed"
 )
 
-//go:embed ../migrations/*.sql
+//go:embed migrations/*.sql
 var fileTreeDatabaseMigrationFiles embed.FS
 
-// TODO CHECK PATHS ON EXECUTION
 func GetSQLFileContent(filename string) (string, error) {
-	contentAsByteArray, readFileError := fileTreeDatabaseMigrationFiles.ReadFile("migrations" + filename)
-	//var relativeFilePathToMigrationFolder = path.Join("./migrations/", filename)
-	//contentAsByteArray, readFileError := os.ReadFile(relativeFilePathToMigrationFolder)
+	contentAsByteArray, readFileError := fileTreeDatabaseMigrationFiles.ReadFile("migrations/" + filename)
 	if readFileError != nil {
 		return "", readFileError
 	}

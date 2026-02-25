@@ -1,16 +1,17 @@
 package fileTreeSynchronization
 
 import (
-	"backend/internal/database/utilities"
+	"backend/internal/database"
 	"backend/pkg/models"
 	"context"
+
 	"gorm.io/gorm"
 )
 
 func syncFileTree(databaseConnection *gorm.DB, filesFromDisk []models.FileTreeItem, filesFromDatabase []models.FileTreeItem) error {
 	ctx := context.Background()
-	filesToDelete := utilities.GetDistinctFiles(filesFromDatabase, filesFromDisk)
-	filesToCreate := utilities.GetDistinctFiles(filesFromDisk, filesFromDatabase)
+	filesToDelete := database.GetDistinctFiles(filesFromDatabase, filesFromDisk)
+	filesToCreate := database.GetDistinctFiles(filesFromDisk, filesFromDatabase)
 
 	deleteError := deleteFileTreeItemsFromDb(databaseConnection, ctx, filesToDelete)
 	if deleteError != nil {

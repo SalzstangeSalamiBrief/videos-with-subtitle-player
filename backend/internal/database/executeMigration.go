@@ -1,4 +1,4 @@
-package utilities
+package database
 
 import (
 	"backend/internal/database/models"
@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -14,7 +15,7 @@ func ExecuteMigration(db *gorm.DB, ctx context.Context, filename string) error {
 	if getFileContentError != nil {
 		return getFileContentError
 	}
-
+	// TODO HOW TO WORK WITH SQL FILES THAT CREATE TABLES => E. G: CREATE MIGRATIONS TABLE THORWS RELATION MGIRATIONS DOES NOT EXIST
 	canExecute, canExecuteError := canExecuteMigration(db, ctx, filename, fileContent)
 	if canExecuteError != nil {
 		return canExecuteError

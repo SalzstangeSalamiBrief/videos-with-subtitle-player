@@ -2,7 +2,6 @@ package database
 
 import (
 	"backend/internal/configuration"
-	"backend/internal/database/migrationExecution"
 	"backend/pkg/models"
 	"context"
 	"errors"
@@ -11,8 +10,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
-
-// TODO
 
 type FileTreeDatabase struct {
 	configuration      *configuration.DbConfiguration
@@ -28,7 +25,7 @@ func (fileTree *FileTreeDatabase) AddConfiguration(configuration *configuration.
 	return fileTree
 }
 
-func (fileTreeDatabase *FileTreeDatabase) Build() (*FileTreeDatabase, error) {
+func (fileTreeDatabase *FileTreeDatabase) Open() (*FileTreeDatabase, error) {
 	_, validationError := fileTreeDatabase.validateConfiguration()
 	if validationError != nil {
 		return nil, validationError
@@ -96,7 +93,12 @@ func (fileTreeDatabase *FileTreeDatabase) MigrateDatabase() (*FileTreeDatabase, 
 	}
 
 	ctx := context.Background()
-	addFileTypeEnumError := migrationExecution.ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "1_AddFileTypeEnum.sql")
+	createMigrationsTableError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "0_CreateMigrationTable.sql")
+	if createMigrationsTableError != nil {
+		return fileTreeDatabase, createMigrationsTableError
+	}
+
+	addFileTypeEnumError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "1_AddFileTypeEnum.sql")
 	if addFileTypeEnumError != nil {
 		return fileTreeDatabase, addFileTypeEnumError
 	}
@@ -106,7 +108,7 @@ func (fileTreeDatabase *FileTreeDatabase) MigrateDatabase() (*FileTreeDatabase, 
 		return fileTreeDatabase, migrationError
 	}
 
-	seedTagsError := migrationExecution.ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "2_tags_seed.sql")
+	seedTagsError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "2_tags_seed.sql")
 	if seedTagsError != nil {
 		log.Fatal(seedTagsError)
 	}
