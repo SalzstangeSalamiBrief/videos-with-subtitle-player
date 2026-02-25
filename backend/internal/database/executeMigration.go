@@ -1,18 +1,16 @@
-package migrationExecution
+package utilities
 
 import (
 	"backend/internal/database/models"
-	"backend/internal/database/utilities"
 	"context"
 	"crypto/sha256"
 	"errors"
 	"fmt"
-
 	"gorm.io/gorm"
 )
 
 func ExecuteMigration(db *gorm.DB, ctx context.Context, filename string) error {
-	fileContent, getFileContentError := utilities.GetSQLFileContent(filename)
+	fileContent, getFileContentError := GetSQLFileContent(filename)
 	if getFileContentError != nil {
 		return getFileContentError
 	}
