@@ -20,7 +20,7 @@ func main() {
 	apiConfiguration, dbConfiguration := loadConfigurations()
 
 	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(apiConfiguration.GetRootPath()).InitializeTree()
-	dbConnection, createDbError := createDatabases(dbConfiguration)
+	dbConnection, createDbError := createDatabases(dbConfiguration, initializedFileTreeManager)
 	if createDbError != nil {
 		if dbConnection != nil {
 			dbConnection.Close()
@@ -93,7 +93,7 @@ func loadConfigurations() (*configuration.ApiConfiguration, *configuration.DbCon
 	return apiConfiguration, dbConfiguration
 }
 
-func createDatabases(dbConfiguration *configuration.DbConfiguration) (*database.FileTreeDatabase, error) {
+func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fileTreeManager.FileTreeManager) (*database.FileTreeDatabase, error) {
 	fileTreeDb, openDbError := database.NewFileTreeDatabase().AddConfiguration(dbConfiguration).Open()
 	if openDbError != nil {
 		return nil, openDbError
@@ -102,6 +102,11 @@ func createDatabases(dbConfiguration *configuration.DbConfiguration) (*database.
 	_, migrateDbError := fileTreeDb.MigrateDatabase()
 	if migrateDbError != nil {
 		return nil, migrateDbError
+	}
+
+	syncFileTreeError := fileTreeDb.SyncFileTreeItems(manager)
+	if syncFileTreeError != nil {
+		return nil, syncFileTreeError
 	}
 
 	return fileTreeDb, nil

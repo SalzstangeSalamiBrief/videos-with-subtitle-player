@@ -178,7 +178,7 @@ func TestGetDistinctFiles(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.Title, func(t *testing.T) {
-			result := GetDistinctFiles(testCase.Input.left, testCase.Input.right)
+			result := getDistinctFiles(testCase.Input.left, testCase.Input.right)
 
 			if len(result) != len(testCase.Expected) {
 				t.Errorf("Expected %d items, but got %d items",

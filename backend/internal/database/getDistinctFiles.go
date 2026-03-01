@@ -2,7 +2,7 @@ package database
 
 import "backend/pkg/models"
 
-func GetDistinctFiles(left []models.FileTreeItem, right []models.FileTreeItem) []models.FileTreeItem {
+func getDistinctFiles(left []models.FileTreeItem, right []models.FileTreeItem) []models.FileTreeItem {
 	distinctFiles := make([]models.FileTreeItem, 0)
 	for _, leftItem := range left {
 		isItemInBoothSets := false

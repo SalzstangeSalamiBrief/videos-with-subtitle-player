@@ -130,7 +130,7 @@ func TestCheckIfFileIsInBatchByPath(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.Title, func(t *testing.T) {
-			result := CheckIfFileIsInBatchByPath(testCase.Input.path, testCase.Input.batch)
+			result := checkIfFileIsInBatchByPath(testCase.Input.path, testCase.Input.batch)
 			if result != testCase.Expected {
 				t.Errorf("Expected %v, got %v", testCase.Expected, result)
 			}

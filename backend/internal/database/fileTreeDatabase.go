@@ -3,6 +3,7 @@ package database
 import (
 	"backend/internal/configuration"
 	"backend/pkg/models"
+	"backend/pkg/services/fileTreeManager"
 	"context"
 	"errors"
 	"log"
@@ -93,12 +94,12 @@ func (fileTreeDatabase *FileTreeDatabase) MigrateDatabase() (*FileTreeDatabase, 
 	}
 
 	ctx := context.Background()
-	createMigrationsTableError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "0_CreateMigrationTable.sql")
+	createMigrationsTableError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "0_CreateMigrationTable.sql", true)
 	if createMigrationsTableError != nil {
 		return fileTreeDatabase, createMigrationsTableError
 	}
 
-	addFileTypeEnumError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "1_AddFileTypeEnum.sql")
+	addFileTypeEnumError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "1_AddFileTypeEnum.sql", false)
 	if addFileTypeEnumError != nil {
 		return fileTreeDatabase, addFileTypeEnumError
 	}
@@ -108,10 +109,22 @@ func (fileTreeDatabase *FileTreeDatabase) MigrateDatabase() (*FileTreeDatabase, 
 		return fileTreeDatabase, migrationError
 	}
 
-	seedTagsError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "2_tags_seed.sql")
+	seedTagsError := ExecuteMigration(fileTreeDatabase.DatabaseConnection, ctx, "2_TagsSeed.sql", false)
 	if seedTagsError != nil {
 		log.Fatal(seedTagsError)
 	}
 
 	return fileTreeDatabase, nil
+}
+
+func (fileTreeDatabase *FileTreeDatabase) SyncFileTreeItems(manager *fileTreeManager.FileTreeManager) error {
+	ctx := context.Background()
+
+	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](fileTreeDatabase.DatabaseConnection).Find(ctx)
+	if getFileTreeItemsFromDbError != nil {
+		return getFileTreeItemsFromDbError
+	}
+
+	syncError := syncFileTree(fileTreeDatabase.DatabaseConnection, manager.GetTree(), fileTreeItemsFromDb, ctx)
+	return syncError
 }

@@ -10,20 +10,22 @@ import (
 	"gorm.io/gorm"
 )
 
-func ExecuteMigration(db *gorm.DB, ctx context.Context, filename string) error {
+func ExecuteMigration(db *gorm.DB, ctx context.Context, filename string, skipValidation bool) error {
 	fileContent, getFileContentError := GetSQLFileContent(filename)
 	if getFileContentError != nil {
 		return getFileContentError
 	}
-	// TODO HOW TO WORK WITH SQL FILES THAT CREATE TABLES => E. G: CREATE MIGRATIONS TABLE THORWS RELATION MGIRATIONS DOES NOT EXIST
-	canExecute, canExecuteError := canExecuteMigration(db, ctx, filename, fileContent)
-	if canExecuteError != nil {
-		return canExecuteError
-	}
 
-	if !canExecute {
-		fmt.Printf("Cannot execute migration for file '%s'\n", filename)
-		return nil
+	if !skipValidation {
+		canExecute, canExecuteError := canExecuteMigration(db, ctx, filename, fileContent)
+		if canExecuteError != nil {
+			return canExecuteError
+		}
+
+		if !canExecute {
+			fmt.Printf("Cannot execute migration for file '%s'\n", filename)
+			return nil
+		}
 	}
 
 	executeAddFileTypeMigrationError := gorm.G[any](db).Exec(ctx, fileContent)
@@ -58,13 +60,25 @@ func canExecuteMigration(db *gorm.DB, ctx context.Context, filename string, file
 }
 
 func createMigrationEntry(db *gorm.DB, ctx context.Context, filename string, fileContent string) error {
+	_, doesMigrationExistsError := gorm.G[models.Migration](db).Where("name = ?", filename).First(ctx)
+	if doesMigrationExistsError == nil {
+		return nil
+	}
+
 	migrationToCreate := models.Migration{
 		Name:     filename,
 		Checksum: createChecksumFromString(fileContent),
 	}
 	err := gorm.G[models.Migration](db).Create(ctx, &migrationToCreate)
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return nil
+		}
 
-	return err
+		return err
+	}
+
+	return nil
 }
 
 func createChecksumFromString(input string) string {
