@@ -22,7 +22,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := IsFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
@@ -47,7 +47,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := IsFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
@@ -72,7 +72,7 @@ func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 
 	for _, combination := range combinations {
 		t.Run(fmt.Sprintf("Should allow extensions: %v", combination), func(t *testing.T) {
-			isAllowed := isFileExtensionAllowed(fileItem, combination...)
+			isAllowed := IsFileExtensionAllowed(fileItem, combination...)
 
 			if !isAllowed {
 				t.Errorf("Expected true but received false")
@@ -89,7 +89,7 @@ func Test_IsFileExtensionAllowed_Invalid(t *testing.T) {
 	}
 	allowedExtensions := []string{".mp4", ".mp3"}
 
-	isAllowed := isFileExtensionAllowed(fileItem, allowedExtensions...)
+	isAllowed := IsFileExtensionAllowed(fileItem, allowedExtensions...)
 
 	if isAllowed {
 		t.Errorf("Expected false but received true")

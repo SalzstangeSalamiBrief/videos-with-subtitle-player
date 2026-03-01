@@ -1,39 +1,46 @@
 package handlers
 
 import (
+	"backend/internal/database"
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
-	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/services/imageConverter/constants"
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
 	"path/filepath"
 	"regexp"
+
+	"github.com/google/uuid"
 )
 
 var fileTree models.FileTreeDto
 
 type FileTreeHandlerConfiguration struct {
-	FileTreeManager *fileTreeManager.FileTreeManager
+	FileTreeDatabase *database.Database
 }
 
 func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if fileTree.Id == "" {
-			fileTree = getFileTreeDto(configuration.FileTreeManager.GetTree())
+			fileTreeItems, getFileTreeItemsError := configuration.FileTreeDatabase.GetFileTree()
+			if getFileTreeItemsError != nil {
+				log.Default().Println("Could not get file tree from database")
+				problemDetailsErrors.NewInternalServerErrorProblemDetails("File tree ist not initialized").SendErrorResponse(w)
+				return
+			}
+
+			fileTree = getFileTreeDto(fileTreeItems)
 		}
 
 		encodedBytes, err := json.Marshal(fileTree.Children)
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("Could not marshal file tree: %v", err.Error()))
 			problemDetailsErrors.NewInternalServerErrorProblemDetails("Could not marshal file tree").SendErrorResponse(w)
-
 			return
 		}
 
@@ -77,7 +84,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 			continue
 		}
-
+		// TODO THIS CREATES A NEW UUID FOR EACH FOLDER
 		child := models.FileTreeDto{
 			Id:       uuid.New().String(),
 			Name:     currentPathPart,

@@ -7,6 +7,7 @@ func getDistinctFiles(left []models.FileTreeItem, right []models.FileTreeItem) [
 	for _, leftItem := range left {
 		isItemInBoothSets := false
 		for _, rightItem := range right {
+			// TODO DOES THIS WORK? CURRENTLY IDSS GETTING OVERWRITTEN
 			if rightItem.Path == leftItem.Path {
 				isItemInBoothSets = true
 				continue

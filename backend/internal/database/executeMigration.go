@@ -10,8 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
-func ExecuteMigration(db *gorm.DB, ctx context.Context, filename string, skipValidation bool) error {
-	fileContent, getFileContentError := GetSQLFileContent(filename)
+func executeMigration(db *gorm.DB, ctx context.Context, filename string, skipValidation bool) error {
+	fileContent, getFileContentError := getSQLFileContent(filename)
 	if getFileContentError != nil {
 		return getFileContentError
 	}

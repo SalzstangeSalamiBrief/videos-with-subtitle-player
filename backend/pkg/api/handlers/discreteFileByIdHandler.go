@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"backend/internal/database"
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/constants"
-	"backend/pkg/services/fileTreeManager"
 	"backend/pkg/utilities"
 	"fmt"
 	"log"
@@ -14,11 +14,11 @@ import (
 )
 
 type DiscreteFileByIdHandlerConfig struct {
-	RootPath string
-	*fileTreeManager.FileTreeManager
+	RootPath         string
+	FileTreeDatabase *database.Database
 }
 
-func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(http.ResponseWriter, *http.Request) {
+func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fileIdString := strings.TrimPrefix(r.URL.Path, "/api/file/discrete/")
 		if fileIdString == "" {
@@ -27,14 +27,21 @@ func CreateDiscreteFileByIdHandler(config DiscreteFileByIdHandlerConfig) func(ht
 			return
 		}
 
-		discreteFileInTree := utilities.GetFileByIdAndExtension(config.FileTreeManager.GetTree(), fileIdString, constants.AllowedDiscreteFileExtensions...)
-		if discreteFileInTree.FileId == "" {
-			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
-			problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("Could not find file with id '%v'\n", fileIdString)).SendErrorResponse(w)
+		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeDatabase.GetFileByFileId(fileIdString)
+		if getFileTreeItemsError != nil {
+			log.Default().Println(getFileTreeItemsError.Error())
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
-		filePathOnHardDisk := path.Join(config.RootPath, discreteFileInTree.Path)
+		isExtensionSupported := utilities.IsFileExtensionAllowed(discreteFileInTree, constants.AllowedDiscreteFileExtensions...)
+		if !isExtensionSupported {
+			log.Default().Println(fmt.Sprintf("File with id='%v' has an unsupported extension", fileIdString))
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
+			return
+		}
+
+		filePathOnHardDisk := path.Join(configuration.RootPath, discreteFileInTree.Path)
 		fileBytes, err := os.ReadFile(filePathOnHardDisk)
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", err.Error()))

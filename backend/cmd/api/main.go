@@ -37,7 +37,7 @@ func main() {
 
 	routerBuilder := router.NewRouterBuilder()
 
-	createdRoutes := createRoutes(apiConfiguration, initializedFileTreeManager)
+	createdRoutes := createRoutes(apiConfiguration, dbConnection)
 	for _, route := range createdRoutes {
 		routerBuilder.RegisterRoute(route)
 	}
@@ -93,8 +93,8 @@ func loadConfigurations() (*configuration.ApiConfiguration, *configuration.DbCon
 	return apiConfiguration, dbConfiguration
 }
 
-func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fileTreeManager.FileTreeManager) (*database.FileTreeDatabase, error) {
-	fileTreeDb, openDbError := database.NewFileTreeDatabase().AddConfiguration(dbConfiguration).Open()
+func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fileTreeManager.FileTreeManager) (*database.Database, error) {
+	fileTreeDb, openDbError := database.NewDatabase().AddConfiguration(dbConfiguration).Open()
 	if openDbError != nil {
 		return nil, openDbError
 	}
@@ -112,13 +112,13 @@ func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fi
 	return fileTreeDb, nil
 }
 
-func createRoutes(apiConfiguration *configuration.ApiConfiguration, ftm *fileTreeManager.FileTreeManager) []router.Route {
+func createRoutes(apiConfiguration *configuration.ApiConfiguration, db *database.Database) []router.Route {
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:        apiConfiguration.GetRootPath(),
-		FileTreeManager: ftm,
+		RootPath:         apiConfiguration.GetRootPath(),
+		FileTreeDatabase: db,
 	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeManager: ftm})
-	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeManager: ftm})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeDatabase: db})
+	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeDatabase: db})
 
 	return []router.Route{
 		handleDiscreteFileRoute,
