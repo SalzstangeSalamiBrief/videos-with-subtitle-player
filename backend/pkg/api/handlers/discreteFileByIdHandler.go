@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"backend/internal/database"
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/constants"
+	"backend/pkg/repositories"
 	"backend/pkg/utilities"
 	"fmt"
 	"log"
@@ -14,8 +14,8 @@ import (
 )
 
 type DiscreteFileByIdHandlerConfig struct {
-	RootPath         string
-	FileTreeDatabase *database.Database
+	RootPath           string
+	FileTreeRepository *repositories.FileTreeRepository
 }
 
 func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) func(http.ResponseWriter, *http.Request) {
@@ -27,7 +27,7 @@ func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) 
 			return
 		}
 
-		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeDatabase.GetFileByFileId(fileIdString)
+		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileByFileId(fileIdString)
 		if getFileTreeItemsError != nil {
 			log.Default().Println(getFileTreeItemsError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)

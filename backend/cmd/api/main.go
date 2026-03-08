@@ -7,6 +7,7 @@ import (
 	"backend/internal/routes"
 	"backend/pkg/api/handlers"
 	"backend/pkg/api/middlewares"
+	"backend/pkg/repositories"
 	"backend/pkg/services/fileTreeManager"
 	"context"
 	"log"
@@ -29,6 +30,11 @@ func main() {
 		log.Fatal(createDbError)
 	}
 
+	fileTreeRepository, newFileTreeRepositoryError := repositories.NewFileTreeRepository(dbConnection)
+	if newFileTreeRepositoryError != nil {
+		log.Fatal(newFileTreeRepositoryError)
+	}
+
 	log.Default().Printf("Start server on '%v'", apiConfiguration.GetServerAddress())
 
 	// TODO CLEANUP OF DB
@@ -37,7 +43,7 @@ func main() {
 
 	routerBuilder := router.NewRouterBuilder()
 
-	createdRoutes := createRoutes(apiConfiguration, dbConnection)
+	createdRoutes := createRoutes(apiConfiguration, fileTreeRepository)
 	for _, route := range createdRoutes {
 		routerBuilder.RegisterRoute(route)
 	}
@@ -112,13 +118,13 @@ func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fi
 	return fileTreeDb, nil
 }
 
-func createRoutes(apiConfiguration *configuration.ApiConfiguration, db *database.Database) []router.Route {
+func createRoutes(apiConfiguration *configuration.ApiConfiguration, fileTreeRepo *repositories.FileTreeRepository) []router.Route {
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
-		RootPath:         apiConfiguration.GetRootPath(),
-		FileTreeDatabase: db,
+		RootPath:           apiConfiguration.GetRootPath(),
+		FileTreeRepository: fileTreeRepo,
 	})
-	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeDatabase: db})
-	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeDatabase: db})
+	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeRepository: fileTreeRepo})
+	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeRepository: fileTreeRepo})
 
 	return []router.Route{
 		handleDiscreteFileRoute,

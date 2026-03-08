@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"backend/internal/database"
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/constants"
+	"backend/pkg/repositories"
 	"backend/pkg/utilities"
 	"fmt"
 	"io"
@@ -17,8 +17,8 @@ import (
 const chunkSize = 1 * 1024 * 1024 // 1mb
 
 type ContinuousFileByIdHandlerConfiguration struct {
-	RootPath         string
-	FileTreeDatabase *database.Database
+	RootPath           string
+	FileTreeRepository *repositories.FileTreeRepository
 }
 
 func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConfiguration) func(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +30,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 			return
 		}
 
-		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeDatabase.GetFileByFileId(fileIdString)
+		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileByFileId(fileIdString)
 		if getFileTreeItemsError != nil {
 			log.Default().Println(getFileTreeItemsError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)

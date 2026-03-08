@@ -137,16 +137,3 @@ func (db *Database) SyncFileTreeItems(manager *fileTreeManager.FileTreeManager) 
 	syncError := syncFileTree(db.DatabaseConnection, manager.GetTree(), fileTreeItemsFromDb, ctx)
 	return syncError
 }
-
-// TODO REPOSITORIES
-func (db *Database) GetFileTree() ([]models.FileTreeItem, error) {
-	ctx := context.Background()
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](db.DatabaseConnection).Find(ctx)
-	return fileTreeItemsFromDb, getFileTreeItemsFromDbError
-}
-
-func (db *Database) GetFileByFileId(fileId string) (models.FileTreeItem, error) {
-	ctx := context.Background()
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](db.DatabaseConnection).Where("file_id = ?", fileId).First(ctx)
-	return fileTreeItemsFromDb, getFileTreeItemsFromDbError
-}

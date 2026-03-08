@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"backend/internal/database"
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
+	"backend/pkg/repositories"
 	"backend/pkg/services/imageConverter/constants"
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"backend/pkg/utilities"
@@ -21,13 +21,13 @@ import (
 var fileTree models.FileTreeDto
 
 type FileTreeHandlerConfiguration struct {
-	FileTreeDatabase *database.Database
+	FileTreeRepository *repositories.FileTreeRepository
 }
 
 func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if fileTree.Id == "" {
-			fileTreeItems, getFileTreeItemsError := configuration.FileTreeDatabase.GetFileTree()
+			fileTreeItems, getFileTreeItemsError := configuration.FileTreeRepository.GetFileTree()
 			if getFileTreeItemsError != nil {
 				log.Default().Println("Could not get file tree from database")
 				problemDetailsErrors.NewInternalServerErrorProblemDetails("File tree ist not initialized").SendErrorResponse(w)
