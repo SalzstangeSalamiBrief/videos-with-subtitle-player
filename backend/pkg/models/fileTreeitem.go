@@ -17,6 +17,7 @@ type FileTreeItem struct {
 	Type                  fileType.FileType `gorm:"type:file_type;not null"`
 	AssociatedAudioFileId *string
 	LowQualityImageId     *string
+	Tags                  []Tag `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;many2many:file_tree_item_to_tags;"`
 }
 
 func (item *FileTreeItem) ToFileDto() FileDto {
