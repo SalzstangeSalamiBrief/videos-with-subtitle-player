@@ -37,7 +37,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 			return
 		}
 
-		isExtensionSupported := utilities.IsFileExtensionAllowed(continuousFileInTree, constants.AllowedDiscreteFileExtensions...)
+		isExtensionSupported := utilities.IsFileExtensionAllowed(continuousFileInTree, constants.AllowedContinuousFileExtensions...)
 		if !isExtensionSupported {
 			log.Default().Println(fmt.Sprintf("File with id='%v' has an unsupported extension", fileIdString))
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
