@@ -3,7 +3,7 @@ package handlers
 import (
 	"backend/internal/problemDetailsErrors"
 	"backend/pkg/constants"
-	"backend/pkg/services/fileTreeManager"
+	"backend/pkg/repositories"
 	"backend/pkg/utilities"
 	"fmt"
 	"io"
@@ -17,8 +17,8 @@ import (
 const chunkSize = 1 * 1024 * 1024 // 1mb
 
 type ContinuousFileByIdHandlerConfiguration struct {
-	RootPath string
-	*fileTreeManager.FileTreeManager
+	RootPath           string
+	FileTreeRepository *repositories.FileTreeRepository
 }
 
 func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConfiguration) func(w http.ResponseWriter, r *http.Request) {
@@ -30,10 +30,17 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 			return
 		}
 
-		continuousFileInTree := utilities.GetFileByIdAndExtension(configuration.FileTreeManager.GetTree(), fileIdString, constants.AllowedContinuousFileExtensions...)
-		if continuousFileInTree.Id == "" {
-			log.Default().Println(fmt.Sprintf("[ContinuousFileByIdHandler]: Error while opening the file with id '%v'\n", fileIdString))
-			problemDetailsErrors.NewNotFoundProblemDetails(fmt.Sprintf("Could not find file with id '%v'\n", fileIdString)).SendErrorResponse(w)
+		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileByFileId(fileIdString)
+		if getFileTreeItemsError != nil {
+			log.Default().Println(getFileTreeItemsError.Error())
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
+			return
+		}
+
+		isExtensionSupported := utilities.IsFileExtensionAllowed(continuousFileInTree, constants.AllowedContinuousFileExtensions...)
+		if !isExtensionSupported {
+			log.Default().Println(fmt.Sprintf("File with id='%v' has an unsupported extension", fileIdString))
+			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 

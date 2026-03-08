@@ -17,8 +17,8 @@ func Test_GetPartsOfPath(t *testing.T) {
 	for _, input := range inputs {
 		t.Run(input.Title, func(t *testing.T) {
 			file := models2.FileTreeItem{
-				Id:   "1",
-				Path: input.Input,
+				FileId: "1",
+				Path:   input.Input,
 			}
 			result := GetPartsOfPath(file)
 

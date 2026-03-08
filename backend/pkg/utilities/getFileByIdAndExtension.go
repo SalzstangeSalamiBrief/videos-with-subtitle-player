@@ -9,12 +9,12 @@ import (
 func GetFileByIdAndExtension(fileTreeItems []models.FileTreeItem, id string, allowedExtension ...string) models.FileTreeItem {
 	var file models.FileTreeItem
 	for _, fileTreeItem := range fileTreeItems {
-		isMatch := fileTreeItem.Id == id
+		isMatch := fileTreeItem.FileId == id
 		if !isMatch {
 			continue
 		}
 
-		if isFileExtensionAllowed(fileTreeItem, allowedExtension...) {
+		if IsFileExtensionAllowed(fileTreeItem, allowedExtension...) {
 			file = fileTreeItem
 			break
 		}
@@ -23,7 +23,7 @@ func GetFileByIdAndExtension(fileTreeItems []models.FileTreeItem, id string, all
 	return file
 }
 
-func isFileExtensionAllowed(fileTreeItem models.FileTreeItem, allowedExtension ...string) bool {
+func IsFileExtensionAllowed(fileTreeItem models.FileTreeItem, allowedExtension ...string) bool {
 	ext := filepath.Ext(fileTreeItem.Path)
 	doesExtensionMatch := slices.Contains(allowedExtension, ext)
 	return doesExtensionMatch

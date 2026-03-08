@@ -2,38 +2,45 @@ package handlers
 
 import (
 	"backend/internal/problemDetailsErrors"
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/models"
-	"backend/pkg/services/fileTreeManager"
+	"backend/pkg/repositories"
 	"backend/pkg/services/imageConverter/constants"
 	imageConverterUtilities "backend/pkg/services/imageConverter/utilities"
 	"backend/pkg/utilities"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"log"
 	"net/http"
 	"path/filepath"
 	"regexp"
+
+	"github.com/google/uuid"
 )
 
 var fileTree models.FileTreeDto
 
 type FileTreeHandlerConfiguration struct {
-	FileTreeManager *fileTreeManager.FileTreeManager
+	FileTreeRepository *repositories.FileTreeRepository
 }
 
 func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if fileTree.Id == "" {
-			fileTree = getFileTreeDto(configuration.FileTreeManager.GetTree())
+			fileTreeItems, getFileTreeItemsError := configuration.FileTreeRepository.GetFileTree()
+			if getFileTreeItemsError != nil {
+				log.Default().Println("Could not get file tree from database")
+				problemDetailsErrors.NewInternalServerErrorProblemDetails("File tree ist not initialized").SendErrorResponse(w)
+				return
+			}
+
+			fileTree = getFileTreeDto(fileTreeItems)
 		}
 
 		encodedBytes, err := json.Marshal(fileTree.Children)
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("Could not marshal file tree: %v", err.Error()))
 			problemDetailsErrors.NewInternalServerErrorProblemDetails("Could not marshal file tree").SendErrorResponse(w)
-
 			return
 		}
 
@@ -77,7 +84,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			currentNode = &currentNode.Children[indexOfMatchingChild]
 			continue
 		}
-
+		// TODO THIS CREATES A NEW UUID FOR EACH FOLDER
 		child := models.FileTreeDto{
 			Id:       uuid.New().String(),
 			Name:     currentPathPart,
@@ -90,7 +97,7 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 }
 
 func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
-	if file.Type != enums.IMAGE {
+	if file.Type != fileType.IMAGE {
 		return
 	}
 
@@ -99,7 +106,7 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	//	return
 	//}
 
-	isLowQualityImage := imageConverterUtilities.IsLowQualityImage(file.Path)
+	isLowQualityImage := imageConverterUtilities.IsLowQualityImagePath(file.Path)
 	if isLowQualityImage {
 		return
 	}
@@ -119,20 +126,16 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 		return
 	}
 
-	currentNode.ThumbnailId = file.Id
-	currentNode.LowQualityThumbnailId = file.LowQualityImageId
+	currentNode.ThumbnailId = file.FileId
+	if file.LowQualityImageId != nil {
+		currentNode.LowQualityThumbnailId = *file.LowQualityImageId
+	}
 }
 
 func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
 	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
 
-	fileItem := models.FileDto{
-		Id:                    file.Id,
-		Name:                  file.Name,
-		Type:                  file.Type,
-		AssociatedAudioFileId: file.AssociatedAudioFileId,
-		LowQualityImageId:     file.LowQualityImageId,
-	}
+	fileItem := file.ToFileDto()
 
 	currentNode.Files = append(currentNode.Files, fileItem)
 }

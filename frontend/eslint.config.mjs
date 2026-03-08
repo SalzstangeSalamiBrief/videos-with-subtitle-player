@@ -8,7 +8,7 @@ import tseslint from 'typescript-eslint';
 export default [
   eslintConfigPrettier,
   ...tanstackConfig,
-  { ignores: ['dist', 'api.ts'] },
+  { ignores: ['dist', 'api.ts', 'src/client/generated'] },
   {
     files: ['**/*.{ts,tsx,js}'],
     languageOptions: {

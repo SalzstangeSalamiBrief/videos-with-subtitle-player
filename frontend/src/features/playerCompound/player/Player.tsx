@@ -23,7 +23,7 @@ export function Player({ audioId, subtitleId, fileType }: IPlayerProps) {
           src={`${baseUrl}/api/file/continuous/${audioId}`}
           data-testid="source"
         />
-        {fileType === FileType.AUDIO && subtitleId && (
+        {fileType === FileType.Audio && subtitleId && (
           <track
             default
             kind="captions"

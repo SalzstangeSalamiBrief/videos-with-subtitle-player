@@ -10,6 +10,8 @@ var AllowedContinuousFileExtensions = slices.Concat(AllowedAudioFileExtensions, 
 
 var AllowedImageFileExtensions = []string{".avif", ".png", ".jpeg", ".jpg", ".webp"}
 
-var AllowedSubtitleFileExtensions = []string{".vtt"}
+var SubtitleExtension = ".vtt"
+
+var AllowedSubtitleFileExtensions = []string{SubtitleExtension}
 
 var AllowedDiscreteFileExtensions = slices.Concat(AllowedImageFileExtensions, AllowedSubtitleFileExtensions)

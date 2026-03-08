@@ -1,7 +1,7 @@
 package webp
 
 import (
-	"backend/pkg/enums"
+	"backend/pkg/enums/fileType"
 	"backend/pkg/services/imageConverter/constants"
 	"backend/pkg/services/imageConverter/models"
 	imageUtilities "backend/pkg/services/imageConverter/utilities"
@@ -30,7 +30,7 @@ func ExecuteWebpConversion(configuration ExecuteWebpConversionConfiguration) err
 	numberOfImagesConverted := 0
 
 	for _, image := range allImages {
-		if imageUtilities.IsLowQualityImage(image) {
+		if imageUtilities.IsLowQualityImagePath(image) {
 			log.Printf("Image %s is low quality. Skip processing \n", image)
 			continue
 		}
@@ -161,7 +161,7 @@ func traverseFileTreeToGetImages(rootPath string) (error, []string) {
 		}
 
 		fileType := utilities.GetFileType(item.Name())
-		if fileType == enums.IMAGE {
+		if fileType == fileType.IMAGE {
 			imageFilePaths = append(imageFilePaths, fullPath)
 		}
 	}

@@ -1,12 +1,12 @@
-import { render, screen, within } from '@testing-library/react';
-import { FileType } from '@videos-with-subtitle-player/core';
-import { describe, expect, test } from 'vitest';
+import { FileType } from '$enums/FileType';
 import { Player } from '$features/playerCompound/player/Player';
+import { render, screen, within } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
 
 describe('Player', () => {
   test('Render video player without track', () => {
     render(
-      <Player audioId="guid" fileType={FileType.VIDEO} subtitleId="guid" />,
+      <Player audioId="guid" fileType={FileType.Video} subtitleId="guid" />,
     );
     const video = screen.getByTestId('video');
     expect(video).toBeInTheDocument();
@@ -20,7 +20,7 @@ describe('Player', () => {
     render(
       <Player
         audioId="guid"
-        fileType={FileType.AUDIO}
+        fileType={FileType.Audio}
         subtitleId={undefined}
       />,
     );
@@ -34,7 +34,7 @@ describe('Player', () => {
 
   test('Render audio player with track', () => {
     render(
-      <Player audioId="guid" fileType={FileType.AUDIO} subtitleId="guid" />,
+      <Player audioId="guid" fileType={FileType.Audio} subtitleId="guid" />,
     );
     const video = screen.getByTestId('video');
     expect(video).toBeInTheDocument();

@@ -81,7 +81,6 @@ func (routerBase *RouterBase) handleRouting(w http.ResponseWriter, r *http.Reque
 func (routerBase *RouterBase) RegisterRoute(routeToAdd Route) *RouterBase {
 	routerBase.routes = append(routerBase.routes, routeToAdd)
 	return routerBase
-
 }
 
 func (routerBase *RouterBase) RegisterMiddleware(middlewareToAdd Middleware) *RouterBase {
