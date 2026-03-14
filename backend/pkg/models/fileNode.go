@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type FileTreeItem struct {
+type FileNode struct {
 	// TODO DO I NEED FILE_ID IF I HAVE gorm.Model.ID?
 	// Dont use gorm.Model to prevent soft delete
 	ID                    uint `gorm:"primary_key"`
@@ -17,22 +17,23 @@ type FileTreeItem struct {
 	Type                  fileType.FileType `gorm:"type:file_type;not null"`
 	AssociatedAudioFileId *string
 	LowQualityImageId     *string
-	Tags                  []Tag `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;many2many:file_tree_item_to_tags;"`
+	Tags                  []Tag  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;many2many:file_node_to_tags;"`
+	ParentFolderId        string `gorm:"type:UUID;index"`
 }
 
-func (item *FileTreeItem) ToFileDto() FileDto {
-	dto := FileDto{
-		Id:   item.FileId,
-		Name: item.Name,
-		Type: item.Type,
+func (node *FileNode) ToDto() FileNodeDto {
+	dto := FileNodeDto{
+		Id:   node.FileId,
+		Name: node.Name,
+		Type: node.Type,
 	}
 
-	if item.AssociatedAudioFileId != nil {
-		dto.AssociatedAudioFileId = *item.AssociatedAudioFileId
+	if node.AssociatedAudioFileId != nil {
+		dto.AssociatedAudioFileId = *node.AssociatedAudioFileId
 	}
 
-	if item.LowQualityImageId != nil {
-		dto.LowQualityImageId = *item.LowQualityImageId
+	if node.LowQualityImageId != nil {
+		dto.LowQualityImageId = *node.LowQualityImageId
 	}
 
 	return dto

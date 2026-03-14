@@ -23,14 +23,14 @@ func NewFileTreeRepository(db *database.Database) (*FileTreeRepository, error) {
 	}, nil
 }
 
-func (repository *FileTreeRepository) GetFileTree() ([]models.FileTreeItem, error) {
+func (repository *FileTreeRepository) GetFileTree() ([]models.FileNode, error) {
 	ctx := context.Background()
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](repository.database.DatabaseConnection).Find(ctx)
+	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileNode](repository.database.DatabaseConnection).Find(ctx)
 	return fileTreeItemsFromDb, getFileTreeItemsFromDbError
 }
 
-func (repository *FileTreeRepository) GetFileByFileId(fileId string) (models.FileTreeItem, error) {
+func (repository *FileTreeRepository) GetFileByFileId(fileId string) (models.FileNode, error) {
 	ctx := context.Background()
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](repository.database.DatabaseConnection).Where("file_id = ?", fileId).First(ctx)
+	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileNode](repository.database.DatabaseConnection).Where("file_id = ?", fileId).First(ctx)
 	return fileTreeItemsFromDb, getFileTreeItemsFromDbError
 }

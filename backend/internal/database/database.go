@@ -113,7 +113,7 @@ func (db *Database) MigrateDatabase() (*Database, error) {
 		return db, addFileTypeEnumError
 	}
 
-	migrationError := db.DatabaseConnection.AutoMigrate(&models.FileTreeItem{}, &models.Tag{})
+	migrationError := db.DatabaseConnection.AutoMigrate(&models.FolderNode{}, &models.FileNode{}, &models.Tag{})
 	if migrationError != nil {
 		return db, migrationError
 	}
@@ -129,11 +129,11 @@ func (db *Database) MigrateDatabase() (*Database, error) {
 func (db *Database) SyncFileTreeItems(manager *fileTreeManager.FileTreeManager) error {
 	ctx := context.Background()
 
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileTreeItem](db.DatabaseConnection).Find(ctx)
+	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileNode](db.DatabaseConnection).Find(ctx)
 	if getFileTreeItemsFromDbError != nil {
 		return getFileTreeItemsFromDbError
 	}
 
-	syncError := syncFileTree(db.DatabaseConnection, manager.GetTree(), fileTreeItemsFromDb, ctx)
+	syncError := syncFileTree(db.DatabaseConnection, manager.GetFiles(), fileTreeItemsFromDb, ctx)
 	return syncError
 }

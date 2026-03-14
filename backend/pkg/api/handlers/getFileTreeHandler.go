@@ -18,7 +18,7 @@ import (
 	"github.com/google/uuid"
 )
 
-var fileTree models.FileTreeDto
+var fileTree models.FolderNodeDto
 
 type FileTreeHandlerConfiguration struct {
 	FileTreeRepository *repositories.FileTreeRepository
@@ -48,10 +48,10 @@ func CreateGetFileTreeHandler(configuration FileTreeHandlerConfiguration) func(h
 	}
 }
 
-func getFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
-	rootFileHierarchy := models.FileTreeDto{
+func getFileTreeDto(filesArray []models.FileNode) models.FolderNodeDto {
+	rootFileHierarchy := models.FolderNodeDto{
 		Id:       uuid.New().String(),
-		Children: []models.FileTreeDto{},
+		Children: []models.FolderNodeDto{},
 	}
 
 	for _, file := range filesArray {
@@ -72,7 +72,7 @@ func getFileTreeDto(filesArray []models.FileTreeItem) models.FileTreeDto {
 	return rootFileHierarchy
 }
 
-func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtension []string) {
+func buildSubFileTree(parentTree *models.FolderNodeDto, pathPartsWithoutFileExtension []string) {
 	remainingPathParts := pathPartsWithoutFileExtension
 	currentNode := parentTree
 
@@ -85,18 +85,18 @@ func buildSubFileTree(parentTree *models.FileTreeDto, pathPartsWithoutFileExtens
 			continue
 		}
 		// TODO THIS CREATES A NEW UUID FOR EACH FOLDER
-		child := models.FileTreeDto{
+		child := models.FolderNodeDto{
 			Id:       uuid.New().String(),
 			Name:     currentPathPart,
-			Children: []models.FileTreeDto{},
-			Files:    []models.FileDto{},
+			Children: []models.FolderNodeDto{},
+			Files:    []models.FileNodeDto{},
 		}
 		currentNode.Children = append(currentNode.Children, child)
 		currentNode = &child
 	}
 }
 
-func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+func getThumbnailOfTree(rootFileTree *models.FolderNodeDto, file models.FileNode, pathPartsWithFileExtension []string) {
 	if file.Type != fileType.IMAGE {
 		return
 	}
@@ -132,15 +132,15 @@ func getThumbnailOfTree(rootFileTree *models.FileTreeDto, file models.FileTreeIt
 	}
 }
 
-func addFileToTree(rootFileTree *models.FileTreeDto, file models.FileTreeItem, pathPartsWithFileExtension []string) {
+func addFileToTree(rootFileTree *models.FolderNodeDto, file models.FileNode, pathPartsWithFileExtension []string) {
 	currentNode := getNodeAssociatedWithFileInTree(rootFileTree, pathPartsWithFileExtension)
 
-	fileItem := file.ToFileDto()
+	fileItem := file.ToDto()
 
 	currentNode.Files = append(currentNode.Files, fileItem)
 }
 
-func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathPartsWithFileExtension []string) *models.FileTreeDto {
+func getNodeAssociatedWithFileInTree(rootFileTree *models.FolderNodeDto, pathPartsWithFileExtension []string) *models.FolderNodeDto {
 	var currentPathPart string
 	remainingPathParts := pathPartsWithFileExtension
 	currentNode := rootFileTree
@@ -156,7 +156,7 @@ func getNodeAssociatedWithFileInTree(rootFileTree *models.FileTreeDto, pathParts
 	return currentNode
 }
 
-func findChildIndexInChildrenOfFileTree(node *models.FileTreeDto, name string) int {
+func findChildIndexInChildrenOfFileTree(node *models.FolderNodeDto, name string) int {
 	for i, child := range node.Children {
 		if child.Name == name {
 			return i

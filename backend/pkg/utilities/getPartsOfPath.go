@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func GetPartsOfPath(file models.FileTreeItem) []string {
+func GetPartsOfPath(file models.FileNode) []string {
 	filePath, _ := filepath.Split(file.Path)
 	allParts := strings.Split(filePath, string(filepath.Separator))
 	var parts []string

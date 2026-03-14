@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func GetContentTypeHeaderMimeType(file models.FileTreeItem) string {
+func GetContentTypeHeaderMimeType(file models.FileNode) string {
 	ext := filepath.Ext(file.Path)
 	mimeType := mime.TypeByExtension(ext)
 	if ext == ".vtt" {

@@ -28,9 +28,9 @@ BEGIN
             FROM "file_tree_items"
             WHERE regexp_replace(path, '/[^/]*$', '') = level_record.parent_path
         LOOP
-            FOREACH tag_id IN ARRAY selected_tags
+            FOREACH tag_id IN ARRAY selected_tagsp
             LOOP
-                INSERT INTO "file_tree_item_to_tags" (file_tree_item_id, tag_id)
+                INSERT INTO "file_node_to_tags" (file_tree_item_id, tag_id)
                 VALUES (item_record.id, tag_id)
                 ON CONFLICT DO NOTHING;
             END LOOP;

@@ -20,7 +20,7 @@ import (
 func main() {
 	apiConfiguration, dbConfiguration := loadConfigurations()
 
-	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(apiConfiguration.GetRootPath()).InitializeTree()
+	initializedFileTreeManager := fileTreeManager.NewFileTreeManager(apiConfiguration.GetRootPath()).InitializeFiles()
 	dbConnection, createDbError := createDatabases(dbConfiguration, initializedFileTreeManager)
 	if createDbError != nil {
 		if dbConnection != nil {

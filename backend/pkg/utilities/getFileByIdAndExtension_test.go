@@ -8,7 +8,7 @@ import (
 )
 
 func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	fileItem := models.FileNode{
 		FileId: "1",
 		Path:   filepath.Join("path", "file.mp4"),
 	}
@@ -33,7 +33,7 @@ func Test_IsFileExtensionAllowed_ValidMp4(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	fileItem := models.FileNode{
 		FileId: "1",
 		Path:   filepath.Join("path", "file.mp3"),
 	}
@@ -58,7 +58,7 @@ func Test_IsFileExtensionAllowed_ValidMp3(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	fileItem := models.FileNode{
 		FileId: "1",
 		Path:   filepath.Join("path", "file.mp3.vtt"),
 	}
@@ -83,7 +83,7 @@ func Test_IsFileExtensionAllowed_ValidVTT(t *testing.T) {
 }
 
 func Test_IsFileExtensionAllowed_Invalid(t *testing.T) {
-	fileItem := models.FileTreeItem{
+	fileItem := models.FileNode{
 		FileId: "1",
 		Path:   filepath.Join("path", "file.mp3.vtt"),
 	}

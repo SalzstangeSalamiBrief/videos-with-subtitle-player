@@ -6,8 +6,8 @@ import (
 	"slices"
 )
 
-func GetFileByIdAndExtension(fileTreeItems []models.FileTreeItem, id string, allowedExtension ...string) models.FileTreeItem {
-	var file models.FileTreeItem
+func GetFileByIdAndExtension(fileTreeItems []models.FileNode, id string, allowedExtension ...string) models.FileNode {
+	var file models.FileNode
 	for _, fileTreeItem := range fileTreeItems {
 		isMatch := fileTreeItem.FileId == id
 		if !isMatch {
@@ -23,7 +23,7 @@ func GetFileByIdAndExtension(fileTreeItems []models.FileTreeItem, id string, all
 	return file
 }
 
-func IsFileExtensionAllowed(fileTreeItem models.FileTreeItem, allowedExtension ...string) bool {
+func IsFileExtensionAllowed(fileTreeItem models.FileNode, allowedExtension ...string) bool {
 	ext := filepath.Ext(fileTreeItem.Path)
 	doesExtensionMatch := slices.Contains(allowedExtension, ext)
 	return doesExtensionMatch
