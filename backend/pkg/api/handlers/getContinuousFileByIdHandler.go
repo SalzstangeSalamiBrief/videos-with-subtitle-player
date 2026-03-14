@@ -18,7 +18,7 @@ const chunkSize = 1 * 1024 * 1024 // 1mb
 
 type ContinuousFileByIdHandlerConfiguration struct {
 	RootPath           string
-	FileTreeRepository *repositories.FileTreeRepository
+	FileTreeRepository *repositories.FileNodeRepository
 }
 
 func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConfiguration) func(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +30,7 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 			return
 		}
 
-		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileByFileId(fileIdString)
+		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
 		if getFileTreeItemsError != nil {
 			log.Default().Println(getFileTreeItemsError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)

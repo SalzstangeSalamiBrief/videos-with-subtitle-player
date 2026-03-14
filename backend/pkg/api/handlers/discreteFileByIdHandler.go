@@ -15,7 +15,7 @@ import (
 
 type DiscreteFileByIdHandlerConfig struct {
 	RootPath           string
-	FileTreeRepository *repositories.FileTreeRepository
+	FileTreeRepository *repositories.FileNodeRepository
 }
 
 func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) func(http.ResponseWriter, *http.Request) {
@@ -27,7 +27,7 @@ func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) 
 			return
 		}
 
-		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileByFileId(fileIdString)
+		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
 		if getFileTreeItemsError != nil {
 			log.Default().Println(getFileTreeItemsError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)

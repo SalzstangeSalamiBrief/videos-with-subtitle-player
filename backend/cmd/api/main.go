@@ -118,13 +118,13 @@ func createDatabases(dbConfiguration *configuration.DbConfiguration, manager *fi
 	return fileTreeDb, nil
 }
 
-func createRoutes(apiConfiguration *configuration.ApiConfiguration, fileTreeRepo *repositories.FileTreeRepository) []router.Route {
+func createRoutes(apiConfiguration *configuration.ApiConfiguration, fileTreeRepo *repositories.FileNodeRepository) []router.Route {
 	handleDiscreteFileRoute := routes.NewGetDiscreteFileByIdRoute(handlers.DiscreteFileByIdHandlerConfig{
 		RootPath:           apiConfiguration.GetRootPath(),
 		FileTreeRepository: fileTreeRepo,
 	})
 	handleContinousFileRoute := routes.CreateGetContinuousFileRoute(handlers.ContinuousFileByIdHandlerConfiguration{RootPath: apiConfiguration.GetRootPath(), FileTreeRepository: fileTreeRepo})
-	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FileTreeRepository: fileTreeRepo})
+	getFileTreeRoute := routes.NewGetFileTreeRoute(handlers.FileTreeHandlerConfiguration{FIleN: fileTreeRepo})
 
 	return []router.Route{
 		handleDiscreteFileRoute,

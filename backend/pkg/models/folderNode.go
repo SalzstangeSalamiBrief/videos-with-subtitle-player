@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type FolderNode struct {
 	ID                    uint `gorm:"primary_key"`
@@ -48,4 +52,27 @@ func (node *FolderNode) ToDto() FolderNodeDto {
 	}
 
 	return dto
+}
+
+func NodesToSingleTree(nodes []FolderNode) FolderNodeDto {
+	root := FolderNodeDto{
+		Name:                  "",
+		Id:                    uuid.New().String(),
+		ThumbnailId:           "",
+		LowQualityThumbnailId: "",
+		Files:                 nil,
+		Children:              nil,
+	}
+
+	if nodes != nil {
+		childNodes := make([]FolderNodeDto, len(nodes))
+		for i, child := range nodes {
+			childDto := child.ToDto()
+			childNodes[i] = childDto
+		}
+
+		root.Children = &childNodes
+	}
+
+	return root
 }

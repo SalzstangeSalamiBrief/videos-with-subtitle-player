@@ -12,6 +12,9 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO SYNC TREE =>
+// TODO CAN REUSE FOR FILES
+// TODO HAVE TO ADD FOR FOLDERS
 func syncFileTree(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, filesFromDatabase []models.FileNode, ctx context.Context) error {
 	filesToDelete := getDistinctFiles(filesFromDatabase, filesFromDisk)
 	filesToCreate := getDistinctFiles(filesFromDisk, filesFromDatabase)
