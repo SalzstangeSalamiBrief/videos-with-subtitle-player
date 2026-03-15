@@ -27,21 +27,21 @@ func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) 
 			return
 		}
 
-		discreteFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
-		if getFileTreeItemsError != nil {
-			log.Default().Println(getFileTreeItemsError.Error())
+		discreteFileNode, getDiscreteFileNodeError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
+		if getDiscreteFileNodeError != nil {
+			log.Default().Println(getDiscreteFileNodeError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
-		isExtensionSupported := utilities.IsFileExtensionAllowed(discreteFileInTree, constants.AllowedDiscreteFileExtensions...)
+		isExtensionSupported := utilities.IsFileExtensionAllowed(discreteFileNode, constants.AllowedDiscreteFileExtensions...)
 		if !isExtensionSupported {
 			log.Default().Println(fmt.Sprintf("File with id='%v' has an unsupported extension", fileIdString))
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
-		filePathOnHardDisk := path.Join(configuration.RootPath, discreteFileInTree.Path)
+		filePathOnHardDisk := path.Join(configuration.RootPath, discreteFileNode.Path)
 		fileBytes, err := os.ReadFile(filePathOnHardDisk)
 		if err != nil {
 			log.Default().Println(fmt.Sprintf("[DiscreteFileByIdHandler]: Error while opening the file with id '%v'\n", err.Error()))
@@ -49,8 +49,8 @@ func CreateDiscreteFileByIdHandler(configuration DiscreteFileByIdHandlerConfig) 
 			return
 		}
 
-		w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", discreteFileInTree.Name))
-		mimeType := utilities.GetContentTypeHeaderMimeType(discreteFileInTree)
+		w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", discreteFileNode.Name))
+		mimeType := utilities.GetContentTypeHeaderMimeType(discreteFileNode)
 		w.Header().Add("Content-Type", mimeType)
 		w.Write(fileBytes)
 	}

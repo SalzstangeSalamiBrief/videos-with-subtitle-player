@@ -21,17 +21,18 @@ func (fileTreeManager *FileTreeManager) convertFileNodesToTree() models.FolderNo
 		ChildFolders: []models.FolderNode{},
 	}
 
-	for _, file := range fileTreeManager.fileNodes {
+	files := fileTreeManager.GetFiles()
+	for _, file := range files {
 		pathParts := utilities.GetPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}
 
-	for _, file := range fileTreeManager.fileNodes {
+	for _, file := range files {
 		pathParts := utilities.GetPartsOfPath(file)
 		getThumbnailOfTree(&rootFileHierarchy, file, pathParts)
 	}
 
-	for _, file := range fileTreeManager.fileNodes {
+	for _, file := range files {
 		pathParts := utilities.GetPartsOfPath(file)
 		addFileToTree(&rootFileHierarchy, file, pathParts)
 	}
@@ -55,6 +56,7 @@ func buildSubFileTree(parentTree *models.FolderNode, pathPartsWithoutFileExtensi
 		child := models.FolderNode{
 			FolderId:     uuid.New().String(),
 			Name:         currentPathPart,
+			Path:         filepath.Join(pathPartsWithoutFileExtension...),
 			ChildFolders: []models.FolderNode{},
 			Files:        []models.FileNode{},
 		}

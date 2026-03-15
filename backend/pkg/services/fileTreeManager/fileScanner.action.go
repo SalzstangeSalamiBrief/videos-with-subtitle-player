@@ -22,7 +22,7 @@ func (fileTreeManager *FileTreeManager) scanForFilesInPath(parentPath string) []
 		log.Fatal(err)
 	}
 
-	currentFileItems := make(fileTreeManager.SubFileTree, 0)
+	currentFileItems := make(SubFileTree, 0)
 	for _, item := range content {
 		itemName := item.Name()
 		currentItemPath := filepath.Join(parentPath, itemName)

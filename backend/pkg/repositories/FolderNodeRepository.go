@@ -25,6 +25,6 @@ func NewFolderNodeRepository(db *database.Database) (*FolderNodeRepository, erro
 
 func (repository *FolderNodeRepository) GetFolders() ([]models.FolderNode, error) {
 	ctx := context.Background()
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FolderNode](repository.database.DatabaseConnection).Find(ctx)
-	return fileTreeItemsFromDb, getFileTreeItemsFromDbError
+	folderNodesFromDb, getFolderNodesFromDbError := gorm.G[models.FolderNode](repository.database.DatabaseConnection).Find(ctx)
+	return folderNodesFromDb, getFolderNodesFromDbError
 }

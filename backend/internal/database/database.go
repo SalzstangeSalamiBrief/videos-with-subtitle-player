@@ -126,14 +126,28 @@ func (db *Database) MigrateDatabase() (*Database, error) {
 	return db, nil
 }
 
-func (db *Database) SyncFileTreeItems(manager *fileTreeManager.FileTreeManager) error {
+func (db *Database) SyncFolderNodes(manager *fileTreeManager.FileTreeManager) error {
 	ctx := context.Background()
 
-	fileTreeItemsFromDb, getFileTreeItemsFromDbError := gorm.G[models.FileNode](db.DatabaseConnection).Find(ctx)
-	if getFileTreeItemsFromDbError != nil {
-		return getFileTreeItemsFromDbError
+	folderNodesFromDb, getFolderNodesFromDbError := gorm.G[models.FolderNode](db.DatabaseConnection).Find(ctx)
+	if getFolderNodesFromDbError != nil {
+		return getFolderNodesFromDbError
 	}
 
-	syncError := syncFileTree(db.DatabaseConnection, manager.GetFiles(), fileTreeItemsFromDb, ctx)
+	// only sync all sub trees of the root one because the root one is not relevant for the frontend
+	syncError := syncFolders(db.DatabaseConnection, ctx, manager.GetSubTrees(), folderNodesFromDb)
+	return syncError
+}
+
+func (db *Database) SyncFileNodes(manager *fileTreeManager.FileTreeManager) error {
+	ctx := context.Background()
+
+	fileNodesFromDb, getFileNodesFromDb := gorm.G[models.FileNode](db.DatabaseConnection).Find(ctx)
+	if getFileNodesFromDb != nil {
+		return getFileNodesFromDb
+	}
+
+	files := manager.GetFiles()
+	syncError := syncFiles(db.DatabaseConnection, files, fileNodesFromDb, ctx)
 	return syncError
 }

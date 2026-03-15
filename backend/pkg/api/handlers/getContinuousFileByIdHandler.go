@@ -30,21 +30,21 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 			return
 		}
 
-		continuousFileInTree, getFileTreeItemsError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
-		if getFileTreeItemsError != nil {
-			log.Default().Println(getFileTreeItemsError.Error())
+		continuousFileNode, getContinuousFileNodeError := configuration.FileTreeRepository.GetFileNodeById(fileIdString)
+		if getContinuousFileNodeError != nil {
+			log.Default().Println(getContinuousFileNodeError.Error())
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
-		isExtensionSupported := utilities.IsFileExtensionAllowed(continuousFileInTree, constants.AllowedContinuousFileExtensions...)
+		isExtensionSupported := utilities.IsFileExtensionAllowed(continuousFileNode, constants.AllowedContinuousFileExtensions...)
 		if !isExtensionSupported {
 			log.Default().Println(fmt.Sprintf("File with id='%v' has an unsupported extension", fileIdString))
 			problemDetailsErrors.NewInternalServerErrorProblemDetails(fmt.Sprintf("Could not get file with id='%v'", fileIdString)).SendErrorResponse(w)
 			return
 		}
 
-		filePathOnHardDisk := path.Join(configuration.RootPath, continuousFileInTree.Path)
+		filePathOnHardDisk := path.Join(configuration.RootPath, continuousFileNode.Path)
 		file, err := os.Open(filePathOnHardDisk)
 		defer file.Close()
 
@@ -77,9 +77,9 @@ func NewGetContinuousFileByIdHandler(configuration ContinuousFileByIdHandlerConf
 		}
 
 		addPartialContentHeader(w, start, end, fileSize)
-		w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", continuousFileInTree.Name))
+		w.Header().Add("Content-Disposition", fmt.Sprintf("attachment; filename=\"%v\"", continuousFileNode.Name))
 
-		mimeType := utilities.GetContentTypeHeaderMimeType(continuousFileInTree)
+		mimeType := utilities.GetContentTypeHeaderMimeType(continuousFileNode)
 		w.Header().Add("Content-Type", mimeType)
 		w.WriteHeader(http.StatusPartialContent)
 		io.CopyN(w, file, end-start)

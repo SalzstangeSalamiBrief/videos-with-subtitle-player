@@ -12,18 +12,15 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO SYNC TREE =>
-// TODO CAN REUSE FOR FILES
-// TODO HAVE TO ADD FOR FOLDERS
-func syncFileTree(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, filesFromDatabase []models.FileNode, ctx context.Context) error {
+func syncFiles(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, filesFromDatabase []models.FileNode, ctx context.Context) error {
 	filesToDelete := getDistinctFiles(filesFromDatabase, filesFromDisk)
 	filesToCreate := getDistinctFiles(filesFromDisk, filesFromDatabase)
-	deleteError := deleteFileTreeItemsFromDb(databaseConnection, ctx, filesToDelete)
+	deleteError := deleteFileNodesFromDb(databaseConnection, ctx, filesToDelete)
 	if deleteError != nil {
 		return deleteError
 	}
 
-	insertError := insertFileTreeItemsIntoDb(databaseConnection, ctx, filesToCreate)
+	insertError := insertFileNodessIntoDb(databaseConnection, ctx, filesToCreate)
 	if insertError != nil {
 		return insertError
 	}
@@ -31,13 +28,13 @@ func syncFileTree(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, 
 	return nil
 }
 
-func doesFileTreeItemWithFileIdExitsInDb(databaseConnection *gorm.DB, fileId string) bool {
+func doesFileNodeWithFileIdExitsInDb(databaseConnection *gorm.DB, fileId string) bool {
 	count := int64(0)
 	databaseConnection.Model(&models.FileNode{}).Where("file_id = ?", fileId).Count(&count)
 	return count > 0
 }
 
-func deleteFileTreeItemsFromDb(databaseConnection *gorm.DB, ctx context.Context, filesToDelete []models.FileNode) error {
+func deleteFileNodesFromDb(databaseConnection *gorm.DB, ctx context.Context, filesToDelete []models.FileNode) error {
 	if len(filesToDelete) == 0 {
 		return nil
 	}
@@ -53,7 +50,7 @@ func deleteFileTreeItemsFromDb(databaseConnection *gorm.DB, ctx context.Context,
 
 		shouldTryCascadingDeletionOfAssociatedAudioFile := fileToDelete.AssociatedAudioFileId != nil
 		if shouldTryCascadingDeletionOfAssociatedAudioFile {
-			doesAudioFileExits := doesFileTreeItemWithFileIdExitsInDb(databaseConnection, *fileToDelete.AssociatedAudioFileId)
+			doesAudioFileExits := doesFileNodeWithFileIdExitsInDb(databaseConnection, *fileToDelete.AssociatedAudioFileId)
 			if doesAudioFileExits {
 				_, deleteError = gorm.G[models.FileNode](databaseConnection).Where("file_id = ?", fileToDelete.AssociatedAudioFileId).Delete(ctx)
 				if deleteError != nil {
@@ -67,7 +64,7 @@ func deleteFileTreeItemsFromDb(databaseConnection *gorm.DB, ctx context.Context,
 
 		shouldTryCascadingDeletionOfAssociatedLowQualityImage := fileToDelete.LowQualityImageId != nil
 		if shouldTryCascadingDeletionOfAssociatedLowQualityImage {
-			doesLowQualityImageExist := doesFileTreeItemWithFileIdExitsInDb(databaseConnection, *fileToDelete.LowQualityImageId)
+			doesLowQualityImageExist := doesFileNodeWithFileIdExitsInDb(databaseConnection, *fileToDelete.LowQualityImageId)
 			if doesLowQualityImageExist {
 				_, deleteError = gorm.G[models.FileNode](databaseConnection).Where("file_id = ?", fileToDelete.LowQualityImageId).Delete(ctx)
 				if deleteError != nil {
@@ -84,7 +81,7 @@ func deleteFileTreeItemsFromDb(databaseConnection *gorm.DB, ctx context.Context,
 	return nil
 }
 
-func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileNode) error {
+func insertFileNodessIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileNode) error {
 	if len(filesToAddInput) == 0 {
 		return nil
 	}
@@ -108,7 +105,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 				isSameBatchInsert := checkIfFileIsInBatchByPath(pathWithoutLowQualitySuffix, filesToAddInput)
 
 				if !isSameBatchInsert {
-					matchingImage, tryGetMatchingImageByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathWithoutLowQualitySuffix)
+					matchingImage, tryGetMatchingImageByPathError := tryGetFileNodeByPath(databaseConnection, ctx, pathWithoutLowQualitySuffix)
 					if tryGetMatchingImageByPathError != nil {
 						log.Printf("Warning: No matching audio file with path='%v' found. error='%v'\n", pathWithoutLowQualitySuffix, tryGetMatchingImageByPathError.Error())
 					}
@@ -126,7 +123,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 			isSameBatchInsert := checkIfFileIsInBatchByPath(pathOfPossibleMatchingAudioFile, filesToAddInput)
 
 			if !isSameBatchInsert {
-				matchingAudioFile, tryGetMatchingAudioFileByPathError := tryGetFileTreeItemByPath(databaseConnection, ctx, pathOfPossibleMatchingAudioFile)
+				matchingAudioFile, tryGetMatchingAudioFileByPathError := tryGetFileNodeByPath(databaseConnection, ctx, pathOfPossibleMatchingAudioFile)
 				if tryGetMatchingAudioFileByPathError != nil {
 					log.Printf("Warning: No matching audio file with path='%v' found. error='%v'\n", pathOfPossibleMatchingAudioFile, tryGetMatchingAudioFileByPathError.Error())
 				}
@@ -150,7 +147,7 @@ func insertFileTreeItemsIntoDb(databaseConnection *gorm.DB, ctx context.Context,
 	return nil
 }
 
-func tryGetFileTreeItemByPath(databaseConnection *gorm.DB, ctx context.Context, path string) (*models.FileNode, error) {
+func tryGetFileNodeByPath(databaseConnection *gorm.DB, ctx context.Context, path string) (*models.FileNode, error) {
 	matchingFile, err := gorm.G[*models.FileNode](databaseConnection).Where("path = ?", path).First(ctx)
 	return matchingFile, err
 }
