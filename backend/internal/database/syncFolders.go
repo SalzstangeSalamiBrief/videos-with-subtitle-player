@@ -9,12 +9,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO SYNC TREE =>
-// TODO CAN REUSE FOR FILES
-// TODO HAVE TO ADD FOR FOLDERS
-// TODO MIGRATION
-// TODO ADJUST TABLE NAMES
-
 func syncFolders(databaseConnection *gorm.DB, ctx context.Context, folderTreesFromDisk []models.FolderNode, flatHierarchyOfFoldersFromDatabase []models.FolderNode) error {
 	flatHierarchyOfFoldersFromDisk := models.NodesToFlatHierarchy(folderTreesFromDisk)
 	foldersToCreate := getDistinctFolders(flatHierarchyOfFoldersFromDisk, flatHierarchyOfFoldersFromDatabase)
@@ -31,7 +25,11 @@ func syncFolders(databaseConnection *gorm.DB, ctx context.Context, folderTreesFr
 		return createFoldersError
 	}
 
-	// TODO SYNC FOLDERS/FILES
+	// TODO TEST FUNCTIONALITY
+	syncFoldersRecursivelyError := syncFoldersRecursively(databaseConnection, ctx, remainingFoldersToSyncRecursively)
+	if syncFoldersRecursivelyError != nil {
+		return syncFoldersRecursivelyError
+	}
 	// TODO AFTER LEAVING THE FUNCTION THE DB CRASHES/IS FLOODED
 	log.Println(remainingFoldersToSyncRecursively)
 	return nil
@@ -57,6 +55,7 @@ func getDistinctFolders(left []models.FolderNode, right []models.FolderNode) []m
 	return distinctFolders
 }
 
+// TODO IS THIS NEEDED?
 func mapFolderSliceToSliceOfPaths(folders []models.FolderNode) []string {
 	paths := make([]string, len(folders))
 	for i, folder := range folders {
@@ -95,7 +94,66 @@ func deleteFoldersBatchFromDb(databaseConnection *gorm.DB, ctx context.Context, 
 	return nil
 }
 
-func tryGetFolderNodeByPath(databaseConnection *gorm.DB, ctx context.Context, path string) (*models.FileNode, error) {
-	matchingFile, err := gorm.G[*models.FileNode](databaseConnection).Where("path = ?", path).First(ctx)
+func syncFoldersRecursively(databaseConnection *gorm.DB, ctx context.Context, foldersFromDisk []models.FolderNode) error {
+	for _, folderFromDisk := range foldersFromDisk {
+		folderToSync, getFolderFromDbError := tryGetFolderNodeByPath(databaseConnection, ctx, folderFromDisk.Path)
+		if getFolderFromDbError != nil {
+			return getFolderFromDbError
+		}
+
+		if folderToSync == nil {
+			log.Printf("Skipped syncing folder with path='%s' because there is no match in the database", folderFromDisk.Path)
+			continue
+		}
+
+		syncFolderError := syncFolderRecursively(databaseConnection, ctx, *folderToSync, folderFromDisk)
+		if syncFolderError != nil {
+			return syncFolderError
+		}
+	}
+
+	return nil
+}
+
+func syncFolderRecursively(databaseConnection *gorm.DB, ctx context.Context, folderFromDb models.FolderNode, folderFromDisk models.FolderNode) error {
+	shouldSync := hasFolderChanges(folderFromDb, folderFromDisk)
+	if !shouldSync {
+		return nil
+	}
+
+	syncFolderError := updateFolder(databaseConnection, ctx, folderFromDb, folderFromDisk)
+	if syncFolderError != nil {
+		return syncFolderError
+	}
+
+	// TODO CHECK IF FILES HAVE THE CORRECT PARENT_FOLDER_ID
+	syncFilesError := syncFiles(databaseConnection, ctx, folderFromDb.Files, folderFromDisk.Files)
+	if syncFilesError != nil {
+		return syncFilesError
+	}
+
+	return nil
+}
+
+func hasFolderChanges(folderFromDb models.FolderNode, folderFromDisk models.FolderNode) bool {
+	hasNameChanged := folderFromDb.Name != folderFromDisk.Name
+	hasParentFolderChanged := folderFromDb.ParentFolderId != folderFromDisk.ParentFolderId
+	hasThumbnailChanged := folderFromDb.ThumbnailId != folderFromDisk.ThumbnailId
+	hasLowQualityThumbnailChanged := folderFromDb.LowQualityThumbnailId != folderFromDisk.LowQualityThumbnailId
+	hasNumberOfFilesChanged := len(folderFromDb.Files) != len(folderFromDisk.Files)
+	return hasNameChanged || hasParentFolderChanged || hasThumbnailChanged || hasLowQualityThumbnailChanged || hasNumberOfFilesChanged
+}
+
+func updateFolder(databaseConnection *gorm.DB, ctx context.Context, folderFromDb models.FolderNode, folderFromDisk models.FolderNode) error {
+	folderFromDb.Name = folderFromDisk.Name
+	folderFromDb.ParentFolderId = folderFromDisk.ParentFolderId
+	folderFromDb.ThumbnailId = folderFromDisk.ThumbnailId
+	folderFromDb.LowQualityThumbnailId = folderFromDisk.LowQualityThumbnailId
+	_, err := gorm.G[models.FolderNode](databaseConnection).Where("id = ?", folderFromDb.ID).Updates(ctx, folderFromDb)
+	return err
+}
+
+func tryGetFolderNodeByPath(databaseConnection *gorm.DB, ctx context.Context, path string) (*models.FolderNode, error) {
+	matchingFile, err := gorm.G[*models.FolderNode](databaseConnection).Where("path = ?", path).First(ctx)
 	return matchingFile, err
 }

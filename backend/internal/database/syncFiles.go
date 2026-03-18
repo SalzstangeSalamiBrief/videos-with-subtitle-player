@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func syncFiles(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, filesFromDatabase []models.FileNode, ctx context.Context) error {
+func syncFiles(databaseConnection *gorm.DB, ctx context.Context, filesFromDisk []models.FileNode, filesFromDatabase []models.FileNode) error {
 	filesToDelete := getDistinctFiles(filesFromDatabase, filesFromDisk)
 	filesToCreate := getDistinctFiles(filesFromDisk, filesFromDatabase)
 	deleteError := deleteFileNodesFromDb(databaseConnection, ctx, filesToDelete)
@@ -20,7 +20,7 @@ func syncFiles(databaseConnection *gorm.DB, filesFromDisk []models.FileNode, fil
 		return deleteError
 	}
 
-	insertError := insertFileNodessIntoDb(databaseConnection, ctx, filesToCreate)
+	insertError := insertFileNodesIntoDb(databaseConnection, ctx, filesToCreate)
 	if insertError != nil {
 		return insertError
 	}
@@ -81,7 +81,7 @@ func deleteFileNodesFromDb(databaseConnection *gorm.DB, ctx context.Context, fil
 	return nil
 }
 
-func insertFileNodessIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileNode) error {
+func insertFileNodesIntoDb(databaseConnection *gorm.DB, ctx context.Context, filesToAddInput []models.FileNode) error {
 	if len(filesToAddInput) == 0 {
 		return nil
 	}
