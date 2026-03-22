@@ -17,7 +17,6 @@ type FileNode struct {
 	Type                  fileType.FileType `gorm:"type:file_type;not null"`
 	AssociatedAudioFileId *string
 	LowQualityImageId     *string
-	Tags                  []Tag  `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;many2many:file_node_to_tags;"`
 	ParentFolderId        string `gorm:"type:UUID;index"`
 }
 

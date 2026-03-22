@@ -19,6 +19,7 @@ type FolderNode struct {
 	ParentFolderId        *string      `gorm:"type:UUID;index"`
 	ParentFolder          *FolderNode  `gorm:"foreignKey:ParentFolderId;references:FolderId"`
 	ChildFolders          []FolderNode `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;foreignKey:ParentFolderId;references:FolderId"`
+	Tags                  []Tag        `gorm:"constraint:OnUpdate:CASCADE,OnDelete:SET NULL;many2many:folder_node_to_tags;"`
 }
 
 func (node *FolderNode) ToDto() FolderNodeDto {
@@ -80,23 +81,20 @@ func NodesToSingleTree(nodes []FolderNode) FolderNodeDto {
 func NodesToFlatHierarchy(nodes []FolderNode) []FolderNode {
 	flatHierarchy := make([]FolderNode, 0)
 	for _, node := range nodes {
-		flatHierarchy = append(flatHierarchy, node.TransformTreeToFlatHierarchy()...)
+		flatHierarchy = append(flatHierarchy, node.transformTreeToFlatHierarchy()...)
 	}
 
 	return flatHierarchy
 }
 
-func (node *FolderNode) TransformTreeToFlatHierarchy() []FolderNode {
+func (node FolderNode) transformTreeToFlatHierarchy() []FolderNode {
 	// copy children & clear children before copying the node into folder to prevent duplicates
 	children := node.ChildFolders
 	node.ChildFolders = make([]FolderNode, 0)
 
-	flatHierarchy := []FolderNode{
-		*node,
-	}
-
+	flatHierarchy := []FolderNode{node}
 	for _, child := range children {
-		flatHierarchy = append(flatHierarchy, child.TransformTreeToFlatHierarchy()...)
+		flatHierarchy = append(flatHierarchy, child.transformTreeToFlatHierarchy()...)
 	}
 
 	return flatHierarchy

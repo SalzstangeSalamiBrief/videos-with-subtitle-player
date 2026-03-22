@@ -23,6 +23,8 @@ func (fileTreeManager *FileTreeManager) convertFileNodesToTree() models.FolderNo
 
 	files := fileTreeManager.GetFiles()
 	for _, file := range files {
+		// TODO ERROR FOR FIRST ELEMENT => IS ADDED AS ROOT FOLDER AND THEN AS CHILD
+		// E:G: /root/child1 => child1.children[child1]
 		pathParts := utilities.GetPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}

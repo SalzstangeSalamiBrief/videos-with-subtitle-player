@@ -13,7 +13,7 @@ func syncFolders(databaseConnection *gorm.DB, ctx context.Context, folderTreesFr
 	flatHierarchyOfFoldersFromDisk := models.NodesToFlatHierarchy(folderTreesFromDisk)
 	foldersToCreate := getDistinctFolders(flatHierarchyOfFoldersFromDisk, flatHierarchyOfFoldersFromDatabase)
 	foldersToDelete := getDistinctFolders(flatHierarchyOfFoldersFromDatabase, flatHierarchyOfFoldersFromDisk)
-	remainingFoldersToSyncRecursively := getRemainingFolders(flatHierarchyOfFoldersFromDisk, foldersToCreate, foldersToDelete)
+	foldersToUpdate := getFoldersToUpdate(flatHierarchyOfFoldersFromDisk, foldersToCreate, foldersToDelete)
 
 	deleteFoldersError := deleteFoldersBatchFromDb(databaseConnection, ctx, foldersToDelete)
 	if deleteFoldersError != nil {
@@ -25,13 +25,11 @@ func syncFolders(databaseConnection *gorm.DB, ctx context.Context, folderTreesFr
 		return createFoldersError
 	}
 
-	// TODO TEST FUNCTIONALITY
-	syncFoldersRecursivelyError := syncFoldersRecursively(databaseConnection, ctx, remainingFoldersToSyncRecursively)
+	syncFoldersRecursivelyError := syncFoldersRecursively(databaseConnection, ctx, foldersToUpdate)
 	if syncFoldersRecursivelyError != nil {
 		return syncFoldersRecursivelyError
 	}
-	// TODO AFTER LEAVING THE FUNCTION THE DB CRASHES/IS FLOODED
-	log.Println(remainingFoldersToSyncRecursively)
+
 	return nil
 }
 
@@ -55,17 +53,7 @@ func getDistinctFolders(left []models.FolderNode, right []models.FolderNode) []m
 	return distinctFolders
 }
 
-// TODO IS THIS NEEDED?
-func mapFolderSliceToSliceOfPaths(folders []models.FolderNode) []string {
-	paths := make([]string, len(folders))
-	for i, folder := range folders {
-		paths[i] = folder.Path
-	}
-
-	return paths
-}
-
-func getRemainingFolders(foldersFromDisk []models.FolderNode, createdFolders []models.FolderNode, deletedFolders []models.FolderNode) []models.FolderNode {
+func getFoldersToUpdate(foldersFromDisk []models.FolderNode, createdFolders []models.FolderNode, deletedFolders []models.FolderNode) []models.FolderNode {
 	manipulatedFolders := slices.Concat(createdFolders, deletedFolders)
 	//manipulatedPaths := mapFolderSliceToSliceOfPaths(manipulatedFolders)
 	unchangedFolders := getDistinctFolders(foldersFromDisk, manipulatedFolders)
@@ -126,8 +114,13 @@ func syncFolderRecursively(databaseConnection *gorm.DB, ctx context.Context, fol
 		return syncFolderError
 	}
 
-	// TODO CHECK IF FILES HAVE THE CORRECT PARENT_FOLDER_ID
-	syncFilesError := syncFiles(databaseConnection, ctx, folderFromDb.Files, folderFromDisk.Files)
+	//// TODO CHECK IF FILES HAVE THE CORRECT PARENT_FOLDER_ID#
+	filesInFolder := folderFromDisk.Files
+	for i := range filesInFolder {
+		filesInFolder[i].ParentFolderId = folderFromDb.FolderId
+	}
+
+	syncFilesError := syncFiles(databaseConnection, ctx, folderFromDb.Files, filesInFolder)
 	if syncFilesError != nil {
 		return syncFilesError
 	}

@@ -9,7 +9,7 @@ BEGIN
     -- Iterate over each unique directory level (parent path)
     FOR level_record IN
         SELECT DISTINCT regexp_replace(path, '/[^/]*$', '') AS parent_path
-        FROM "file_tree_items"
+        FROM "folder_nodes"
     LOOP
         -- Pick a random number of tags from 0 to 12 for this level
         num_tags := floor(random() * 13)::INT;
@@ -25,12 +25,12 @@ BEGIN
         -- Assign these tags to all fileTreeItems on this level
         FOR item_record IN
             SELECT id
-            FROM "file_tree_items"
+            FROM "folder_nodes"
             WHERE regexp_replace(path, '/[^/]*$', '') = level_record.parent_path
         LOOP
             FOREACH tag_id IN ARRAY selected_tagsp
             LOOP
-                INSERT INTO "file_node_to_tags" (file_tree_item_id, tag_id)
+                INSERT INTO "folder_node_to_tags" (file_tree_item_id, tag_id)
                 VALUES (item_record.id, tag_id)
                 ON CONFLICT DO NOTHING;
             END LOOP;

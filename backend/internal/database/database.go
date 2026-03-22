@@ -113,12 +113,12 @@ func (db *Database) MigrateDatabase() (*Database, error) {
 		return db, addFileTypeEnumError
 	}
 
-	migrationError := db.DatabaseConnection.AutoMigrate(&models.FolderNode{}, &models.FileNode{}, &models.Tag{})
+	migrationError := executeMigration(db.DatabaseConnection, ctx, "2_AddInitialModels_Folder_File_Tags.sql", false)
 	if migrationError != nil {
 		return db, migrationError
 	}
 
-	seedTagsError := executeMigration(db.DatabaseConnection, ctx, "2_TagsSeed.sql", false)
+	seedTagsError := executeMigration(db.DatabaseConnection, ctx, "3_TagsSeed.sql", false)
 	if seedTagsError != nil {
 		log.Fatal(seedTagsError)
 	}
@@ -148,6 +148,6 @@ func (db *Database) SyncFileNodes(manager *fileTreeManager.FileTreeManager) erro
 	}
 
 	files := manager.GetFiles()
-	syncError := syncFiles(db.DatabaseConnection, files, fileNodesFromDb, ctx)
+	syncError := syncFiles(db.DatabaseConnection, ctx, files, fileNodesFromDb)
 	return syncError
 }
