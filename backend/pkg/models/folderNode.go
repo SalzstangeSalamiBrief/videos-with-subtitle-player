@@ -28,10 +28,10 @@ func (node *FolderNode) ToDto() FolderNodeDto {
 		Name:                  node.Name,
 		ThumbnailId:           node.ThumbnailId,
 		LowQualityThumbnailId: node.LowQualityThumbnailId,
-		Files:                 nil,
-		Children:              nil,
+		Files:                 &[]FileNodeDto{},
+		Children:              &[]FolderNodeDto{},
 	}
-
+	// TODO DOES NOT WORK PROPERLY
 	if node.ChildFolders != nil {
 		childFolders := make([]FolderNodeDto, len(node.ChildFolders))
 		for i, child := range node.ChildFolders {

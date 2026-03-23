@@ -24,7 +24,11 @@ func syncFolders(databaseConnection *gorm.DB, ctx context.Context, folderTreesFr
 	if createFoldersError != nil {
 		return createFoldersError
 	}
-
+	// TODO THIS DOES NOT WORK PROPERLY
+	// 1. USE THE DEFAULT DIRECTORY with n unique entries
+	// 2. USE ANOTHER DIRECTORY with m unique entries
+	// EXPECTED: n entries delete, m entries added
+	// CURRENT: m-n entries added
 	syncFoldersRecursivelyError := syncFoldersRecursively(databaseConnection, ctx, foldersToUpdate)
 	if syncFoldersRecursivelyError != nil {
 		return syncFoldersRecursivelyError
@@ -62,6 +66,12 @@ func getFoldersToUpdate(foldersFromDisk []models.FolderNode, createdFolders []mo
 
 func createFoldersBatch(databaseConnection *gorm.DB, ctx context.Context, foldersToCreate []models.FolderNode) error {
 	result := gorm.WithResult()
+
+	x := make([]string, len(foldersToCreate))
+	for i, folder := range foldersToCreate {
+		x[i] = folder.Path
+	}
+
 	createFoldersInBatchError := gorm.G[models.FolderNode](databaseConnection, result).CreateInBatches(ctx, &foldersToCreate, len(foldersToCreate))
 	if createFoldersInBatchError != nil {
 		log.Println("Error creating folders")

@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS folder_nodes (
     name                     VARCHAR NOT NULL,
     path                     VARCHAR NOT NULL,
     CONSTRAINT uni_folder_nodes_folder_id UNIQUE (folder_id),
-    CONSTRAINT uni_folder_nodes_name      UNIQUE (name),
     CONSTRAINT uni_folder_nodes_path      UNIQUE (path),
     thumbnail_id             VARCHAR NOT NULL DEFAULT '',
     low_quality_thumbnail_id VARCHAR NOT NULL DEFAULT '',
@@ -15,21 +14,21 @@ CREATE TABLE IF NOT EXISTS folder_nodes (
 
 CREATE INDEX IF NOT EXISTS idx_folder_nodes_parent_folder_id ON folder_nodes (parent_folder_id);
 
-CREATE TABLE IF NOT EXISTS "fileNodes" (
+CREATE TABLE IF NOT EXISTS "file_nodes" (
     id                       BIGSERIAL PRIMARY KEY,
     created_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     updated_at               TIMESTAMP NOT NULL DEFAULT NOW(),
     file_id                  UUID,
     path                     VARCHAR NOT NULL,
     name                     VARCHAR,
-    CONSTRAINT "uni_fileNodes_path" UNIQUE (path),
+    CONSTRAINT "uni_file_nodes_path" UNIQUE (path),
     type                     file_type NOT NULL,
     associated_audio_file_id UUID,
     low_quality_image_id     UUID,
     parent_folder_id         UUID REFERENCES folder_nodes (folder_id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_file_nodes_parent_folder_id ON "fileNodes" (parent_folder_id);
+CREATE INDEX IF NOT EXISTS idx_file_nodes_parent_folder_id ON "file_nodes" (parent_folder_id);
 
 CREATE TABLE IF NOT EXISTS tags (
     id         BIGSERIAL PRIMARY KEY,

@@ -43,6 +43,7 @@ func main() {
 	log.Default().Printf("Start server on '%v'", apiConfiguration.GetServerAddress())
 
 	// TODO CLEANUP OF DB
+	// TODO CRASHES DOCKER SOME TIMES AFTER CLOSING
 	shutdownCh := make(chan os.Signal, 1)
 	signal.Notify(shutdownCh, os.Interrupt, syscall.SIGTERM)
 

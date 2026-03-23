@@ -23,8 +23,6 @@ func (fileTreeManager *FileTreeManager) convertFileNodesToTree() models.FolderNo
 
 	files := fileTreeManager.GetFiles()
 	for _, file := range files {
-		// TODO ERROR FOR FIRST ELEMENT => IS ADDED AS ROOT FOLDER AND THEN AS CHILD
-		// E:G: /root/child1 => child1.children[child1]
 		pathParts := utilities.GetPartsOfPath(file)
 		buildSubFileTree(&rootFileHierarchy, pathParts)
 	}
@@ -58,7 +56,7 @@ func buildSubFileTree(parentTree *models.FolderNode, pathPartsWithoutFileExtensi
 		child := models.FolderNode{
 			FolderId:     uuid.New().String(),
 			Name:         currentPathPart,
-			Path:         filepath.Join(pathPartsWithoutFileExtension...),
+			Path:         filepath.Join(pathPartsWithoutFileExtension[0 : i+1]...),
 			ChildFolders: []models.FolderNode{},
 			Files:        []models.FileNode{},
 		}
@@ -130,5 +128,6 @@ func findChildIndexInChildrenOfFileTree(node *models.FolderNode, name string) in
 			return i
 		}
 	}
+
 	return -1
 }
